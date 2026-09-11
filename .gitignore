@@ -2,3 +2,11 @@
 proxmox/env.org
 proxmox/.env
 proxmox/answer_lbic.toml
+
+# OpenTofu
+**/.terraform/
+**/.terraform.lock.hcl
+**/*.tfstate
+**/*.tfstate.backup
+**/*.auto.tfvars
+**/*.tfvars
