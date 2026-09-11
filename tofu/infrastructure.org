@@ -1,0 +1,201 @@
+#+TITLE: OpenTofu config file for core services
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+DESCRIPTION: OpenTofu config file for provisioning a Headscale LXC in Proxmox
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc_1:
+- [[#headscale][Headscale]]
+
+* Headscale
+:PROPERTIES:
+:header-args+: :tangle headscale.tf
+:END:
+** Terraform
+#+begin_src tofu
+terraform {
+#+end_src
+*** Required Providers
+#+begin_src tofu
+  required_providers {
+    proxmox = {
+      source  = "bpg/proxmox"
+      version = "~> 0.112.0"
+    }
+  }
+#+end_src
+*** Client-Side State Encryption
+#+begin_src tofu
+  encryption {
+    key_provider "pbkdf2" "mykey" {
+      passphrase = var.tofu_state_passphrase
+    }
+    method "aes_gcm" "mymethod" {
+      keys = key_provider.pbkdf2.mykey
+    }
+    state {
+      method = method.aes_gcm.mymethod
+      enforced = true
+    }
+    plan {
+      method = method.aes_gcm.mymethod
+      enforced = true
+    }
+  }
+#+end_src
+*** EoS
+#+begin_src tofu
+}
+#+end_src
+** Provider
+Provider setup: how OpenTofu authenticates to Proxmox.
+Authentication tokens should be passed via env var =PROXMOX_VE_API_TOKEN= in the formatted as =user@realm!tokenid=secret-uuid=.
+#+begin_src tofu
+provider "proxmox" {
+  endpoint = "https://andira.lbic.fee.unicamp.br:8006/"
+  # Set to true if using self-signed certificates on the Proxmox host
+  insecure = true
+}
+#+end_src
+** Variables
+*** SSH Public Keys
+**** Laptop IPF
+#+begin_src tofu
+variable "ssh_key_laptop" {
+  type        = string
+  description = "The SSH public key for the IPF laptop"
+}
+#+end_src
+**** Desktop Catuaba
+#+begin_src tofu
+variable "ssh_key_desktop" {
+  type        = string
+  description = "The SSH public key for the Catuaba desktop"
+}
+#+end_src
+*** Network Configuration
+**** IP
+#+begin_src tofu
+variable "lxc_ip_cidr" {
+  type        = string
+  description = "The IP address and CIDR for the Headscale LXC"
+  default     = "10.10.20.2/24"
+}
+#+end_src
+**** Gateway
+#+begin_src tofu
+variable "lxc_gateway" {
+  type        = string
+  description = "The default gateway for the Headscale LXC"
+  default     = "10.10.20.1"
+}
+#+end_src
+*** Tofu State Passphrase
+#+begin_src tofu
+variable "tofu_state_passphrase" {
+  type        = string
+  description = "Passphrase for OpenTofu client-side state encryption"
+  sensitive   = true
+}
+#+end_src
+** LXC Container
+This block provisions the Debian 13 (Trixie) container on the internal bridge (=vmbr1=).
+#+begin_src tofu
+resource "proxmox_virtual_environment_container" "headscale" {
+  description = "Headscale VPN Controller"
+  tags        = ["core", "vpn"]
+  node_name = "andira"
+  vm_id     = 201
+
+  # ensure unprivileged mode
+  unprivileged = true
+
+  # autostart
+  start_on_boot = true
+
+  # enable nesting
+  features {
+    nesting = true
+  }
+
+  # ensure the container starts early in the boot sequence (lower = earlier)
+  startup {
+    order      = 10
+    up_delay   = 5
+    down_delay = 5
+  }
+#+end_src
+*** OS
+#+begin_src tofu
+  # Using Debian 13 (Trixie) - Ensure this template is downloaded to your local storage
+  operating_system {
+    template_file_id = "local:vztmpl/debian-13-standard_13.6-1_amd64.tar.zst"
+    type             = "debian"
+  }
+#+end_src
+*** CPU
+#+begin_src tofu
+  cpu {
+    cores = 1
+  }
+#+end_src
+*** Memory
+#+begin_src tofu
+  memory {
+    dedicated = 512
+    swap      = 0
+  }
+#+end_src
+*** Disk
+#+begin_src tofu
+  disk {
+    datastore_id = "local-lvm"
+    size         = 4
+  }
+#+end_src
+*** Network
+#+begin_src tofu
+  network_interface {
+    name   = "eth0"
+    bridge = "vmbr1"
+    vlan_id = 20  # "Infra" VLAN
+  }
+#+end_src
+*** Initialization
+#+begin_src tofu
+  initialization {
+    hostname = "headscale"
+#+end_src
+**** DNS
+#+begin_src tofu :tangle no
+    dns {
+      servers = ["10.10.20.x", "10.10.20.y"]  # DNS-1, DNS-2
+    }
+#+end_src
+**** IP
+#+begin_src tofu
+    ip_config {
+      ipv4 {
+        address = var.lxc_ip_cidr
+        gateway = var.lxc_gateway
+      }
+    }
+#+end_src
+**** User
+#+begin_src tofu
+    user_account {
+      keys = [
+        var.ssh_key_laptop,
+        var.ssh_key_desktop
+      ]
+    }
+#+end_src
+**** EoS
+#+begin_src tofu
+}
+#+end_src
+*** EoS
+#+begin_src tofu
+}
+#+end_src
