@@ -1,0 +1,20 @@
+#+TITLE: Homelab
+#+AUTHOR: Rafael Ito
+#+DESCRIPTION: documentation and config files for Homelab
+#+STARTUP: showeverything
+
+* Table of Content :toc:
+- [[#documentation][Documentation]]
+  - [[#lbic][LBiC]]
+
+* Documentation
+** LBiC
+- Proxmox
+  - LXC
+    - VPN
+    - LDAP/Active Directory/FreeIPA
+    - DNS
+  - VM for Kubernetes
+    - Talos OS #1
+    - Talos OS #2
+    - Talos OS #3
