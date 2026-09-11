@@ -1,16 +1,20 @@
-#+TITLE: OpenTofu config file for core services
+#+TITLE: OpenTofu Infrastructure
 #+AUTHOR: Rafael Ito
 #+PROPERTY: header-args
-#+DESCRIPTION: OpenTofu config file for provisioning a Headscale LXC in Proxmox
+#+DESCRIPTION: OpenTofu config file for provisioning LXC containers and VMs in Proxmox
 #+STARTUP: showeverything
 #+auto_tangle: t
 
-* Table of Contents :toc_1:
+* Table of Contents :toc:
+- [[#global-configuration][Global Configuration]]
+  - [[#terraform][Terraform]]
+  - [[#providers][Providers]]
+  - [[#variables][Variables]]
 - [[#headscale][Headscale]]
 
-* Headscale
+* Global Configuration
 :PROPERTIES:
-:header-args+: :tangle headscale.tf
+:header-args+: :tangle main.tf
 :END:
 ** Terraform
 #+begin_src tofu
@@ -48,7 +52,8 @@ terraform {
 #+begin_src tofu
 }
 #+end_src
-** Provider
+** Providers
+*** Proxmox
 Provider setup: how OpenTofu authenticates to Proxmox.
 Authentication tokens should be passed via env var =PROXMOX_VE_API_TOKEN= in the formatted as =user@realm!tokenid=secret-uuid=.
 #+begin_src tofu
@@ -74,29 +79,34 @@ variable "ssh_key_desktop" {
   description = "The SSH public key for the Catuaba desktop"
 }
 #+end_src
-*** Network Configuration
-**** IP
-#+begin_src tofu
-variable "lxc_ip_cidr" {
-  type        = string
-  description = "The IP address and CIDR for the Headscale LXC"
-  default     = "10.10.20.2/24"
-}
-#+end_src
-**** Gateway
-#+begin_src tofu
-variable "lxc_gateway" {
-  type        = string
-  description = "The default gateway for the Headscale LXC"
-  default     = "10.10.20.1"
-}
-#+end_src
 *** Tofu State Passphrase
 #+begin_src tofu
 variable "tofu_state_passphrase" {
   type        = string
   description = "Passphrase for OpenTofu client-side state encryption"
   sensitive   = true
+}
+#+end_src
+* Headscale :noexport_1:
+VPN.
+:PROPERTIES:
+:header-args+: :tangle headscale.tf
+:END:
+** Variables
+*** Network IP
+#+begin_src tofu
+variable "headscale_ip_cidr" {
+  type        = string
+  description = "The IP address and CIDR for the Headscale LXC"
+  default     = "10.10.20.2/24"
+}
+#+end_src
+*** Network Gateway
+#+begin_src tofu
+variable "headscale_gateway" {
+  type        = string
+  description = "The default gateway for the Headscale LXC"
+  default     = "10.10.20.1"
 }
 #+end_src
 ** LXC Container
@@ -177,8 +187,8 @@ resource "proxmox_virtual_environment_container" "headscale" {
 #+begin_src tofu
     ip_config {
       ipv4 {
-        address = var.lxc_ip_cidr
-        gateway = var.lxc_gateway
+        address = var.headscale_ip_cidr
+        gateway = var.headscale_gateway
       }
     }
 #+end_src
