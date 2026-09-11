@@ -1,0 +1,53 @@
+#+TITLE: Proxmox Automated Installation
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+DESCRIPTION: configuration file for providing Proxmox pre-defined answers during the installation
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#lbic][LBiC]]
+  - [[#global][Global]]
+  - [[#network][Network]]
+  - [[#disk][Disk]]
+  - [[#disk-1][Disk]]
+
+* LBiC
+:PROPERTIES:
+:header-args: :tangle answer_lbic.tmpl.toml
+:END:
+** Global
+#+begin_src toml
+[global]
+keyboard = "en-us"
+country = "br"
+timezone = "America/Sao_Paulo"
+fqdn = "${SERVER_FQDN}"
+mailto = "${ADMIN_EMAIL}"
+root_password_hashed = "${PROXMOX_PASSWORD_HASH}"
+#+end_src
+** Network
+#+begin_src toml
+[network]
+source = "from-answer"
+cidr = "${SERVER_IP_CIDR}"
+gateway = "${SERVER_GATEWAY}"
+dns = "${SERVER_DNS}"
+# pin the management interface to the exact hardware MAC address
+filter.mac = "${SERVER_MAC}"
+#+end_src
+** Disk
+#+begin_src toml
+[disk-setup]
+filesystem = "ext4"
+disk_list = ["nvme0n1"]
+#+end_src
+** Disk
+LVM advanced configuration.
+#+begin_src toml
+lvm.hdsize = 465
+lvm.swapsize = 8
+lvm.maxroot = 32
+lvm.minfree = 16
+# maxvz is intentionally omitted.
+#+end_src

@@ -1,0 +1,25 @@
+[global]
+keyboard = "en-us"
+country = "br"
+timezone = "America/Sao_Paulo"
+fqdn = "${SERVER_FQDN}"
+mailto = "${ADMIN_EMAIL}"
+root_password_hashed = "${PROXMOX_PASSWORD_HASH}"
+
+[network]
+source = "from-answer"
+cidr = "${SERVER_IP_CIDR}"
+gateway = "${SERVER_GATEWAY}"
+dns = "${SERVER_DNS}"
+# pin the management interface to the exact hardware MAC address
+filter.mac = "${SERVER_MAC}"
+
+[disk-setup]
+filesystem = "ext4"
+disk_list = ["nvme0n1"]
+
+lvm.hdsize = 465
+lvm.swapsize = 8
+lvm.maxroot = 32
+lvm.minfree = 16
+# maxvz is intentionally omitted.
