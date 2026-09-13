@@ -50,3 +50,11 @@
     mode: '0644'
   notify: headscale | install & config | restart systemd service
 #+end_src
+*** Start service
+#+begin_src yaml
+- name: Enable and start Headscale service
+  ansible.builtin.systemd:
+    name: headscale
+    state: started
+    enabled: true
+#+end_src
