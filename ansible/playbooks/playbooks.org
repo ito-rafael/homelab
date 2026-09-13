@@ -1,0 +1,28 @@
+#+TITLE: Ansible Playbooks
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#headscale][Headscale]]
+  - [[#user-onboarding][User Onboarding]]
+
+* Headscale
+** User Onboarding
+:PROPERTIES:
+:header-args+: :tangle headscale_onboard_student.yml
+:END:
+This playbook creates a user in Headscale and generates a Pre-Auth key.
+Usage: =ansible-playbook -i inventory.yml onboard_student.yml -e "student=rafael"=
+*** Playbook Definition
+#+begin_src yaml
+---
+- name: headscale | onboarding | onboard new VPN user
+  hosts: headscale
+  gather_facts: false
+  vars:
+    # fails if "student" is not provided via -e flag
+    target_user: "{{ student | mandatory }}"
+  tasks:
+#+end_src

@@ -1,0 +1,8 @@
+---
+- name: headscale | onboarding | onboard new VPN user
+  hosts: headscale
+  gather_facts: false
+  vars:
+    # fails if "student" is not provided via -e flag
+    target_user: "{{ student | mandatory }}"
+  tasks:
