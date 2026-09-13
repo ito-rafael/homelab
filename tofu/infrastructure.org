@@ -10,7 +10,8 @@
   - [[#terraform][Terraform]]
   - [[#providers][Providers]]
   - [[#variables][Variables]]
-- [[#headscale][Headscale]]
+- [[#core][Core]]
+  - [[#headscale][Headscale]]
 
 * Global Configuration
 :PROPERTIES:
@@ -87,13 +88,14 @@ variable "tofu_state_passphrase" {
   sensitive   = true
 }
 #+end_src
-* Headscale :noexport_1:
-VPN.
+* Core
+** Headscale :noexport_1:
 :PROPERTIES:
 :header-args+: :tangle headscale.tf
 :END:
-** Variables
-*** Network IP
+VPN.
+*** Variables
+**** Network IP
 #+begin_src tofu
 variable "headscale_ip_cidr" {
   type        = string
@@ -101,7 +103,7 @@ variable "headscale_ip_cidr" {
   default     = "10.10.20.2/24"
 }
 #+end_src
-*** Network Gateway
+**** Network Gateway
 #+begin_src tofu
 variable "headscale_gateway" {
   type        = string
@@ -109,12 +111,13 @@ variable "headscale_gateway" {
   default     = "10.10.20.1"
 }
 #+end_src
-** LXC Container
-This block provisions the Debian 13 (Trixie) container on the internal bridge (=vmbr1=).
+*** LXC Container
+This block provisions the Debian 13 (Trixie) container on the internal bridge (=vmbr2=).
+**** Resource
 #+begin_src tofu
 resource "proxmox_virtual_environment_container" "headscale" {
   description = "Headscale VPN Controller"
-  tags        = ["core", "vpn"]
+  tags        = ["core", "vpn", "headscale"]
   node_name = "andira"
   vm_id     = 201
 
@@ -136,54 +139,53 @@ resource "proxmox_virtual_environment_container" "headscale" {
     down_delay = 5
   }
 #+end_src
-*** OS
+**** OS
 #+begin_src tofu
-  # Using Debian 13 (Trixie) - Ensure this template is downloaded to your local storage
   operating_system {
     template_file_id = "local:vztmpl/debian-13-standard_13.6-1_amd64.tar.zst"
     type             = "debian"
   }
 #+end_src
-*** CPU
+**** CPU
 #+begin_src tofu
   cpu {
     cores = 1
   }
 #+end_src
-*** Memory
+**** Memory
 #+begin_src tofu
   memory {
     dedicated = 512
     swap      = 0
   }
 #+end_src
-*** Disk
+**** Disk
 #+begin_src tofu
   disk {
     datastore_id = "local-lvm"
     size         = 4
   }
 #+end_src
-*** Network
+**** Network
 #+begin_src tofu
   network_interface {
     name   = "eth0"
-    bridge = "vmbr1"
+    bridge = "vmbr2"
     vlan_id = 20  # "Infra" VLAN
   }
 #+end_src
-*** Initialization
+**** Initialization
 #+begin_src tofu
   initialization {
     hostname = "headscale"
 #+end_src
-**** DNS
+***** DNS
 #+begin_src tofu :tangle no
     dns {
       servers = ["10.10.20.x", "10.10.20.y"]  # DNS-1, DNS-2
     }
 #+end_src
-**** IP
+***** IP
 #+begin_src tofu
     ip_config {
       ipv4 {
@@ -192,7 +194,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
       }
     }
 #+end_src
-**** User
+***** SSH Keys
 #+begin_src tofu
     user_account {
       keys = [
@@ -201,11 +203,14 @@ resource "proxmox_virtual_environment_container" "headscale" {
       ]
     }
 #+end_src
+***** EoS
+#+begin_src tofu
+}
+#+end_src
 **** EoS
 #+begin_src tofu
 }
 #+end_src
-*** EoS
 #+begin_src tofu
 }
 #+end_src
