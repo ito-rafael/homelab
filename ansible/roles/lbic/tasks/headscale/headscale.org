@@ -48,4 +48,5 @@
     owner: headscale
     group: headscale
     mode: '0644'
+  notify: headscale | install & config | restart systemd service
 #+end_src

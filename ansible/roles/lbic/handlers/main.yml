@@ -1,0 +1,6 @@
+- name: headscale | install & config | restart systemd service
+  tags: headscale
+  ansible.builtin.systemd:
+    name: headscale
+    state: restarted
+    scope: system
