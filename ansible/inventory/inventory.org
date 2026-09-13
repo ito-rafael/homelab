@@ -1,0 +1,28 @@
+#+TITLE: Ansible Configuration for Core Services
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args:yaml :tangle hosts.yml
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* LBiC
+#+begin_src yaml
+lbic:
+  vars:
+    ansible_user: ansible
+  children:
+#+end_src
+** Server
+In order for the ='-J root@andira'= jumps to work, this host config must be in the =~/.ssh/config= file of the machine that will run the Ansible commands.
+#+begin_src conf
+Host andira
+    HostName <SERVER-IP-ADDRESS>
+    User root
+#+end_src
+*** Andirá
+#+begin_src yaml
+    lbic_server:
+      hosts:
+        andira:
+          ansible_host: andira
+          ansible_user: root
+#+end_src
