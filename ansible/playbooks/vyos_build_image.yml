@@ -30,7 +30,7 @@
             dest: "{{ vyos_build_dir }}"
             version: current
 
-        - name: vyos | build vyos | create proxmox build flavor
+        - name: vyos | build vyos | create Proxmox build flavor
           ansible.builtin.copy:
             dest: "{{ vyos_build_dir }}/data/build-flavors/proxmox.toml"
             content: |
@@ -49,8 +49,14 @@
           args:
             chdir: "{{ vyos_build_dir }}"
 
-        - name: vyos | build vyos | find the generated qcow2 file
+        - name: vyos | build vyos | find the generated QCOW2 image
           ansible.builtin.find:
             paths: "{{ vyos_build_dir }}/build"
             patterns: "vyos-*.qcow2"
           register: built_image
+
+        - name: vyos | build vyos | move and rename the VyOS image for OpenTofu
+          ansible.builtin.copy:
+            src: "{{ built_image.files[0].path }}"
+            dest: "{{ vyos_target_image }}"
+            remote_src: yes
