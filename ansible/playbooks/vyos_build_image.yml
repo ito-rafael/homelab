@@ -23,3 +23,9 @@
               - git
             state: present
             update_cache: yes
+
+        - name: vyos | build vyos | clone vyos-build repository
+          ansible.builtin.git:
+            repo: https://github.com/vyos/vyos-build.git
+            dest: "{{ vyos_build_dir }}"
+            version: current

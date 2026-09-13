@@ -103,3 +103,11 @@ Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
             state: present
             update_cache: yes
 #+end_src
+*** Clone Repository
+#+begin_src yaml
+        - name: vyos | build vyos | clone vyos-build repository
+          ansible.builtin.git:
+            repo: https://github.com/vyos/vyos-build.git
+            dest: "{{ vyos_build_dir }}"
+            version: current
+#+end_src
