@@ -37,3 +37,14 @@
               image_format = "qcow2"
               packages = ["qemu-guest-agent"]
             mode: '0644'
+
+        - name: vyos | build vyos | compile VyOS image via Docker
+          ansible.builtin.command: >
+            docker run --rm --privileged
+            -v /dev:/dev
+            -v {{ vyos_build_dir }}:/vyos
+            -w /vyos
+            vyos/vyos-build:current
+            bash -c "sudo make clean && sudo ./build-vyos-image proxmox --architecture amd64 --build-by 'ansible@unicamp'"
+          args:
+            chdir: "{{ vyos_build_dir }}"
