@@ -80,3 +80,10 @@ Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
     vyos_target_image: /var/lib/vz/template/iso/vyos-1.4-cloud-init.qcow2
   tasks:
 #+end_src
+*** Check Existing Image
+#+begin_src yaml
+    - name: vyos | build vyos | check if VyOS image already exists
+      ansible.builtin.stat:
+        path: "{{ vyos_target_image }}"
+      register: vyos_image_stat
+#+end_src
