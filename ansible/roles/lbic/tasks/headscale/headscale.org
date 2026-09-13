@@ -18,7 +18,7 @@
 #+end_src
 *** Download
 #+begin_src yaml :padline no
-- name: Download Headscale Debian package
+- name: core | headscale | download Debian package
   ansible.builtin.get_url:
     url: "https://github.com/juanfont/headscale/releases/download/v{{ headscale_version }}/headscale_{{ headscale_version }}_linux_amd64.deb"
     dest: "/tmp/headscale.deb"
@@ -26,14 +26,14 @@
 #+end_src
 *** Install
 #+begin_src yaml
-- name: Install Headscale package
+- name: core | headscale | install Headscale package
   ansible.builtin.apt:
     deb: "/tmp/headscale.deb"
     state: present
 #+end_src
 *** Create dir
 #+begin_src yaml
-- name: Ensure Headscale configuration directory exists
+- name: core | headscale | create Headscale directory
   ansible.builtin.file:
     path: /etc/headscale
     state: directory
@@ -41,18 +41,18 @@
 #+end_src
 *** Configure
 #+begin_src yaml
-- name: Deploy basic Headscale config.yaml
+- name: core | headscale | deploy Headscale config.yaml
   ansible.builtin.copy:
     dest: /etc/headscale/config.yaml
     src: headscale/config.yaml
     owner: headscale
     group: headscale
     mode: '0644'
-  notify: headscale | install & config | restart systemd service
+  notify: core | headscale | restart systemd service
 #+end_src
 *** Start service
 #+begin_src yaml
-- name: Enable and start Headscale service
+- name: core | headscale | enable and start systemd service
   ansible.builtin.systemd:
     name: headscale
     state: started
