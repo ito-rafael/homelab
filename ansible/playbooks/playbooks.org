@@ -26,3 +26,14 @@ Usage: =ansible-playbook -i inventory.yml onboard_student.yml -e "student=rafael
     target_user: "{{ student | mandatory }}"
   tasks:
 #+end_src
+*** Create User
+#+begin_src yaml
+    - name: headscale | onboarding | ensure user exists in Headscale
+      ansible.builtin.command: "headscale users create {{ target_user }}"
+      register: user_creation
+      failed_when:
+        - user_creation.rc != 0
+        - "'already exists' not in user_creation.stderr"
+        - "'UNIQUE constraint failed' not in user_creation.stderr"
+      changed_when: user_creation.rc == 0
+#+end_src
