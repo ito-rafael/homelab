@@ -37,3 +37,10 @@ Usage: =ansible-playbook -i inventory.yml onboard_student.yml -e "student=rafael
         - "'UNIQUE constraint failed' not in user_creation.stderr"
       changed_when: user_creation.rc == 0
 #+end_src
+*** Fetch User ID
+#+begin_src yaml
+    - name: headscale | onboarding | fetch user list to get the numeric ID
+      ansible.builtin.command: "headscale users list --output json"
+      register: users_json
+      changed_when: false
+#+end_src

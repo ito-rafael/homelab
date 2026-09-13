@@ -15,3 +15,8 @@
         - "'already exists' not in user_creation.stderr"
         - "'UNIQUE constraint failed' not in user_creation.stderr"
       changed_when: user_creation.rc == 0
+
+    - name: headscale | onboarding | fetch user list to get the numeric ID
+      ansible.builtin.command: "headscale users list --output json"
+      register: users_json
+      changed_when: false
