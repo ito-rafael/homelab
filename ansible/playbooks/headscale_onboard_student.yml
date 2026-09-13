@@ -20,3 +20,8 @@
       ansible.builtin.command: "headscale users list --output json"
       register: users_json
       changed_when: false
+
+    - name: headscale | onboarding | generate a 24-hour pre-auth key
+      ansible.builtin.command: "headscale preauthkeys create --user {{ (users_json.stdout | from_json | selectattr('name', 'equalto', target_user) | first).id }} --expiration 24h"
+      register: preauth_key
+      changed_when: true
