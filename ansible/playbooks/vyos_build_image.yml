@@ -60,3 +60,8 @@
             src: "{{ built_image.files[0].path }}"
             dest: "{{ vyos_target_image }}"
             remote_src: yes
+
+        - name: vyos | build vyos | clean up the build directory to save space
+          ansible.builtin.file:
+            path: "{{ vyos_build_dir }}"
+            state: absent

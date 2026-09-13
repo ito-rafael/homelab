@@ -150,3 +150,10 @@ Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
             dest: "{{ vyos_target_image }}"
             remote_src: yes
 #+end_src
+*** Cleanup
+#+begin_src yaml
+        - name: vyos | build vyos | clean up the build directory to save space
+          ansible.builtin.file:
+            path: "{{ vyos_build_dir }}"
+            state: absent
+#+end_src
