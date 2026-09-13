@@ -1,7 +1,11 @@
 ---
-
 - name: Download Headscale Debian package
   ansible.builtin.get_url:
     url: "https://github.com/juanfont/headscale/releases/download/v{{ headscale_version }}/headscale_{{ headscale_version }}_linux_amd64.deb"
     dest: "/tmp/headscale.deb"
     mode: '0644'
+
+- name: Install Headscale package
+  ansible.builtin.apt:
+    deb: "/tmp/headscale.deb"
+    state: present
