@@ -18,7 +18,7 @@
 #+end_src
 *** Configure vmbr1
 #+begin_src yaml :padline no
-- name: Ensure vmbr1 NAT bridge is configured
+- name: core | proxmox | configure vmbr1 NAT bridge
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR1 NAT"
@@ -27,13 +27,13 @@
 #+end_src
 *** Bring up vmbr1
 #+begin_src yaml
-- name: Bring up vmbr1 interface immediately
+- name: core | proxmox | bring up vmbr1 interface
   ansible.builtin.command: ifup vmbr1
   when: network_config_vmbr1.changed
 #+end_src
 *** Configure vmbr2
 #+begin_src yaml
-- name: Ensure vmbr2 VLAN-aware trunk is configured
+- name: core | proxomox | configure vmbr2 VLAN-aware trunk
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR2 TRUNK"
@@ -42,7 +42,7 @@
 #+end_src
 *** Bring up vmbr2
 #+begin_src yaml
-- name: Bring up vmbr2 interface immediately
+- name: core | proxmox | bring up vmbr2 interface
   ansible.builtin.command: ifup vmbr2
   when: network_config_vmbr2.changed
 #+end_src
