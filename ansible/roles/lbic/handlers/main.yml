@@ -1,4 +1,4 @@
-- name: headscale | install & config | restart systemd service
+- name: core | headscale | restart systemd service
   tags: headscale
   ansible.builtin.systemd:
     name: headscale
