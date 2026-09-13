@@ -11,3 +11,15 @@
       ansible.builtin.stat:
         path: "{{ vyos_target_image }}"
       register: vyos_image_stat
+
+    - name: vyos | build vyos | build and deploy image
+      when: not vyos_image_stat.stat.exists
+      block:
+
+        - name: vyos | build vyos | install docker and git
+          ansible.builtin.apt:
+            name:
+              - docker.io
+              - git
+            state: present
+            update_cache: yes

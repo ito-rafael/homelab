@@ -87,3 +87,19 @@ Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
         path: "{{ vyos_target_image }}"
       register: vyos_image_stat
 #+end_src
+*** Build Block Start
+#+begin_src yaml
+    - name: vyos | build vyos | build and deploy image
+      when: not vyos_image_stat.stat.exists
+      block:
+#+end_src
+*** Install Dependencies
+#+begin_src yaml
+        - name: vyos | build vyos | install docker and git
+          ansible.builtin.apt:
+            name:
+              - docker.io
+              - git
+            state: present
+            update_cache: yes
+#+end_src
