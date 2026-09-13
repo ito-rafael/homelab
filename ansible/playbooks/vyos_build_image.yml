@@ -29,3 +29,11 @@
             repo: https://github.com/vyos/vyos-build.git
             dest: "{{ vyos_build_dir }}"
             version: current
+
+        - name: vyos | build vyos | create proxmox build flavor
+          ansible.builtin.copy:
+            dest: "{{ vyos_build_dir }}/data/build-flavors/proxmox.toml"
+            content: |
+              image_format = "qcow2"
+              packages = ["qemu-guest-agent"]
+            mode: '0644'
