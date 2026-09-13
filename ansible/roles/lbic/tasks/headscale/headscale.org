@@ -31,3 +31,11 @@
     deb: "/tmp/headscale.deb"
     state: present
 #+end_src
+*** Create dir
+#+begin_src yaml
+- name: Ensure Headscale configuration directory exists
+  ansible.builtin.file:
+    path: /etc/headscale
+    state: directory
+    mode: '0755'
+#+end_src

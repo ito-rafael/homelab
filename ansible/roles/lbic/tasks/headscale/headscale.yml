@@ -9,3 +9,9 @@
   ansible.builtin.apt:
     deb: "/tmp/headscale.deb"
     state: present
+
+- name: Ensure Headscale configuration directory exists
+  ansible.builtin.file:
+    path: /etc/headscale
+    state: directory
+    mode: '0755'
