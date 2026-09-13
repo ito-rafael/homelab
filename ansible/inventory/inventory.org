@@ -18,11 +18,20 @@ Host andira
     HostName <SERVER-IP-ADDRESS>
     User root
 #+end_src
-*** Andirá
+*** BoS
 #+begin_src yaml
     lbic_server:
       hosts:
+#+end_src
+*** Andirá
+#+begin_src yaml
         andira:
+          ansible_host: andira
+          ansible_user: root
+#+end_src
+*** Proxmox
+#+begin_src yaml
+        proxmox:
           ansible_host: andira
           ansible_user: root
 #+end_src
