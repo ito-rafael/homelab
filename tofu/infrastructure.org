@@ -12,6 +12,7 @@
   - [[#variables][Variables]]
 - [[#core][Core]]
   - [[#headscale][Headscale]]
+  - [[#vyos][VyOS]]
 
 * Global Configuration
 :PROPERTIES:
@@ -211,6 +212,104 @@ resource "proxmox_virtual_environment_container" "headscale" {
 #+begin_src tofu
 }
 #+end_src
+** VyOS :noexport_1:
+:PROPERTIES:
+:header-args+: :tangle vyos.tf
+:END:
+Core Router.
+*** Variables
+**** Network IP
+#+begin_src tofu
+variable "vyos_ip_cidr" {
+  type        = string
+  description = "The management IP address and CIDR for the VyOS router"
+  default     = "10.10.10.1/24"
+}
+#+end_src
+**** Network Gateway
+#+begin_src tofu
+variable "vyos_gateway" {
+  type        = string
+  description = "The default gateway for the VyOS router (usually the university network gateway)"
+  default     = "10.10.10.254"
+}
+#+end_src
+*** Virtual Machine
+This block provisions the VyOS 1.4 router VM. It attaches to the external network (=vmbr1=) and the internal VLAN trunk (=vmbr2=).
+**** Resource
+#+begin_src tofu
+resource "proxmox_virtual_environment_vm" "vyos" {
+  name        = "vyos"
+  description = "VyOS Core Router"
+  node_name   = "andira"
+  vm_id       = 202
+  tags        = ["core", "router", "vyos"]
+
+  # router must boot before LXCs and Kubernetes
+  started = true
+  on_boot = true
+  startup {
+    order      = 1
+    up_delay   = 10
+  }
+
+  # communicates with the injected qemu-guest-agent
+  agent {
+    enabled = true
+  }
+
+  # eth0: WAN Interface
+  # Transit Network (facing the physical network)
+  network_device {
+    bridge = "vmbr1"
+  }
+
+  # eth1: LAN Interface
+  # Internal Trunk (VLAN Trunk for internal lab networks)
+  network_device {
+    bridge = "vmbr2"
+  }
+#+end_src
+**** Disk
+#+begin_src tofu
+  disk {
+    datastore_id = "local-lvm"
+    # ensure the VyOS image has Cloud-Init QCOW2 support
+    file_id      = "local:iso/vyos-1.4-cloud-init.qcow2"
+    interface    = "virtio0"
+    size         = 10
+  }
+#+end_src
+**** Initialization
+#+begin_src tofu
+  # Cloud-Init Bootstrap
+  initialization {
+    hostname = "vyos"
+#+end_src
+***** SSH Keys
+#+begin_src tofu
+    user_account {
+      username = "vyos"
+      keys     = [
+        var.ssh_key_laptop,
+        var.ssh_key_desktop
+      ]
+    }
+#+end_src
+***** Network
+#+begin_src tofu
+    ip_config {
+      ipv4 {
+        address = var.vyos_ip_cidr
+        gateway = var.vyos_gateway
+      }
+    }
+#+end_src
+***** EoS
+#+begin_src tofu
+}
+#+end_src
+**** EoS
 #+begin_src tofu
 }
 #+end_src
