@@ -39,3 +39,13 @@
     state: directory
     mode: '0755'
 #+end_src
+*** Configure
+#+begin_src yaml
+- name: Deploy basic Headscale config.yaml
+  ansible.builtin.copy:
+    dest: /etc/headscale/config.yaml
+    src: headscale/config.yaml
+    owner: headscale
+    group: headscale
+    mode: '0644'
+#+end_src
