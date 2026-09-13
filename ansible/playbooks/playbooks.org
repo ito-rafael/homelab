@@ -7,6 +7,8 @@
 * Table of Contents :toc:
 - [[#headscale][Headscale]]
   - [[#user-onboarding][User Onboarding]]
+- [[#vyos][VyOS]]
+  - [[#build-vyos-image][Build VyOS Image]]
 
 * Headscale
 ** User Onboarding
@@ -59,4 +61,22 @@ Usage: =ansible-playbook -i inventory.yml onboard_student.yml -e "student=rafael
           - "User '{{ target_user }}' is ready."
           - "Send this exact command to the student:"
           - "sudo tailscale up --login-server http://10.10.20.2:8080 --authkey {{ preauth_key.stdout }}"
+#+end_src
+* VyOS
+** Build VyOS Image
+:PROPERTIES:
+:header-args+: :tangle vyos_build_image.yml
+:END:
+This playbook natively compiles the VyOS Cloud-Init QCOW2 image directly on the Proxmox host using the official vyos-build Docker environment.
+Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
+*** Playbook Definition
+#+begin_src yaml
+---
+- name: vyos | build vyos | build VyOS cloud-init image
+  hosts: proxmox
+  become: yes
+  vars:
+    vyos_build_dir: /opt/vyos-build
+    vyos_target_image: /var/lib/vz/template/iso/vyos-1.4-cloud-init.qcow2
+  tasks:
 #+end_src

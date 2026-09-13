@@ -1,0 +1,8 @@
+---
+- name: vyos | build vyos | build VyOS cloud-init image
+  hosts: proxmox
+  become: yes
+  vars:
+    vyos_build_dir: /opt/vyos-build
+    vyos_target_image: /var/lib/vz/template/iso/vyos-1.4-cloud-init.qcow2
+  tasks:
