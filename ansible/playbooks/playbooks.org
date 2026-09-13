@@ -51,3 +51,12 @@ Usage: =ansible-playbook -i inventory.yml onboard_student.yml -e "student=rafael
       register: preauth_key
       changed_when: true
 #+end_src
+*** Output Instructions
+#+begin_src yaml
+    - name: headscale | onboarding | display the connection command for the student
+      ansible.builtin.debug:
+        msg:
+          - "User '{{ target_user }}' is ready."
+          - "Send this exact command to the student:"
+          - "sudo tailscale up --login-server http://10.10.20.2:8080 --authkey {{ preauth_key.stdout }}"
+#+end_src

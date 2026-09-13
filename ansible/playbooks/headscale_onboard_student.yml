@@ -25,3 +25,10 @@
       ansible.builtin.command: "headscale preauthkeys create --user {{ (users_json.stdout | from_json | selectattr('name', 'equalto', target_user) | first).id }} --expiration 24h"
       register: preauth_key
       changed_when: true
+
+    - name: headscale | onboarding | display the connection command for the student
+      ansible.builtin.debug:
+        msg:
+          - "User '{{ target_user }}' is ready."
+          - "Send this exact command to the student:"
+          - "sudo tailscale up --login-server http://10.10.20.2:8080 --authkey {{ preauth_key.stdout }}"
