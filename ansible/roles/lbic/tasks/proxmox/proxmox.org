@@ -40,3 +40,9 @@
     block: "{{ lookup('file', 'proxmox/vmbr2.txt') }}"
   register: network_config_vmbr2
 #+end_src
+*** Bring up vmbr2
+#+begin_src yaml
+- name: Bring up vmbr2 interface immediately
+  ansible.builtin.command: ifup vmbr2
+  when: network_config_vmbr2.changed
+#+end_src

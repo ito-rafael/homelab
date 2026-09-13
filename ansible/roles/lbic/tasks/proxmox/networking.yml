@@ -16,3 +16,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR2 TRUNK"
     block: "{{ lookup('file', 'proxmox/vmbr2.txt') }}"
   register: network_config_vmbr2
+
+- name: Bring up vmbr2 interface immediately
+  ansible.builtin.command: ifup vmbr2
+  when: network_config_vmbr2.changed
