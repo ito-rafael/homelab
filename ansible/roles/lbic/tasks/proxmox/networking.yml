@@ -5,3 +5,7 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR1 NAT"
     block: "{{ lookup('file', 'proxmox/vmbr1.txt') }}"
   register: network_config_vmbr1
+
+- name: Bring up vmbr1 interface immediately
+  ansible.builtin.command: ifup vmbr1
+  when: network_config_vmbr1.changed
