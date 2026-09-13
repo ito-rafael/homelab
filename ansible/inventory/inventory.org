@@ -35,3 +35,12 @@ Host andira
           ansible_host: andira
           ansible_user: root
 #+end_src
+*** VyOS
+#+begin_src yaml
+        vyos:
+          ansible_host: 10.10.10.1
+          ansible_user: vyos
+          ansible_connection: network_cli
+          ansible_network_os: vyos.vyos.vyos
+          ansible_ssh_common_args: '-J root@andira'
+#+end_src
