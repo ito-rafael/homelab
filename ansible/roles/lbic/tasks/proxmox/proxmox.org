@@ -1,0 +1,27 @@
+#+TITLE: Ansible configuration for Proxmox
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#proxmox][Proxmox]]
+  - [[#networking][Networking]]
+
+* Proxmox
+** Networking
+:PROPERTIES:
+:header-args+: :tangle networking.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Configure vmbr1
+#+begin_src yaml :padline no
+- name: Ensure vmbr1 NAT bridge is configured
+  ansible.builtin.blockinfile:
+    path: /etc/network/interfaces
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR1 NAT"
+    block: "{{ lookup('file', 'proxmox/vmbr1.txt') }}"
+  register: network_config_vmbr1
+#+end_src

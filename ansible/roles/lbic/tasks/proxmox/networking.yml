@@ -1,0 +1,7 @@
+---
+- name: Ensure vmbr1 NAT bridge is configured
+  ansible.builtin.blockinfile:
+    path: /etc/network/interfaces
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR1 NAT"
+    block: "{{ lookup('file', 'proxmox/vmbr1.txt') }}"
+  register: network_config_vmbr1
