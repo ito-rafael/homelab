@@ -134,3 +134,11 @@ Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
           args:
             chdir: "{{ vyos_build_dir }}"
 #+end_src
+*** Find Generated File
+#+begin_src yaml
+        - name: vyos | build vyos | find the generated qcow2 file
+          ansible.builtin.find:
+            paths: "{{ vyos_build_dir }}/build"
+            patterns: "vyos-*.qcow2"
+          register: built_image
+#+end_src

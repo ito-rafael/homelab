@@ -48,3 +48,9 @@
             bash -c "sudo make clean && sudo ./build-vyos-image proxmox --architecture amd64 --build-by 'ansible@unicamp'"
           args:
             chdir: "{{ vyos_build_dir }}"
+
+        - name: vyos | build vyos | find the generated qcow2 file
+          ansible.builtin.find:
+            paths: "{{ vyos_build_dir }}/build"
+            patterns: "vyos-*.qcow2"
+          register: built_image
