@@ -44,3 +44,10 @@ Host andira
           ansible_network_os: vyos.vyos.vyos
           ansible_ssh_common_args: '-J root@andira'
 #+end_src
+*** VPN
+#+begin_src yaml
+        headscale:
+          ansible_host: 10.10.20.2
+          ansible_user: root
+          ansible_ssh_common_args: '-J root@andira'
+#+end_src
