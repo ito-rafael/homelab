@@ -8,6 +8,7 @@
 - [[#master-playbook][Master Playbook]]
   - [[#proxmox-hypervisor][Proxmox Hypervisor]]
   - [[#vyos-router][VyOS Router]]
+  - [[#headscale-vpn][Headscale VPN]]
 
 * Master Playbook
 :PROPERTIES:
@@ -40,4 +41,16 @@ Runs against the core router to configure VLANs and NAT via the network CLI.
       ansible.builtin.import_role:
         name: lbic
         tasks_from: vyos/routing.yml
+#+end_src
+** Headscale VPN
+Runs against the LXC container to install and configure the VPN controller.
+#+begin_src yaml
+- name: Configure Headscale VPN Controller
+  hosts: headscale
+  become: yes
+  tasks:
+    - name: core | headscale | install and configure Headscale VPN
+      ansible.builtin.import_role:
+        name: lbic
+        tasks_from: headscale/headscale.yml
 #+end_src

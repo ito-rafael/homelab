@@ -17,3 +17,12 @@
       ansible.builtin.import_role:
         name: lbic
         tasks_from: vyos/routing.yml
+
+- name: Configure Headscale VPN Controller
+  hosts: headscale
+  become: yes
+  tasks:
+    - name: core | headscale | install and configure Headscale VPN
+      ansible.builtin.import_role:
+        name: lbic
+        tasks_from: headscale/headscale.yml
