@@ -16,7 +16,7 @@
 :header-args+: :tangle headscale_onboard_student.yml
 :END:
 This playbook creates a user in Headscale and generates a Pre-Auth key.
-Usage: =ansible-playbook -i inventory.yml onboard_student.yml -e "student=rafael"=
+Usage: =ansible-playbook -i inventory.yml headscale_onboard_student.yml -e "student=rafael"=
 *** Playbook Definition
 #+begin_src yaml
 ---
@@ -68,7 +68,7 @@ Usage: =ansible-playbook -i inventory.yml onboard_student.yml -e "student=rafael
 :header-args+: :tangle vyos_build_image.yml
 :END:
 This playbook natively compiles the VyOS Cloud-Init QCOW2 image directly on the Proxmox host using the official vyos-build Docker environment.
-Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
+Usage: =ansible-playbook -i inventory/hosts.yml playbooks/vyos_build_image.yml=
 *** Playbook Definition
 #+begin_src yaml
 ---
@@ -95,10 +95,10 @@ Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
 #+end_src
 *** Install Dependencies
 #+begin_src yaml
-        - name: vyos | build vyos | install docker and git
+        - name: vyos | build vyos | install podman and git
           ansible.builtin.apt:
             name:
-              - docker.io
+              - podman
               - git
             state: present
             update_cache: yes
@@ -125,7 +125,7 @@ Usage: =ansible-playbook -i inventory/hosts.yml playbooks/build_vyos.yml=
 #+begin_src yaml
         - name: vyos | build vyos | compile VyOS image via Docker
           ansible.builtin.command: >
-            docker run --rm --privileged
+            podman run --rm --privileged
             -v /dev:/dev
             -v {{ vyos_build_dir }}:/vyos
             -w /vyos

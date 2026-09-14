@@ -16,10 +16,10 @@
       when: not vyos_image_stat.stat.exists
       block:
 
-        - name: vyos | build vyos | install docker and git
+        - name: vyos | build vyos | install podman and git
           ansible.builtin.apt:
             name:
-              - docker.io
+              - podman
               - git
             state: present
             update_cache: yes
@@ -40,7 +40,7 @@
 
         - name: vyos | build vyos | compile VyOS image via Docker
           ansible.builtin.command: >
-            docker run --rm --privileged
+            podman run --rm --privileged
             -v /dev:/dev
             -v {{ vyos_build_dir }}:/vyos
             -w /vyos
