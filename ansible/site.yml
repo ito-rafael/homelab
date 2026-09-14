@@ -1,0 +1,10 @@
+---
+
+- name: Configure Proxmox Hypervisor
+  hosts: proxmox
+  become: yes
+  tasks:
+    - name: core | proxmox | configure Proxmox network interfaces
+      ansible.builtin.import_role:
+        name: lbic
+        tasks_from: proxmox/networking.yml

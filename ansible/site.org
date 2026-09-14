@@ -1,0 +1,30 @@
+#+TITLE: Master Playbook Orchestration
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#master-playbook][Master Playbook]]
+  - [[#proxmox-hypervisor][Proxmox Hypervisor]]
+
+* Master Playbook
+:PROPERTIES:
+:header-args+: :tangle site.yml
+:END:
+This is the master orchestration file. It maps host groups from the inventory to specific task files within the =lbic= role.
+#+begin_src yaml
+---
+#+end_src
+** Proxmox Hypervisor
+Runs against the physical host to configure bridges and networking.
+#+begin_src yaml
+- name: Configure Proxmox Hypervisor
+  hosts: proxmox
+  become: yes
+  tasks:
+    - name: core | proxmox | configure Proxmox network interfaces
+      ansible.builtin.import_role:
+        name: lbic
+        tasks_from: proxmox/networking.yml
+#+end_src
