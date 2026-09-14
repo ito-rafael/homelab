@@ -30,6 +30,12 @@ provider "proxmox" {
   endpoint = "https://andira.lbic.fee.unicamp.br:8006/"
   # Set to true if using self-signed certificates on the Proxmox host
   insecure = true
+
+  ssh {
+    agent    = false
+    username = "root"
+    private_key = file("~/.ssh/id_ed25519")
+  }
 }
 
 variable "ssh_key_laptop" {
