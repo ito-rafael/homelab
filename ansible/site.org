@@ -7,6 +7,7 @@
 * Table of Contents :toc:
 - [[#master-playbook][Master Playbook]]
   - [[#proxmox-hypervisor][Proxmox Hypervisor]]
+  - [[#vyos-router][VyOS Router]]
 
 * Master Playbook
 :PROPERTIES:
@@ -27,4 +28,16 @@ Runs against the physical host to configure bridges and networking.
       ansible.builtin.import_role:
         name: lbic
         tasks_from: proxmox/networking.yml
+#+end_src
+** VyOS Router
+Runs against the core router to configure VLANs and NAT via the network CLI.
+#+begin_src yaml
+- name: Configure VyOS Core Router
+  hosts: vyos
+  gather_facts: no
+  tasks:
+    - name: core | vyos | apply routing and NAT configuration
+      ansible.builtin.import_role:
+        name: lbic
+        tasks_from: vyos/routing.yml
 #+end_src

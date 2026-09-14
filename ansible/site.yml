@@ -8,3 +8,12 @@
       ansible.builtin.import_role:
         name: lbic
         tasks_from: proxmox/networking.yml
+
+- name: Configure VyOS Core Router
+  hosts: vyos
+  gather_facts: no
+  tasks:
+    - name: core | vyos | apply routing and NAT configuration
+      ansible.builtin.import_role:
+        name: lbic
+        tasks_from: vyos/routing.yml
