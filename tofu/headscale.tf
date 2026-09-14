@@ -14,7 +14,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
   description = "Headscale VPN Controller"
   tags        = ["core", "vpn", "headscale"]
   node_name = "andira"
-  vm_id     = 201
+  vm_id     = 202
 
   # ensure unprivileged mode
   unprivileged = true

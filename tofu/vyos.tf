@@ -14,7 +14,7 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   name        = "vyos"
   description = "VyOS Core Router"
   node_name   = "andira"
-  vm_id       = 202
+  vm_id       = 201
   tags        = ["core", "router", "vyos"]
 
   # router must boot before LXCs and Kubernetes
@@ -52,7 +52,6 @@ resource "proxmox_virtual_environment_vm" "vyos" {
 
   # Cloud-Init Bootstrap
   initialization {
-    hostname = "vyos"
 
     user_account {
       username = "vyos"
