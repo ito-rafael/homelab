@@ -10,7 +10,7 @@
   ansible.builtin.command: ifup vmbr1
   when: network_config_vmbr1.changed
 
-- name: core | proxomox | configure vmbr2 VLAN-aware trunk
+- name: core | proxmox | configure vmbr2 VLAN-aware trunk
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR2 TRUNK"

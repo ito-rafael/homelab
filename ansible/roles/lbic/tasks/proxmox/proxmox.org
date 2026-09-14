@@ -33,7 +33,7 @@
 #+end_src
 *** Configure vmbr2
 #+begin_src yaml
-- name: core | proxomox | configure vmbr2 VLAN-aware trunk
+- name: core | proxmox | configure vmbr2 VLAN-aware trunk
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR2 TRUNK"
