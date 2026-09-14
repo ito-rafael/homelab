@@ -17,6 +17,33 @@ lbic:
       hosts:
         paubrasil:    # xxx.xx.xx.179
 #+end_src
+** Workstation
+#+begin_src yaml
+    lbic_workstation:
+      hosts:
+        #andira:      # xxx.xxx.xxx.162
+        aroeira:      # xxx.xxx.xxx.163
+        baoba:        # xxx.xxx.xxx.164
+        barauna:      # xxx.xxx.xxx.165
+        cajazeira:    # xxx.xxx.xxx.166
+        cambuci:      # xxx.xxx.xxx.167
+        castanheiro:  # xxx.xxx.xxx.168
+        #catuaba:     # xxx.xxx.xxx.169
+        cedro:        # xxx.xxx.xxx.170
+        embira:       # xxx.xxx.xxx.171
+        gameleira:    # xxx.xxx.xxx.172
+        imburana:     # xxx.xxx.xxx.173
+        ipe:          # xxx.xxx.xxx.174
+        jacaranda:    # xxx.xxx.xxx.175
+        jatoba:       # xxx.xxx.xxx.176
+        jequitiba:    # xxx.xxx.xxx.177
+        mogno:        # xxx.xxx.xxx.178
+        #paubrasil:   # xxx.xxx.xxx.179
+        peroba:       # xxx.xxx.xxx.180
+        seringueira:  # xxx.xxx.xxx.181
+        umbu:         # xxx.xxx.xxx.182
+        canabis:      # xxx.xxx.xxx.183
+#+end_src
 ** Server
 In order for the ='-J root@andira'= jumps to work, this host config must be in the =~/.ssh/config= file of the machine that will run the Ansible commands.
 #+begin_src conf
