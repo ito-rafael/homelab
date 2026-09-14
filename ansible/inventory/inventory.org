@@ -11,6 +11,12 @@ lbic:
     ansible_user: ansible
   children:
 #+end_src
+** Experiment
+#+begin_src yaml
+    lbic_experiment:
+      hosts:
+        paubrasil:    # xxx.xx.xx.179
+#+end_src
 ** Server
 In order for the ='-J root@andira'= jumps to work, this host config must be in the =~/.ssh/config= file of the machine that will run the Ansible commands.
 #+begin_src conf
