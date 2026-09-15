@@ -270,6 +270,15 @@
       ansible.builtin.debug:
         var: vyos_qcow2_info.stdout_lines
 #+end_src
+*** Move Image
+#+begin_src yaml
+    - name: vyos | build image | move image to Proxmox template directory
+      ansible.builtin.copy:
+        src: "{{ vyos_built_image }}"
+        dest: "{{ vyos_target_image }}"
+        remote_src: true
+        mode: "0644"
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml

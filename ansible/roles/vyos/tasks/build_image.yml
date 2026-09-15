@@ -210,3 +210,10 @@
     - name: vyos | build image | display QCOW2 information
       ansible.builtin.debug:
         var: vyos_qcow2_info.stdout_lines
+
+    - name: vyos | build image | move image to Proxmox template directory
+      ansible.builtin.copy:
+        src: "{{ vyos_built_image }}"
+        dest: "{{ vyos_target_image }}"
+        remote_src: true
+        mode: "0644"
