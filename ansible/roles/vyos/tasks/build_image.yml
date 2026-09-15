@@ -1,0 +1,4 @@
+- name: vyos | build image | check if VyOS image already exists
+  ansible.builtin.stat:
+    path: "{{ vyos_target_image }}"
+  register: vyos_target_image_exists

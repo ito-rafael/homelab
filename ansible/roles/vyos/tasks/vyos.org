@@ -5,6 +5,17 @@
 #+auto_tangle: t
 
 * VyOS
+** Build Image
+:PROPERTIES:
+:header-args+: :tangle build_image.yml
+:END:
+*** Check Existing Image
+#+begin_src yaml
+- name: vyos | build image | check if VyOS image already exists
+  ansible.builtin.stat:
+    path: "{{ vyos_target_image }}"
+  register: vyos_target_image_exists
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
