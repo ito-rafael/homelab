@@ -264,6 +264,12 @@
           qemu-img output:
           {{ vyos_qcow2_info.stdout }}
 #+end_src
+*** Display QCOW2 Information
+#+begin_src yaml
+    - name: vyos | build image | display QCOW2 information
+      ansible.builtin.debug:
+        var: vyos_qcow2_info.stdout_lines
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml

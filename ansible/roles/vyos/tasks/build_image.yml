@@ -206,3 +206,7 @@
 
           qemu-img output:
           {{ vyos_qcow2_info.stdout }}
+
+    - name: vyos | build image | display QCOW2 information
+      ansible.builtin.debug:
+        var: vyos_qcow2_info.stdout_lines
