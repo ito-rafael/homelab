@@ -1,0 +1,7 @@
+---
+- name: core | proxmox | provision lab infrastructure
+  ansible.builtin.shell: make auto-apply
+  args:
+    chdir: '/home/rafael/git/homelab/tofu'
+  delegate_to: localhost
+  become: no

@@ -47,3 +47,31 @@
   ansible.builtin.command: ifup vmbr2
   when: network_config_vmbr2.changed
 #+end_src
+** Provisioning
+:PROPERTIES:
+:header-args+: :tangle provision.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Provision LXC containers and VMs
+**** With Terraform
+#+begin_src yaml :padline no :tangle no
+- name: core | proxmox | provision lab infrastructure
+  cloud.terraform.terraform:
+    project_path: '/home/rafael/git/homelab/tofu'
+    binary_path: tofu
+    state: present
+    force_init: yes
+  delegate_to: localhost
+  become: no
+#+end_src
+**** With Makefile
+#+begin_src yaml :padline no
+- name: core | proxmox | provision lab infrastructure
+  ansible.builtin.shell: make auto-apply
+  args:
+    chdir: '/home/rafael/git/homelab/tofu'
+  delegate_to: localhost
+  become: no
+#+end_src
