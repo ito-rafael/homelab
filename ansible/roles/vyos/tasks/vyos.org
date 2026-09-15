@@ -81,6 +81,18 @@
       changed_when: false
       failed_when: false
 #+end_src
+*** Build Pinned Builder Container
+#+begin_src yaml
+    - name: vyos | build image | build pinned VyOS builder container
+      ansible.builtin.command:
+        cmd: >
+          podman build
+          --tag {{ vyos_builder_image }}
+          {{ vyos_build_dir }}/docker
+      args:
+        chdir: "{{ vyos_build_dir }}"
+      when: vyos_builder_exists.rc != 0
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
