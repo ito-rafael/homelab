@@ -217,3 +217,9 @@
         dest: "{{ vyos_target_image }}"
         remote_src: true
         mode: "0644"
+
+    - name: vyos | build image | calculate SHA256 checksum
+      ansible.builtin.stat:
+        path: "{{ vyos_target_image }}"
+        checksum_algorithm: sha256
+      register: vyos_target_image_stat
