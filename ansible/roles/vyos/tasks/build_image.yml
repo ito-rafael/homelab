@@ -110,3 +110,22 @@
       register: vyos_kernel_package_check
       changed_when: false
       failed_when: false
+
+    - name: vyos | build image | verify required kernel package is available
+      ansible.builtin.assert:
+        that:
+          - vyos_kernel_package_check.rc == 0
+        fail_msg: |
+          The pinned vyos-build revision {{ vyos_build_ref }} requires
+          {{ vyos_kernel_package }}, but that package is not currently
+          available from the configured VyOS Rolling package repository.
+
+          Kernel version:
+          {{ vyos_kernel_version.stdout | trim }}
+          Kernel flavor:
+          {{ vyos_kernel_flavor.stdout | trim }}
+
+          This usually means that the pinned vyos-build revision and the
+          current Rolling package repositories are out of sync. Select a
+          newer known-good vyos-build commit or wait until the corresponding
+          package is published.
