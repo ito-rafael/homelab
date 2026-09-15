@@ -197,6 +197,26 @@
       args:
         chdir: "{{ vyos_build_dir }}"
 #+end_src
+*** Compile and Build Image
+#+begin_src yaml
+    - name: vyos | build image | compile VyOS QCOW2 image
+      ansible.builtin.command:
+        cmd: >
+          podman run
+          --rm
+          --privileged
+          --sysctl net.ipv6.conf.lo.disable_ipv6=0
+          -v {{ vyos_build_dir }}:/vyos
+          -w /vyos
+          {{ vyos_builder_image }}
+          bash -lc
+          "sudo ./build-vyos-image
+          --architecture {{ vyos_architecture }}
+          --build-by '{{ vyos_build_by }}'
+          {{ vyos_build_flavor }}"
+      args:
+        chdir: "{{ vyos_build_dir }}"
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
