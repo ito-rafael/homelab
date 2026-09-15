@@ -223,3 +223,10 @@
         path: "{{ vyos_target_image }}"
         checksum_algorithm: sha256
       register: vyos_target_image_stat
+
+    - name: vyos | build image | display image information
+      ansible.builtin.debug:
+        msg:
+          - "VyOS build commit: {{ vyos_build_ref }}"
+          - "VyOS image: {{ vyos_target_image }}"
+          - "SHA256: {{ vyos_target_image_stat.stat.checksum }}"
