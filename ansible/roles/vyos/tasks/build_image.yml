@@ -46,3 +46,10 @@
         content: |
           image_format = "qcow2"
           packages = ["qemu-guest-agent"]
+
+    - name: vyos | build image | check if pinned builder image exists
+      ansible.builtin.command:
+        cmd: "podman image exists {{ vyos_builder_image }}"
+      register: vyos_builder_exists
+      changed_when: false
+      failed_when: false

@@ -72,6 +72,15 @@
           image_format = "qcow2"
           packages = ["qemu-guest-agent"]
 #+end_src
+*** Check Builder Image
+#+begin_src yaml
+    - name: vyos | build image | check if pinned builder image exists
+      ansible.builtin.command:
+        cmd: "podman image exists {{ vyos_builder_image }}"
+      register: vyos_builder_exists
+      changed_when: false
+      failed_when: false
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
