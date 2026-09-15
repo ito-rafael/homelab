@@ -133,6 +133,23 @@
         vyos_kernel_package: >-
           linux-image-{{ vyos_kernel_version.stdout | trim }}-{{ vyos_kernel_flavor.stdout | trim }}
 #+end_src
+*** Check Kernel Package Availability
+#+begin_src yaml
+    - name: vyos | build image | check required kernel package availability
+      ansible.builtin.command:
+        cmd: >
+          podman run
+          --rm
+          {{ vyos_builder_image }}
+          bash -lc
+          "apt-get update -qq &&
+           apt-cache policy {{ vyos_kernel_package }}"
+      args:
+        chdir: "{{ vyos_build_dir }}"
+      register: vyos_kernel_package_check
+      changed_when: false
+      failed_when: false
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
