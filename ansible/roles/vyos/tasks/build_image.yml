@@ -129,3 +129,11 @@
           current Rolling package repositories are out of sync. Select a
           newer known-good vyos-build commit or wait until the corresponding
           package is published.
+
+    - name: vyos | build image | display build preflight information
+      ansible.builtin.debug:
+        msg:
+          - "VyOS build commit: {{ vyos_build_ref }}"
+          - "Kernel version: {{ vyos_kernel_version.stdout | trim }}"
+          - "Kernel flavor: {{ vyos_kernel_flavor.stdout | trim }}"
+          - "Kernel package: {{ vyos_kernel_package }}"

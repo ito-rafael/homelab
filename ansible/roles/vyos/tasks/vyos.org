@@ -171,6 +171,16 @@
           newer known-good vyos-build commit or wait until the corresponding
           package is published.
 #+end_src
+*** Display Preflight Information
+#+begin_src yaml
+    - name: vyos | build image | display build preflight information
+      ansible.builtin.debug:
+        msg:
+          - "VyOS build commit: {{ vyos_build_ref }}"
+          - "Kernel version: {{ vyos_kernel_version.stdout | trim }}"
+          - "Kernel flavor: {{ vyos_kernel_flavor.stdout | trim }}"
+          - "Kernel package: {{ vyos_kernel_package }}"
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
