@@ -90,3 +90,8 @@
         fail_msg: >-
           Could not determine kernel_version and/or kernel_flavor from
           {{ vyos_build_dir }}/data/defaults.toml.
+
+    - name: vyos | build image | define required kernel package
+      ansible.builtin.set_fact:
+        vyos_kernel_package: >-
+          linux-image-{{ vyos_kernel_version.stdout | trim }}-{{ vyos_kernel_flavor.stdout | trim }}
