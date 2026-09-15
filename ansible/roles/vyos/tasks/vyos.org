@@ -42,6 +42,15 @@
         force: true
         update: true
 #+end_src
+*** Verify Checked-Out Commit
+#+begin_src yaml
+    - name: vyos | build image | read checked-out commit
+      ansible.builtin.command:
+        cmd: git rev-parse HEAD
+        chdir: "{{ vyos_build_dir }}"
+      register: vyos_actual_commit
+      changed_when: false
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml

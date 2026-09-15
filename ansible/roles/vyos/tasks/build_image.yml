@@ -22,3 +22,10 @@
         version: "{{ vyos_build_ref }}"
         force: true
         update: true
+
+    - name: vyos | build image | read checked-out commit
+      ansible.builtin.command:
+        cmd: git rev-parse HEAD
+        chdir: "{{ vyos_build_dir }}"
+      register: vyos_actual_commit
+      changed_when: false
