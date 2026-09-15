@@ -9,6 +9,15 @@
         name: proxmox
         tasks_from: network.yml
 
+- name: Provision LXC containers and VMs
+  hosts: proxmox
+  become: no
+  tasks:
+    - name: core | infrastructure | provision LXC containers and VMs
+      ansible.builtin.import_role:
+        name: proxmox
+        tasks_from: provision.yml
+
 - name: Configure VyOS Core Router
   hosts: vyos
   gather_facts: no

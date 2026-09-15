@@ -7,6 +7,7 @@
 * Table of Contents :toc:
 - [[#master-playbook][Master Playbook]]
   - [[#proxmox-hypervisor][Proxmox Hypervisor]]
+  - [[#opentofu][OpenTofu]]
   - [[#vyos-router][VyOS Router]]
   - [[#headscale-vpn][Headscale VPN]]
 
@@ -29,6 +30,18 @@ Runs against the physical host to configure bridges and networking.
       ansible.builtin.import_role:
         name: proxmox
         tasks_from: network.yml
+#+end_src
+** OpenTofu
+Runs against the Proxmox server to provision the LXC containers and Virtual Machines.
+#+begin_src yaml
+- name: Provision LXC containers and VMs
+  hosts: proxmox
+  become: no
+  tasks:
+    - name: core | infrastructure | provision LXC containers and VMs
+      ansible.builtin.import_role:
+        name: proxmox
+        tasks_from: provision.yml
 #+end_src
 ** VyOS Router
 Runs against the core router to configure VLANs and NAT via the network CLI.
