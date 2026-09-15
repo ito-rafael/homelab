@@ -104,6 +104,17 @@
       register: vyos_kernel_version
       changed_when: false
 #+end_src
+*** Read Kernel Flavor
+#+begin_src yaml
+    - name: vyos | build image | read kernel flavor from pinned source
+      ansible.builtin.shell:
+        cmd: >
+          awk -F'"' '/^[[:space:]]*kernel_flavor[[:space:]]*=/{print $2}'
+          data/defaults.toml
+        chdir: "{{ vyos_build_dir }}"
+      register: vyos_kernel_flavor
+      changed_when: false
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
