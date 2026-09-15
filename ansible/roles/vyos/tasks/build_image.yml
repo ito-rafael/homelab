@@ -190,3 +190,9 @@
     - name: vyos | build image | record generated QCOW2 path
       ansible.builtin.set_fact:
         vyos_built_image: "{{ vyos_qcow2_files.files[0].path }}"
+
+    - name: vyos | build image | validate generated QCOW2
+      ansible.builtin.command:
+        cmd: qemu-img info "{{ vyos_built_image }}"
+      register: vyos_qcow2_info
+      changed_when: false
