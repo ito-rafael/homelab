@@ -81,3 +81,12 @@
         chdir: "{{ vyos_build_dir }}"
       register: vyos_kernel_flavor
       changed_when: false
+
+    - name: vyos | build image | validate kernel metadata
+      ansible.builtin.assert:
+        that:
+          - vyos_kernel_version.stdout | trim | length > 0
+          - vyos_kernel_flavor.stdout | trim | length > 0
+        fail_msg: >-
+          Could not determine kernel_version and/or kernel_flavor from
+          {{ vyos_build_dir }}/data/defaults.toml.
