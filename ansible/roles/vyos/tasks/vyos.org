@@ -181,6 +181,22 @@
           - "Kernel flavor: {{ vyos_kernel_flavor.stdout | trim }}"
           - "Kernel package: {{ vyos_kernel_package }}"
 #+end_src
+*** Clean Previous Build Artifacts
+#+begin_src yaml
+    - name: vyos | build image | clean previous build artifacts
+      ansible.builtin.command:
+        cmd: >
+          podman run
+          --rm
+          --privileged
+          --sysctl net.ipv6.conf.lo.disable_ipv6=0
+          -v {{ vyos_build_dir }}:/vyos
+          -w /vyos
+          {{ vyos_builder_image }}
+          bash -lc "sudo make clean"
+      args:
+        chdir: "{{ vyos_build_dir }}"
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
