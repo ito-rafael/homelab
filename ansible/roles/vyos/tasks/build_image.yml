@@ -177,3 +177,12 @@
         file_type: file
         recurse: false
       register: vyos_qcow2_files
+
+    - name: vyos | build image | ensure exactly one QCOW2 was generated
+      ansible.builtin.assert:
+        that:
+          - vyos_qcow2_files.files | length == 1
+        fail_msg: >-
+          Expected exactly one QCOW2 image in
+          {{ vyos_build_dir }}/build, found
+          {{ vyos_qcow2_files.matched }}.
