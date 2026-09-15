@@ -27,8 +27,8 @@ Runs against the physical host to configure bridges and networking.
   tasks:
     - name: core | proxmox | configure Proxmox network interfaces
       ansible.builtin.import_role:
-        name: lbic
-        tasks_from: proxmox/networking.yml
+        name: proxmox
+        tasks_from: network.yml
 #+end_src
 ** VyOS Router
 Runs against the core router to configure VLANs and NAT via the network CLI.
@@ -39,8 +39,8 @@ Runs against the core router to configure VLANs and NAT via the network CLI.
   tasks:
     - name: core | vyos | apply routing and NAT configuration
       ansible.builtin.import_role:
-        name: lbic
-        tasks_from: vyos/routing.yml
+        name: vyos
+        tasks_from: routing.yml
 #+end_src
 ** Headscale VPN
 Runs against the LXC container to install and configure the VPN controller.
@@ -51,6 +51,6 @@ Runs against the LXC container to install and configure the VPN controller.
   tasks:
     - name: core | headscale | install and configure Headscale VPN
       ansible.builtin.import_role:
-        name: lbic
-        tasks_from: headscale/headscale.yml
+        name: headscale
+        tasks_from: headscale.yml
 #+end_src

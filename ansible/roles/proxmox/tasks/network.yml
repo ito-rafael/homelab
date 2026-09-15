@@ -3,7 +3,7 @@
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR1 NAT"
-    block: "{{ lookup('file', 'proxmox/vmbr1.txt') }}"
+    block: "{{ lookup('file', 'vmbr1.txt') }}"
   register: network_config_vmbr1
 
 - name: core | proxmox | bring up vmbr1 interface
@@ -14,7 +14,7 @@
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR2 TRUNK"
-    block: "{{ lookup('file', 'proxmox/vmbr2.txt') }}"
+    block: "{{ lookup('file', 'vmbr2.txt') }}"
   register: network_config_vmbr2
 
 - name: core | proxmox | bring up vmbr2 interface

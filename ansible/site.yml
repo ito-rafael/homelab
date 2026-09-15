@@ -6,8 +6,8 @@
   tasks:
     - name: core | proxmox | configure Proxmox network interfaces
       ansible.builtin.import_role:
-        name: lbic
-        tasks_from: proxmox/networking.yml
+        name: proxmox
+        tasks_from: network.yml
 
 - name: Configure VyOS Core Router
   hosts: vyos
@@ -15,8 +15,8 @@
   tasks:
     - name: core | vyos | apply routing and NAT configuration
       ansible.builtin.import_role:
-        name: lbic
-        tasks_from: vyos/routing.yml
+        name: vyos
+        tasks_from: routing.yml
 
 - name: Configure Headscale VPN Controller
   hosts: headscale
@@ -24,5 +24,5 @@
   tasks:
     - name: core | headscale | install and configure Headscale VPN
       ansible.builtin.import_role:
-        name: lbic
-        tasks_from: headscale/headscale.yml
+        name: headscale
+        tasks_from: headscale.yml

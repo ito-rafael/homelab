@@ -19,7 +19,7 @@
 - name: core | headscale | deploy Headscale config.yaml
   ansible.builtin.copy:
     dest: /etc/headscale/config.yaml
-    src: headscale/config.yaml
+    src: config.yaml
     owner: headscale
     group: headscale
     mode: '0644'

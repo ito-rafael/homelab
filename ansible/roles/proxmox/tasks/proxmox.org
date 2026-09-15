@@ -7,11 +7,12 @@
 * Table of Contents :toc:
 - [[#proxmox][Proxmox]]
   - [[#networking][Networking]]
+  - [[#provisioning][Provisioning]]
 
 * Proxmox
 ** Networking
 :PROPERTIES:
-:header-args+: :tangle networking.yml
+:header-args+: :tangle network.yml
 :END:
 #+begin_src yaml
 ---
@@ -22,7 +23,7 @@
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR1 NAT"
-    block: "{{ lookup('file', 'proxmox/vmbr1.txt') }}"
+    block: "{{ lookup('file', 'vmbr1.txt') }}"
   register: network_config_vmbr1
 #+end_src
 *** Bring up vmbr1
@@ -37,7 +38,7 @@
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
     marker: "# {mark} ANSIBLE MANAGED BLOCK: VMBR2 TRUNK"
-    block: "{{ lookup('file', 'proxmox/vmbr2.txt') }}"
+    block: "{{ lookup('file', 'vmbr2.txt') }}"
   register: network_config_vmbr2
 #+end_src
 *** Bring up vmbr2
