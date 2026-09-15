@@ -230,3 +230,22 @@
           - "VyOS build commit: {{ vyos_build_ref }}"
           - "VyOS image: {{ vyos_target_image }}"
           - "SHA256: {{ vyos_target_image_stat.stat.checksum }}"
+
+- name: vyos | build image | verify existing image
+  when: vyos_target_image_exists.stat.exists
+  block:
+
+    - name: vyos | build image | calculate existing image SHA256
+      ansible.builtin.stat:
+        path: "{{ vyos_target_image }}"
+        checksum_algorithm: sha256
+      register: existing_vyos_image
+
+    - name: vyos | build image | display existing image information
+      ansible.builtin.debug:
+        msg:
+          - "VyOS image already exists: {{ vyos_target_image }}"
+          - "SHA256: {{ existing_vyos_image.stat.checksum }}"
+          - >-
+            Build commit pin is {{ vyos_build_ref }}.
+            Existing images are not rebuilt automatically.

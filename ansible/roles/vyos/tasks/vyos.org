@@ -296,6 +296,31 @@
           - "VyOS image: {{ vyos_target_image }}"
           - "SHA256: {{ vyos_target_image_stat.stat.checksum }}"
 #+end_src
+*** Existing Image
+#+begin_src yaml
+- name: vyos | build image | verify existing image
+  when: vyos_target_image_exists.stat.exists
+  block:
+#+end_src
+*** Existing Image Checksum
+#+begin_src yaml
+    - name: vyos | build image | calculate existing image SHA256
+      ansible.builtin.stat:
+        path: "{{ vyos_target_image }}"
+        checksum_algorithm: sha256
+      register: existing_vyos_image
+#+end_src
+*** Display Existing Image Information
+#+begin_src yaml
+    - name: vyos | build image | display existing image information
+      ansible.builtin.debug:
+        msg:
+          - "VyOS image already exists: {{ vyos_target_image }}"
+          - "SHA256: {{ existing_vyos_image.stat.checksum }}"
+          - >-
+            Build commit pin is {{ vyos_build_ref }}.
+            Existing images are not rebuilt automatically.
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
