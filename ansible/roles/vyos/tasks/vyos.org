@@ -217,6 +217,16 @@
       args:
         chdir: "{{ vyos_build_dir }}"
 #+end_src
+*** Find Generated QCOW2
+#+begin_src yaml
+    - name: vyos | build image | find generated QCOW2 images
+      ansible.builtin.find:
+        paths: "{{ vyos_build_dir }}/build"
+        patterns: "*.qcow2"
+        file_type: file
+        recurse: false
+      register: vyos_qcow2_files
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
