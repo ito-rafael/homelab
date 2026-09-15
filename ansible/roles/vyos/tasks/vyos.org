@@ -252,6 +252,18 @@
       register: vyos_qcow2_info
       changed_when: false
 #+end_src
+*** Assert Generated QCOW2
+#+begin_src yaml
+    - name: vyos | build image | verify generated image format
+      ansible.builtin.assert:
+        that:
+          - "'file format: qcow2' in vyos_qcow2_info.stdout"
+        fail_msg: |
+          Generated image is not a valid QCOW2 image.
+
+          qemu-img output:
+          {{ vyos_qcow2_info.stdout }}
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml

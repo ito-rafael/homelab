@@ -196,3 +196,13 @@
         cmd: qemu-img info "{{ vyos_built_image }}"
       register: vyos_qcow2_info
       changed_when: false
+
+    - name: vyos | build image | verify generated image format
+      ansible.builtin.assert:
+        that:
+          - "'file format: qcow2' in vyos_qcow2_info.stdout"
+        fail_msg: |
+          Generated image is not a valid QCOW2 image.
+
+          qemu-img output:
+          {{ vyos_qcow2_info.stdout }}
