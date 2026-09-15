@@ -51,6 +51,17 @@
       register: vyos_actual_commit
       changed_when: false
 #+end_src
+*** Assert Pinned Commit
+#+begin_src yaml
+    - name: vyos | build image | verify checked-out commit
+      ansible.builtin.assert:
+        that:
+          - vyos_actual_commit.stdout | trim == vyos_build_ref
+        fail_msg: >-
+          vyos-build checkout is not at the requested commit.
+          Expected {{ vyos_build_ref }},
+          got {{ vyos_actual_commit.stdout | trim }}.
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
