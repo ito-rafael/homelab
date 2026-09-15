@@ -14,3 +14,11 @@
           - git
         state: present
         update_cache: true
+
+    - name: vyos | build image | checkout pinned vyos-build repository
+      ansible.builtin.git:
+        repo: "{{ vyos_build_repo }}"
+        dest: "{{ vyos_build_dir }}"
+        version: "{{ vyos_build_ref }}"
+        force: true
+        update: true
