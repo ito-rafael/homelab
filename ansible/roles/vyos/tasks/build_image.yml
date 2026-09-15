@@ -186,3 +186,7 @@
           Expected exactly one QCOW2 image in
           {{ vyos_build_dir }}/build, found
           {{ vyos_qcow2_files.matched }}.
+
+    - name: vyos | build image | record generated QCOW2 path
+      ansible.builtin.set_fact:
+        vyos_built_image: "{{ vyos_qcow2_files.files[0].path }}"

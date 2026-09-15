@@ -238,6 +238,12 @@
           {{ vyos_build_dir }}/build, found
           {{ vyos_qcow2_files.matched }}.
 #+end_src
+*** Record Generated Image
+#+begin_src yaml
+    - name: vyos | build image | record generated QCOW2 path
+      ansible.builtin.set_fact:
+        vyos_built_image: "{{ vyos_qcow2_files.files[0].path }}"
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
