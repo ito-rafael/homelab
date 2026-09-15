@@ -16,6 +16,22 @@
     path: "{{ vyos_target_image }}"
   register: vyos_target_image_exists
 #+end_src
+*** Build Block Start
+#+begin_src yaml
+- name: vyos | build image | build and deploy image
+  when: not vyos_target_image_exists.stat.exists
+  block:
+#+end_src
+*** Install Dependencies
+#+begin_src yaml
+    - name: vyos | build image | install podman and git
+      ansible.builtin.apt:
+        name:
+          - podman
+          - git
+        state: present
+        update_cache: true
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
