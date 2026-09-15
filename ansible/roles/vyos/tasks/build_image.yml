@@ -38,3 +38,11 @@
           vyos-build checkout is not at the requested commit.
           Expected {{ vyos_build_ref }},
           got {{ vyos_actual_commit.stdout | trim }}.
+
+    - name: vyos | build image | create Proxmox build flavor
+      ansible.builtin.copy:
+        dest: "{{ vyos_build_dir }}/data/build-flavors/{{ vyos_build_flavor }}.toml"
+        mode: "0644"
+        content: |
+          image_format = "qcow2"
+          packages = ["qemu-guest-agent"]
