@@ -28,6 +28,12 @@
         path: "{{ vyos_build_dir }}/seed"
         state: directory
         mode: "0755"
+
+    - name: vyos | build image | create NoCloud user-data
+      ansible.builtin.template:
+        src: user-data.j2
+        dest: "{{ vyos_build_dir }}/seed/user-data"
+        mode: "0644"
     - name: vyos | build image | read checked-out commit
       ansible.builtin.command:
         cmd: git rev-parse HEAD

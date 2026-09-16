@@ -51,6 +51,14 @@
         state: directory
         mode: "0755"
 #+end_src
+**** Create NoCloud User Data
+#+begin_src yaml
+    - name: vyos | build image | create NoCloud user-data
+      ansible.builtin.template:
+        src: user-data.j2
+        dest: "{{ vyos_build_dir }}/seed/user-data"
+        mode: "0644"
+#+end_src
 *** Verify Checked-Out Commit
 #+begin_src yaml
     - name: vyos | build image | read checked-out commit
