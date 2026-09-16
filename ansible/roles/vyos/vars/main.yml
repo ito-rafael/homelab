@@ -7,6 +7,11 @@ vyos_architecture: "amd64"
 vyos_build_flavor: "proxmox"
 vyos_build_by: "ansible@unicamp"
 
+vyos_ip_cidr: "10.10.10.1/24"
+vyos_gateway: "10.10.10.254"
+vyos_eth0_mac: "02:00:00:00:10:01"
+vyos_eth1_mac: "02:00:00:00:10:02"
+
 vyos_seed_dir: "{{ vyos_build_dir }}/seed"
 vyos_seed_iso: "{{ vyos_build_dir }}/seed.iso"
 vyos_seed_iso_name: "vyos-seed.iso"
