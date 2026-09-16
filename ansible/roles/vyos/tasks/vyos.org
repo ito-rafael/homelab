@@ -404,7 +404,7 @@ This applies the core routing, VLANs, and NAT masquerade to the VyOS instance.
 #+begin_src yaml
 ---
 #+end_src
-*** Configure Router
+*** Configure router
 #+begin_src yaml
 - name: vyos | routing | configure interfaces, DNS, and NAT
   vyos.vyos.vyos_config:
@@ -417,5 +417,16 @@ This applies the core routing, VLANs, and NAT masquerade to the VyOS instance.
       - set nat source rule 100 outbound-interface name 'eth0'
       - set nat source rule 100 source address '10.10.0.0/16'
       - set nat source rule 100 translation address 'masquerade'
-    save: yes
+  register: vyos_config_result
+#+end_src
+*** Save configuration
+#+begin_src yaml
+- name: vyos | routing | save configuration
+  vyos.vyos.vyos_command:
+    commands:
+      - configure
+      - save
+      - exit
+  changed_when: true
+  when: vyos_config_result.changed
 #+end_src
