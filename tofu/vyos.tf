@@ -10,6 +10,18 @@ variable "vyos_gateway" {
   default     = "10.10.10.254"
 }
 
+locals {
+  # read the Ansible variables
+  vyos_vars = yamldecode(file("${path.module}/../ansible/roles/vyos/vars/main.yml"))
+
+  # replace the architecture tag
+  path_step1 = replace(local.vyos_vars.vyos_target_image, "{{ vyos_architecture }}", local.vyos_vars.vyos_architecture)
+  # replace the version tag
+  path_step2 = replace(local.path_step1, "{{ vyos_build_version }}", local.vyos_vars.vyos_build_version)
+  # extract the final filename
+  vyos_image_name = basename(local.path_step2)
+}
+
 resource "proxmox_virtual_environment_vm" "vyos" {
   name        = "vyos"
   description = "VyOS Core Router"
@@ -44,9 +56,10 @@ resource "proxmox_virtual_environment_vm" "vyos" {
 
   disk {
     datastore_id = "local-lvm"
-    # ensure the VyOS image has Cloud-Init QCOW2 support
-    file_id      = "local:iso/vyos-1.4-cloud-init.qcow2"
+    # ensure the VyOS image has QCOW2 support
+    file_id      = "local:iso/${local.vyos_image_name}"
     interface    = "virtio0"
+    file_format  = "raw"
     size         = 10
   }
 

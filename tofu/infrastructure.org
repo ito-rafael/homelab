@@ -118,6 +118,25 @@ variable "vyos_gateway" {
   default     = "10.10.10.254"
 }
 #+end_src
+**** Local
+#+begin_src tofu
+locals {
+  # read the Ansible variables
+  vyos_vars = yamldecode(file("${path.module}/../ansible/roles/vyos/vars/main.yml"))
+#+end_src
+*****  Image build filename
+#+begin_src tofu
+  # replace the architecture tag
+  path_step1 = replace(local.vyos_vars.vyos_target_image, "{{ vyos_architecture }}", local.vyos_vars.vyos_architecture)
+  # replace the version tag
+  path_step2 = replace(local.path_step1, "{{ vyos_build_version }}", local.vyos_vars.vyos_build_version)
+  # extract the final filename
+  vyos_image_name = basename(local.path_step2)
+#+end_src
+***** EoS
+#+begin_src tofu
+}
+#+end_src
 *** Virtual Machine
 This block provisions the VyOS 1.4 router VM. It attaches to the external network (=vmbr1=) and the internal VLAN trunk (=vmbr2=).
 **** Resource
@@ -141,13 +160,11 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   agent {
     enabled = true
   }
-
   # eth0: WAN Interface
   # Transit Network (facing the physical network)
   network_device {
     bridge = "vmbr1"
   }
-
   # eth1: LAN Interface
   # Internal Trunk (VLAN Trunk for internal lab networks)
   network_device {
@@ -158,9 +175,10 @@ resource "proxmox_virtual_environment_vm" "vyos" {
 #+begin_src tofu
   disk {
     datastore_id = "local-lvm"
-    # ensure the VyOS image has Cloud-Init QCOW2 support
-    file_id      = "local:iso/vyos-1.4-cloud-init.qcow2"
+    # ensure the VyOS image has QCOW2 support
+    file_id      = "local:iso/${local.vyos_image_name}"
     interface    = "virtio0"
+    file_format  = "raw"
     size         = 10
   }
 #+end_src
