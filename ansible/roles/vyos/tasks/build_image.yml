@@ -67,6 +67,13 @@
         cmd: isoinfo -d -i "{{ vyos_seed_iso }}"
       register: vyos_seed_iso_info
       changed_when: false
+
+    - name: vyos | build image | verify NoCloud seed ISO label
+      ansible.builtin.assert:
+        that:
+          - "'Volume id: cidata' in vyos_seed_iso_info.stdout"
+        fail_msg: >-
+          NoCloud seed ISO does not have the expected cidata volume label.
     - name: vyos | build image | read checked-out commit
       ansible.builtin.command:
         cmd: git rev-parse HEAD

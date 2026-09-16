@@ -100,6 +100,15 @@
       register: vyos_seed_iso_info
       changed_when: false
 #+end_src
+**** Assert NoCloud Seed ISO
+#+begin_src yaml
+    - name: vyos | build image | verify NoCloud seed ISO label
+      ansible.builtin.assert:
+        that:
+          - "'Volume id: cidata' in vyos_seed_iso_info.stdout"
+        fail_msg: >-
+          NoCloud seed ISO does not have the expected cidata volume label.
+#+end_src
 *** Verify Checked-Out Commit
 #+begin_src yaml
     - name: vyos | build image | read checked-out commit
