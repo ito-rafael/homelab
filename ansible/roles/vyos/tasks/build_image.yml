@@ -98,13 +98,11 @@
           Expected {{ vyos_build_ref }},
           got {{ vyos_actual_commit.stdout | trim }}.
 
-    - name: vyos | build image | create Proxmox build flavor
+    - name: vyos | build image | install Proxmox build flavor
       ansible.builtin.copy:
+        src: proxmox.toml
         dest: "{{ vyos_build_dir }}/data/build-flavors/{{ vyos_build_flavor }}.toml"
         mode: "0644"
-        content: |
-          image_format = "qcow2"
-          packages = ["qemu-guest-agent"]
 
     - name: vyos | build image | check if pinned builder image exists
       ansible.builtin.command:

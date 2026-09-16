@@ -140,13 +140,11 @@
 #+end_src
 *** Create Proxmox Build Flavor
 #+begin_src yaml
-    - name: vyos | build image | create Proxmox build flavor
+    - name: vyos | build image | install Proxmox build flavor
       ansible.builtin.copy:
+        src: proxmox.toml
         dest: "{{ vyos_build_dir }}/data/build-flavors/{{ vyos_build_flavor }}.toml"
         mode: "0644"
-        content: |
-          image_format = "qcow2"
-          packages = ["qemu-guest-agent"]
 #+end_src
 *** Check Builder Image
 #+begin_src yaml

@@ -1,0 +1,47 @@
+image_format = "qcow2"
+
+packages = [
+  "qemu-guest-agent",
+  "cloud-init"
+]
+
+default_config = '''
+interfaces {
+    loopback lo {
+    }
+}
+
+system {
+    config-management {
+        commit-revisions "100"
+    }
+
+    console {
+        device ttyS0 {
+            speed "115200"
+        }
+    }
+
+    host-name "vyos"
+
+    login {
+        user vyos {
+            authentication {
+                plaintext-password "vyos"
+            }
+        }
+    }
+
+    syslog {
+        local {
+            facility all {
+                level "info"
+            }
+        }
+    }
+}
+'''
+
+[[includes_chroot]]
+path = "etc/cloud/cloud.cfg.d/90_dpkg.cfg"
+data = "datasource_list: [NoCloud]"
