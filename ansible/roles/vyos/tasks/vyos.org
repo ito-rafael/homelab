@@ -24,11 +24,12 @@
 #+end_src
 *** Install Dependencies
 #+begin_src yaml
-    - name: vyos | build image | install podman and git
+    - name: vyos | build image | install dependencies
       ansible.builtin.apt:
         name:
           - podman
           - git
+          - genisoimage
         state: present
         update_cache: true
 #+end_src
@@ -74,6 +75,22 @@
         src: meta-data.j2
         dest: "{{ vyos_build_dir }}/seed/meta-data"
         mode: "0644"
+#+end_src
+**** Build NoCloud Seed ISO
+#+begin_src yaml
+    - name: vyos | build image | create NoCloud seed ISO
+      ansible.builtin.command:
+        cmd: >
+          genisoimage
+          -joliet
+          -rock
+          -volid cidata
+          -output {{ vyos_seed_iso }}
+          meta-data
+          user-data
+          network-config
+      args:
+        chdir: "{{ vyos_seed_dir }}"
 #+end_src
 *** Verify Checked-Out Commit
 #+begin_src yaml
