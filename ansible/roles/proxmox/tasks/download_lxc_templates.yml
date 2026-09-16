@@ -1,4 +1,8 @@
 ---
+- name: core | proxmox | update LXC appliance template list
+  ansible.builtin.command:
+    cmd: pveam update
+  changed_when: false
 
 - name: core | proxmox | download LXC templates
   ansible.builtin.command:

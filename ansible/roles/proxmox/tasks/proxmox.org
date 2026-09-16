@@ -55,6 +55,13 @@
 #+begin_src yaml
 ---
 #+end_src
+*** Update template list
+#+begin_src yaml :padline no
+- name: core | proxmox | update LXC appliance template list
+  ansible.builtin.command:
+    cmd: pveam update
+  changed_when: false
+#+end_src
 *** Download LXC templates
 #+begin_src yaml
 - name: core | proxmox | download LXC templates
