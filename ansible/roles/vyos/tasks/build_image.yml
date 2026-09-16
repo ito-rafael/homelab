@@ -61,6 +61,12 @@
           network-config
       args:
         chdir: "{{ vyos_seed_dir }}"
+
+    - name: vyos | build image | validate NoCloud seed ISO
+      ansible.builtin.command:
+        cmd: isoinfo -d -i "{{ vyos_seed_iso }}"
+      register: vyos_seed_iso_info
+      changed_when: false
     - name: vyos | build image | read checked-out commit
       ansible.builtin.command:
         cmd: git rev-parse HEAD

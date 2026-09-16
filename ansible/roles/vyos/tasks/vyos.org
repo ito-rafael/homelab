@@ -92,6 +92,14 @@
       args:
         chdir: "{{ vyos_seed_dir }}"
 #+end_src
+**** Validate NoCloud Seed ISO
+#+begin_src yaml
+    - name: vyos | build image | validate NoCloud seed ISO
+      ansible.builtin.command:
+        cmd: isoinfo -d -i "{{ vyos_seed_iso }}"
+      register: vyos_seed_iso_info
+      changed_when: false
+#+end_src
 *** Verify Checked-Out Commit
 #+begin_src yaml
     - name: vyos | build image | read checked-out commit
