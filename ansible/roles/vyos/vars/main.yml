@@ -7,5 +7,10 @@ vyos_architecture: "amd64"
 vyos_build_flavor: "proxmox"
 vyos_build_by: "ansible@unicamp"
 
+vyos_seed_dir: "{{ vyos_build_dir }}/seed"
+vyos_seed_iso: "{{ vyos_build_dir }}/seed.iso"
+vyos_seed_iso_name: "vyos-seed.iso"
+vyos_seed_iso_target: "/var/lib/vz/template/iso/{{ vyos_seed_iso_name }}"
+
 vyos_target_image: "/var/lib/vz/template/iso/vyos-{{ vyos_build_version }}-{{ vyos_architecture }}-proxmox.img"
 vyos_builder_image: "vyos-build:{{ vyos_build_ref }}"
