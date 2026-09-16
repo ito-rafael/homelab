@@ -1,2 +1,3 @@
 ---
 headscale_version: "0.29.3"
+headscale_arch: "amd64"

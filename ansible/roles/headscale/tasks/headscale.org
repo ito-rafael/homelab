@@ -20,7 +20,7 @@
 #+begin_src yaml :padline no
 - name: core | headscale | download Debian package
   ansible.builtin.get_url:
-    url: "https://github.com/juanfont/headscale/releases/download/v{{ headscale_version }}/headscale_{{ headscale_version }}_linux_amd64.deb"
+    url: "https://github.com/juanfont/headscale/releases/download/v{{ headscale_version }}/headscale_{{ headscale_version }}_linux_{{ headscale_arch }}.deb"
     dest: "/tmp/headscale.deb"
     mode: '0644'
 #+end_src
