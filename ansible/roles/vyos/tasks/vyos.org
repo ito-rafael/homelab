@@ -109,6 +109,15 @@
         fail_msg: >-
           NoCloud seed ISO does not have the expected cidata volume label.
 #+end_src
+**** Publish NoCloud Seed ISO
+#+begin_src yaml
+    - name: vyos | build image | publish NoCloud seed ISO
+      ansible.builtin.copy:
+        src: "{{ vyos_seed_iso }}"
+        dest: "{{ vyos_seed_iso_target }}"
+        remote_src: true
+        mode: "0644"
+#+end_src
 *** Verify Checked-Out Commit
 #+begin_src yaml
     - name: vyos | build image | read checked-out commit
