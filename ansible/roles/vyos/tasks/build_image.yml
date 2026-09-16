@@ -40,6 +40,12 @@
         src: network-config.j2
         dest: "{{ vyos_build_dir }}/seed/network-config"
         mode: "0644"
+
+    - name: vyos | build image | create NoCloud meta-data
+      ansible.builtin.template:
+        src: meta-data.j2
+        dest: "{{ vyos_build_dir }}/seed/meta-data"
+        mode: "0644"
     - name: vyos | build image | read checked-out commit
       ansible.builtin.command:
         cmd: git rev-parse HEAD
