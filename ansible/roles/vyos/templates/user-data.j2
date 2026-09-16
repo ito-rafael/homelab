@@ -1,0 +1,24 @@
+#cloud-config
+
+vyos_config_commands:
+  # Hostname
+  - set system host-name 'vyos'
+
+  # SSH key for laptop IPF
+  - set system login user vyos authentication public-keys ipf type 'ssh-ed25519'
+  - set system login user vyos authentication public-keys ipf key '{{ ssh_public_key_ipf }}'
+
+  # SSH key for workstation Catuaba
+  - set system login user vyos authentication public-keys catuaba type 'ssh-ed25519'
+  - set system login user vyos authentication public-keys catuaba key '{{ ssh_public_key_catuaba }}'
+
+  # Disable password authentication
+  - set service ssh port '22'
+  - set service ssh disable-password-authentication
+
+  # Network: WAN Interface
+  - set interfaces ethernet eth0 hw-id '{{ vyos_eth0_mac }}'
+  - set interfaces ethernet eth0 address '{{ vyos_ip_cidr }}'
+
+  # Network: LAN Interface
+  - set interfaces ethernet eth1 hw-id '{{ vyos_eth1_mac }}'
