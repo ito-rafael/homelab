@@ -45,7 +45,7 @@ lbic:
         canabis:      # xxx.xxx.xxx.183
 #+end_src
 ** Server
-In order for the ='-J root@andira'= jumps to work, this host config must be in the =~/.ssh/config= file of the machine that will run the Ansible commands.
+In order for the ='-o ProxyJump=root@andira'= jumps to work, this host config must be in the =~/.ssh/config= file of the machine that will run the Ansible commands.
 #+begin_src conf
 Host andira
     HostName <SERVER-IP-ADDRESS>
@@ -73,9 +73,10 @@ Host andira
         vyos:
           ansible_host: 10.10.10.1
           ansible_user: vyos
-          ansible_connection: network_cli
+          ansible_connection: ansible.netcommon.network_cli
           ansible_network_os: vyos.vyos.vyos
-          ansible_ssh_common_args: '-J root@andira'
+          ansible_network_cli_ssh_type: libssh
+          ansible_libssh_proxy_command: 'ssh -W %h:%p -q root@andira'
 #+end_src
 *** VPN
 #+begin_src yaml
