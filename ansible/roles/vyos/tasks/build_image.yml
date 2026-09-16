@@ -223,6 +223,7 @@
           "sudo ./build-vyos-image
           --architecture {{ vyos_architecture }}
           --build-by '{{ vyos_build_by }}'
+          --custom-package cloud-init
           {{ vyos_build_flavor }}"
       args:
         chdir: "{{ vyos_build_dir }}"
