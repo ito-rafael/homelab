@@ -30,6 +30,11 @@ Runs against the physical host to configure bridges and networking.
       ansible.builtin.import_role:
         name: proxmox
         tasks_from: network.yml
+
+    - name: core | proxmox | download LXC templates
+      ansible.builtin.import_role:
+        name: proxmox
+        tasks_from: download_lxc_templates.yml
 #+end_src
 ** OpenTofu
 Runs against the Proxmox server to provision the LXC containers and Virtual Machines.

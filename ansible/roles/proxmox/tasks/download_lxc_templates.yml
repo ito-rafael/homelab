@@ -1,0 +1,9 @@
+---
+
+- name: core | proxmox | download LXC templates
+  ansible.builtin.command:
+    cmd: "pveam download local {{ item }}"
+  args:
+    creates: "/var/lib/vz/template/cache/{{ item }}"
+  loop:
+    - "{{ lxc_template_headscale }}"
