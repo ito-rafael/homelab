@@ -133,6 +133,11 @@ locals {
   # extract the final filename
   vyos_image_name = basename(local.path_step2)
 #+end_src
+***** MAC Address
+#+begin_src tofu
+  vyos_eth0_mac = local.vyos_vars.vyos_eth0_mac
+  vyos_eth1_mac = local.vyos_vars.vyos_eth1_mac
+#+end_src
 ***** EoS
 #+begin_src tofu
 }
@@ -160,11 +165,18 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   agent {
     enabled = true
   }
+**** Network
+***** eth0
+#+begin_src tofu
   # eth0: WAN Interface
   # Transit Network (facing the physical network)
   network_device {
     bridge = "vmbr1"
+    mac_address = local.vyos_eth0_mac
   }
+#+end_src
+***** eth1
+#+begin_src tofu
   # eth1: LAN Interface
   # Internal Trunk (VLAN Trunk for internal lab networks)
   network_device {

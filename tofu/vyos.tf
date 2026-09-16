@@ -20,6 +20,10 @@ locals {
   path_step2 = replace(local.path_step1, "{{ vyos_build_version }}", local.vyos_vars.vyos_build_version)
   # extract the final filename
   vyos_image_name = basename(local.path_step2)
+
+  vyos_eth0_mac = local.vyos_vars.vyos_eth0_mac
+  vyos_eth1_mac = local.vyos_vars.vyos_eth1_mac
+
 }
 
 resource "proxmox_virtual_environment_vm" "vyos" {
@@ -46,12 +50,14 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   # Transit Network (facing the physical network)
   network_device {
     bridge = "vmbr1"
+    mac_address = local.vyos_eth0_mac
   }
 
   # eth1: LAN Interface
   # Internal Trunk (VLAN Trunk for internal lab networks)
   network_device {
     bridge = "vmbr2"
+    mac_address = local.vyos_eth1_mac
   }
 
   disk {
