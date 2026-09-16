@@ -248,6 +248,16 @@ variable "headscale_gateway" {
   default     = "10.10.20.1"
 }
 #+end_src
+**** Local
+#+begin_src tofu
+locals {
+  # read the Ansible variables from the proxmox role
+  proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))
+
+  # extract the LXC template filename
+  headscale_lxc_template = local.proxmox_vars.lxc_template_headscale
+}
+#+end_src
 *** LXC Container
 This block provisions the Debian 13 (Trixie) container on the internal bridge (=vmbr2=).
 **** Resource
@@ -279,7 +289,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
 **** OS
 #+begin_src tofu
   operating_system {
-    template_file_id = "local:vztmpl/debian-13-standard_13.6-1_amd64.tar.zst"
+    template_file_id = "local:vztmpl/${local.headscale_lxc_template}"
     type             = "debian"
   }
 #+end_src

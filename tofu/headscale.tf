@@ -10,6 +10,14 @@ variable "headscale_gateway" {
   default     = "10.10.20.1"
 }
 
+locals {
+  # read the Ansible variables from the proxmox role
+  proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))
+
+  # extract the LXC template filename
+  headscale_lxc_template = local.proxmox_vars.lxc_template_headscale
+}
+
 resource "proxmox_virtual_environment_container" "headscale" {
   description = "Headscale VPN Controller"
   tags        = ["core", "vpn", "headscale"]
@@ -35,7 +43,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
   }
 
   operating_system {
-    template_file_id = "local:vztmpl/debian-13-standard_13.6-1_amd64.tar.zst"
+    template_file_id = "local:vztmpl/${local.headscale_lxc_template}"
     type             = "debian"
   }
 
