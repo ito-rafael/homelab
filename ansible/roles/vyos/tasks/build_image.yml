@@ -23,6 +23,11 @@
         force: true
         update: true
 
+    - name: vyos | build image | create NoCloud seed directory
+      ansible.builtin.file:
+        path: "{{ vyos_build_dir }}/seed"
+        state: directory
+        mode: "0755"
     - name: vyos | build image | read checked-out commit
       ansible.builtin.command:
         cmd: git rev-parse HEAD

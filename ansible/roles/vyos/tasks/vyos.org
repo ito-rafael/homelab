@@ -42,6 +42,15 @@
         force: true
         update: true
 #+end_src
+*** NoCloud
+**** Create NoCloud Seed Directory
+#+begin_src yaml
+    - name: vyos | build image | create NoCloud seed directory
+      ansible.builtin.file:
+        path: "{{ vyos_build_dir }}/seed"
+        state: directory
+        mode: "0755"
+#+end_src
 *** Verify Checked-Out Commit
 #+begin_src yaml
     - name: vyos | build image | read checked-out commit
