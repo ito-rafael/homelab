@@ -19,6 +19,11 @@
         name: proxmox
         tasks_from: download_lxc_templates.yml
 
+    - name: core | vyos | build VyOS image on Proxmox server
+      ansible.builtin.import_role:
+        name: vyos
+        tasks_from: build_image.yml
+
 - name: Provision LXC containers and VMs
   hosts: proxmox
   become: no

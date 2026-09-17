@@ -40,6 +40,11 @@ Runs against the physical host to configure bridges and networking.
       ansible.builtin.import_role:
         name: proxmox
         tasks_from: download_lxc_templates.yml
+
+    - name: core | vyos | build VyOS image on Proxmox server
+      ansible.builtin.import_role:
+        name: vyos
+        tasks_from: build_image.yml
 #+end_src
 ** OpenTofu
 Runs against the Proxmox server to provision the LXC containers and Virtual Machines.
