@@ -138,11 +138,20 @@
   become: no
 #+end_src
 **** With Makefile
-#+begin_src yaml :padline no
+#+begin_src yaml :padline no :tangle no
 - name: core | proxmox | provision lab infrastructure
   ansible.builtin.shell: make auto-apply
   args:
     chdir: '/home/rafael/git/homelab/tofu'
   delegate_to: localhost
   become: no
+#+end_src
+***** Init
+#+begin_src yaml :padline no
+- name: core | proxmox | initialize OpenTofu
+  ansible.builtin.command:
+    cmd: make init TOFU_ARGS="-input=false"
+    chdir: /home/rafael/git/homelab/tofu
+  delegate_to: localhost
+  changed_when: false
 #+end_src

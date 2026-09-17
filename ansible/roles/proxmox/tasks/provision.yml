@@ -1,7 +1,7 @@
 ---
-- name: core | proxmox | provision lab infrastructure
-  ansible.builtin.shell: make auto-apply
-  args:
-    chdir: '/home/rafael/git/homelab/tofu'
+- name: core | proxmox | initialize OpenTofu
+  ansible.builtin.command:
+    cmd: make init TOFU_ARGS="-input=false"
+    chdir: /home/rafael/git/homelab/tofu
   delegate_to: localhost
-  become: no
+  changed_when: false
