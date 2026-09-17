@@ -7,6 +7,7 @@
 * Table of Contents :toc:
 - [[#headscale][Headscale]]
   - [[#install--configure][Install & Configure]]
+  - [[#tun-device-configuration][TUN Device Configuration]]
 
 * Headscale
 ** Install & Configure
@@ -57,4 +58,23 @@
     name: headscale
     state: started
     enabled: true
+#+end_src
+** TUN Device Configuration
+:PROPERTIES:
+:header-args+: :tangle lxc_tun.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Grant Access
+#+begin_src yaml :padline no
+- name: core | proxmox | grant TUN device access to Headscale LXC
+  ansible.builtin.lineinfile:
+    path: /etc/pve/lxc/202.conf
+    line: "{{ item }}"
+  loop:
+    - "lxc.cgroup2.devices.allow: c 10:200 rwm"
+    - "lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file"
+  delegate_to: proxmox
+  register: headscale_tun_config
 #+end_src

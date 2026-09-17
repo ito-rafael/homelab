@@ -1,0 +1,10 @@
+---
+- name: core | proxmox | grant TUN device access to Headscale LXC
+  ansible.builtin.lineinfile:
+    path: /etc/pve/lxc/202.conf
+    line: "{{ item }}"
+  loop:
+    - "lxc.cgroup2.devices.allow: c 10:200 rwm"
+    - "lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file"
+  delegate_to: proxmox
+  register: headscale_tun_config
