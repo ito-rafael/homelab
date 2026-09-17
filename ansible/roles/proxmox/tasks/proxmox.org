@@ -155,3 +155,15 @@
   delegate_to: localhost
   changed_when: false
 #+end_src
+***** Plan
+#+begin_src yaml
+- name: core | proxmox | create OpenTofu plan
+  ansible.builtin.command:
+    cmd: >
+      make plan TOFU_ARGS="-input=false -no-color -out=/tmp/homelab.tfplan"
+    chdir: /home/rafael/git/homelab/tofu
+  delegate_to: localhost
+  register: tofu_plan
+  # since GNU Make obscures exact exit codes, we parse stdout to detect changes
+  changed_when: "'No changes.' not in tofu_plan.stdout"
+#+end_src
