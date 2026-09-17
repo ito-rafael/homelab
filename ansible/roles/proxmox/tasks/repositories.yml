@@ -24,3 +24,7 @@
     suites: [trixie]
     components: [no-subscription]
     state: present
+
+- name: core | proxmox | update apt cache
+  ansible.builtin.apt:
+    update_cache: yes

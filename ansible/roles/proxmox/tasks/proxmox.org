@@ -88,6 +88,12 @@
     components: [no-subscription]
     state: present
 #+end_src
+*** Update APT Cache
+#+begin_src yaml
+- name: core | proxmox | update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+#+end_src
 ** Download LXC templates
 :PROPERTIES:
 :header-args+: :tangle download_lxc_templates.yml
