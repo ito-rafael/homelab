@@ -1,7 +1,14 @@
 ---
+- name: core | proxmox | get Headscale LXC ID
+  ansible.builtin.shell: "pct list | awk '$2 == \"{{ inventory_hostname }}\" {print $1}'"
+  delegate_to: proxmox
+  register: headscale_lxc_id
+  changed_when: false
+  failed_when: headscale_lxc_id.stdout | trim == ""
+
 - name: core | proxmox | grant TUN device access to Headscale LXC
   ansible.builtin.lineinfile:
-    path: /etc/pve/lxc/202.conf
+    path: "/etc/pve/lxc/{{ headscale_lxc_id.stdout | trim }}.conf"
     line: "{{ item }}"
   loop:
     - "lxc.cgroup2.devices.allow: c 10:200 rwm"
@@ -10,7 +17,7 @@
   register: headscale_tun_config
 
 - name: core | proxmox | reboot Headscale LXC to apply TUN permissions
-  ansible.builtin.shell: pct stop 202 && pct start 202
+  ansible.builtin.shell: "pct stop {{ headscale_lxc_id.stdout | trim }} && pct start {{ headscale_lxc_id.stdout | trim }}"
   delegate_to: proxmox
   when: headscale_tun_config.changed
 
