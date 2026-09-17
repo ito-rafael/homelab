@@ -31,6 +31,11 @@ Runs against the physical host to configure bridges and networking.
         name: proxmox
         tasks_from: network.yml
 
+    - name: core | proxmox | configure Proxmox APT repositories
+      ansible.builtin.import_role:
+        name: proxmox
+        tasks_from: repositories.yml
+
     - name: core | proxmox | download LXC templates
       ansible.builtin.import_role:
         name: proxmox

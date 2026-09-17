@@ -9,11 +9,16 @@
         name: proxmox
         tasks_from: network.yml
 
+    - name: core | proxmox | configure Proxmox APT repositories
+      ansible.builtin.import_role:
+        name: proxmox
+        tasks_from: repositories.yml
 
     - name: core | proxmox | download LXC templates
       ansible.builtin.import_role:
         name: proxmox
         tasks_from: download_lxc_templates.yml
+
 - name: Provision LXC containers and VMs
   hosts: proxmox
   become: no
