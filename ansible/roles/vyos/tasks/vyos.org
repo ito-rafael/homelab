@@ -418,6 +418,18 @@ https://vyos.net/get/nightly-builds/
             Build commit pin is {{ vyos_build_ref }}.
             Existing images are not rebuilt automatically.
 #+end_src
+*** Cleanup
+The build directory is intentionally retained so build logs and the exact
+checked-out source remain available for debugging and inspection.
+
+It can be removed manually after the image has been validated if disk space is more
+important than retaining the build environment.
+#+begin_src yaml :tangle no
+- name: vyos | build image | clean up the build directory
+  ansible.builtin.file:
+    path: "{{ vyos_build_dir }}"
+    state: absent
+#+end_src
 ** Routing Configuration
 :PROPERTIES:
 :header-args+: :tangle routing.yml
