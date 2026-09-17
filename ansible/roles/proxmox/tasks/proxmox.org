@@ -77,6 +77,17 @@
     components: [pve-no-subscription]
     state: present
 #+end_src
+*** Add Ceph No-Subscription Repository
+#+begin_src yaml
+- name: core | proxmox | add Ceph no-subscription repository
+  ansible.builtin.deb822_repository:
+    name: ceph-no-subscription
+    types: [deb]
+    uris: "http://download.proxmox.com/debian/ceph-squid"
+    suites: [trixie]
+    components: [no-subscription]
+    state: present
+#+end_src
 ** Download LXC templates
 :PROPERTIES:
 :header-args+: :tangle download_lxc_templates.yml

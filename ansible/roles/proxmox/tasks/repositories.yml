@@ -15,3 +15,12 @@
     suites: [trixie]
     components: [pve-no-subscription]
     state: present
+
+- name: core | proxmox | add Ceph no-subscription repository
+  ansible.builtin.deb822_repository:
+    name: ceph-no-subscription
+    types: [deb]
+    uris: "http://download.proxmox.com/debian/ceph-squid"
+    suites: [trixie]
+    components: [no-subscription]
+    state: present
