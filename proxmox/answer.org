@@ -25,6 +25,10 @@ timezone = "America/Sao_Paulo"
 fqdn = "${SERVER_FQDN}"
 mailto = "${ADMIN_EMAIL}"
 root_password_hashed = "${PROXMOX_PASSWORD_HASH}"
+root-ssh-keys = [
+  "${SSH_KEY_LAPTOP}",
+  "${SSH_KEY_DESKTOP}"
+]
 #+end_src
 ** Network
 #+begin_src toml
