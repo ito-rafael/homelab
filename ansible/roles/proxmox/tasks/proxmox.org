@@ -7,6 +7,7 @@
 * Table of Contents :toc:
 - [[#proxmox][Proxmox]]
   - [[#networking][Networking]]
+  - [[#repositories][Repositories]]
   - [[#download-lxc-templates][Download LXC templates]]
   - [[#provisioning][Provisioning]]
 
@@ -47,6 +48,23 @@
 - name: core | proxmox | bring up vmbr2 interface
   ansible.builtin.command: ifup vmbr2
   when: network_config_vmbr2.changed
+#+end_src
+** Repositories
+:PROPERTIES:
+:header-args+: :tangle repositories.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Remove Enterprise Repositories
+#+begin_src yaml :padline no
+- name: core | proxmox | remove enterprise repositories
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}"
+    state: absent
+  loop:
+    - pve-enterprise.sources
+    - ceph.sources
 #+end_src
 ** Download LXC templates
 :PROPERTIES:

@@ -1,0 +1,8 @@
+---
+- name: core | proxmox | remove enterprise repositories
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/{{ item }}"
+    state: absent
+  loop:
+    - pve-enterprise.sources
+    - ceph.sources
