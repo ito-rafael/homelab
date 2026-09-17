@@ -9,6 +9,28 @@
 :PROPERTIES:
 :header-args+: :tangle build_image.yml
 :END:
+These tasks build a reproducible VyOS Rolling QCOW2 image.
+
+The VyOS source tree is pinned to an exact commit rather than following the
+moving =rolling= branch. The build container is built locally from the same
+pinned =vyos-build= checkout, keeping the builder environment aligned with the
+source revision.
+
+The resulting QCOW2 image includes =qemu-guest-agent= for Proxmox integration.
+The image is built with Cloud-Init, but further configured by Ansible after
+deployment using the router configuration tasks.
+
+The build also performs a preflight check against the current VyOS Rolling
+package repository. The kernel version and flavor are read from the pinned
+=vyos-build= source tree and the corresponding kernel package is verified
+before the expensive image build starts. This prevents failures caused by a
+pinned source revision referencing a package that is no longer available in
+the Rolling repository.
+
+After the build completes, the generated QCOW2 image is validated with
+=qemu-img= before being copied to the Proxmox template directory.
+
+https://vyos.net/get/nightly-builds/
 *** Check Existing Image
 #+begin_src yaml
 - name: vyos | build image | check if VyOS image already exists
