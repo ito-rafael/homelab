@@ -32,7 +32,7 @@
     deb: "/tmp/headscale.deb"
     state: present
 #+end_src
-*** Create dir
+*** Create directory
 #+begin_src yaml
 - name: core | headscale | create Headscale directory
   ansible.builtin.file:
@@ -77,4 +77,11 @@
     - "lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file"
   delegate_to: proxmox
   register: headscale_tun_config
+#+end_src
+*** Reboot Container
+#+begin_src yaml
+- name: core | proxmox | reboot Headscale LXC to apply TUN permissions
+  ansible.builtin.shell: pct stop 202 && pct start 202
+  delegate_to: proxmox
+  when: headscale_tun_config.changed
 #+end_src

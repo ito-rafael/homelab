@@ -8,3 +8,8 @@
     - "lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file"
   delegate_to: proxmox
   register: headscale_tun_config
+
+- name: core | proxmox | reboot Headscale LXC to apply TUN permissions
+  ansible.builtin.shell: pct stop 202 && pct start 202
+  delegate_to: proxmox
+  when: headscale_tun_config.changed
