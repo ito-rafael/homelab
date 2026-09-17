@@ -15,3 +15,11 @@
   register: tofu_plan
   # since GNU Make obscures exact exit codes, we parse stdout to detect changes
   changed_when: "'No changes.' not in tofu_plan.stdout"
+
+- name: core | proxmox | apply OpenTofu plan
+  ansible.builtin.command:
+    cmd: make apply TOFU_ARGS="-input=false -auto-approve /tmp/homelab.tfplan"
+    chdir: /home/rafael/git/homelab/tofu
+  delegate_to: localhost
+  # dynamically skips the task if the previous step found no changes
+  when: tofu_plan is changed
