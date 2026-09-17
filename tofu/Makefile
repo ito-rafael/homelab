@@ -17,13 +17,13 @@ define TOFU_ENV
 endef
 
 init:
-	$(TOFU_ENV) init
+	$(TOFU_ENV) init $(TOFU_ARGS)
 
 plan:
-	$(TOFU_ENV) plan
+	$(TOFU_ENV) plan $(TOFU_ARGS)
 
 apply:
-	$(TOFU_ENV) apply
+	$(TOFU_ENV) apply $(TOFU_ARGS)
 
 destroy:
 	$(TOFU_ENV) destroy
