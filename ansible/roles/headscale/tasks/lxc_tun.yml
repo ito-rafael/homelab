@@ -13,3 +13,8 @@
   ansible.builtin.shell: pct stop 202 && pct start 202
   delegate_to: proxmox
   when: headscale_tun_config.changed
+
+- name: core | headscale | wait for Headscale LXC to come back online
+  ansible.builtin.wait_for_connection:
+    timeout: 60
+  when: headscale_tun_config.changed

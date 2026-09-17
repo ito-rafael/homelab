@@ -85,3 +85,10 @@
   delegate_to: proxmox
   when: headscale_tun_config.changed
 #+end_src
+*** Wait for Reconnect
+#+begin_src yaml
+- name: core | headscale | wait for Headscale LXC to come back online
+  ansible.builtin.wait_for_connection:
+    timeout: 60
+  when: headscale_tun_config.changed
+#+end_src
