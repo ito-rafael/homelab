@@ -31,3 +31,9 @@
 - name: core | headscale | execute Tailscale installer
   ansible.builtin.command: /tmp/install_tailscale.sh
   when: tailscale_installed.rc != 0
+
+- name: core | headscale | ensure Tailscale daemon is started and enabled
+  ansible.builtin.systemd:
+    name: tailscaled
+    state: started
+    enabled: true
