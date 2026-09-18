@@ -87,4 +87,9 @@ Runs against the LXC container to install and configure the VPN controller.
       ansible.builtin.import_role:
         name: headscale
         tasks_from: headscale.yml
+
+    - name: core | headscale | configure LXC TUN device access
+      ansible.builtin.import_role:
+        name: headscale
+        tasks_from: lxc_tun.yml
 #+end_src

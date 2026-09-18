@@ -56,3 +56,8 @@
       ansible.builtin.import_role:
         name: headscale
         tasks_from: headscale.yml
+
+    - name: core | headscale | configure LXC TUN device access
+      ansible.builtin.import_role:
+        name: headscale
+        tasks_from: lxc_tun.yml
