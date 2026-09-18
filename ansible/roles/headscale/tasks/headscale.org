@@ -191,3 +191,9 @@
     register: headscale_users_raw
     changed_when: false
 #+end_src
+**** Extract user ID for lbic
+#+begin_src yaml
+  - name: core | headscale | extract user ID for lbic
+    ansible.builtin.set_fact:
+      headscale_user_id: "{{ (headscale_users_raw.stdout | from_json | selectattr('name', 'equalto', 'lbic') | first).id }}"
+#+end_src
