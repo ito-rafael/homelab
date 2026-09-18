@@ -71,6 +71,8 @@ resource "proxmox_virtual_environment_vm" "vyos" {
     size         = 10
   }
 
+  bios = "seabios"
+  scsi_hardware = "virtio-scsi-pci"
 
   cdrom {
     file_id = "local:iso/${local.vyos_seed_iso_name}"

@@ -198,7 +198,11 @@ resource "proxmox_virtual_environment_vm" "vyos" {
     size         = 10
   }
 #+end_src
+**** Miscellaneous
 #+begin_src tofu
+  bios = "seabios"
+  scsi_hardware = "virtio-scsi-pci"
+#+end_src
 **** CD-ROM
 #+begin_src tofu
   cdrom {
