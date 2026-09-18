@@ -62,6 +62,15 @@ resource "proxmox_virtual_environment_vm" "vyos" {
     mac_address = local.vyos_eth1_mac
   }
 
+  # add a virtual serial port
+  serial_device {
+    device = "socket"
+  }
+  # tell Proxmox to map the primary display to the serial port
+  vga {
+    type = "serial0"
+  }
+
   disk {
     datastore_id = "local-lvm"
     # ensure the VyOS image has QCOW2 support

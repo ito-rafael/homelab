@@ -187,6 +187,17 @@ resource "proxmox_virtual_environment_vm" "vyos" {
     bridge = "vmbr2"
   }
 #+end_src
+**** Console
+#+begin_src tofu
+  # add a virtual serial port
+  serial_device {
+    device = "socket"
+  }
+  # tell Proxmox to map the primary display to the serial port
+  vga {
+    type = "serial0"
+  }
+#+end_src
 **** Disk
 #+begin_src tofu
   disk {
