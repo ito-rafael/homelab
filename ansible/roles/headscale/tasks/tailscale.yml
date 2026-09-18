@@ -46,3 +46,9 @@
     - "'UNIQUE constraint failed' not in headscale_user.stderr"
     - "'already exists' not in headscale_user.stderr"
   changed_when: headscale_user.rc == 0
+
+- name: core | headscale | check Tailscale connection status
+  ansible.builtin.command: tailscale status
+  register: tailscale_status
+  changed_when: false
+  failed_when: false
