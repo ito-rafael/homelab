@@ -227,3 +227,9 @@
   ansible.builtin.set_fact:
     headscale_node_id: "{{ (headscale_nodes_raw.stdout | from_json | selectattr('name', 'equalto', 'headscale') | first).id }}"
 #+end_src
+**** Approve Routes
+#+begin_src yaml
+- name: core | headscale | approve advertised routes
+  ansible.builtin.command: "headscale nodes approve-routes --identifier {{ headscale_node_id }} --routes 143.106.45.160/27"
+  changed_when: false
+#+end_src
