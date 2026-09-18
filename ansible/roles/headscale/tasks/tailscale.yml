@@ -65,3 +65,8 @@
   - name: core | headscale | extract user ID for lbic
     ansible.builtin.set_fact:
       headscale_user_id: "{{ (headscale_users_raw.stdout | from_json | selectattr('name', 'equalto', 'lbic') | first).id }}"
+
+  - name: core | headscale | generate pre-auth key
+    ansible.builtin.command: "headscale preauthkeys create -e 10m --user {{ headscale_user_id }}"
+    register: headscale_authkey
+    changed_when: false
