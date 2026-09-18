@@ -25,5 +25,11 @@ plan:
 apply:
 	$(TOFU_ENV) apply $(TOFU_ARGS)
 
+auto-apply:
+	$(TOFU_ENV) apply -auto-approve
+
 destroy:
 	$(TOFU_ENV) destroy
+
+destroy-fast:
+	$(TOFU_ENV) destroy -refresh=false -auto-approve
