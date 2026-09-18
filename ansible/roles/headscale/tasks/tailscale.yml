@@ -5,3 +5,9 @@
     sysctl_set: yes
     state: present
     reload: yes
+
+- name: core | headscale | check if Tailscale is installed
+  ansible.builtin.command: which tailscale
+  register: tailscale_installed
+  changed_when: false
+  failed_when: false
