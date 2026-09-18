@@ -125,3 +125,14 @@
   changed_when: false
   failed_when: false
 #+end_src
+**** Install dependencies
+#+begin_src yaml
+- name: core | headscale | ensure curl and ca-certificates are installed
+  ansible.builtin.apt:
+    name:
+      - curl
+      - ca-certificates
+    state: present
+    update_cache: yes
+  when: tailscale_installed.rc != 0
+#+end_src
