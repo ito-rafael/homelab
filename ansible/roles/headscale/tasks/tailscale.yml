@@ -52,3 +52,12 @@
   register: tailscale_status
   changed_when: false
   failed_when: false
+
+- name: core | headscale | connect and advertise routes
+  when: tailscale_status.rc != 0
+  block:
+
+  - name: core | headscale | get users list as JSON
+    ansible.builtin.command: headscale users list --output json
+    register: headscale_users_raw
+    changed_when: false
