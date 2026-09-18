@@ -133,6 +133,10 @@ locals {
   # extract the final filename
   vyos_image_name = basename(local.path_step2)
 #+end_src
+***** Seed ISO image
+#+begin_src tofu
+  vyos_seed_iso_name = local.vyos_vars.vyos_seed_iso_name
+#+end_src
 ***** MAC Address
 #+begin_src tofu
   vyos_eth0_mac = local.vyos_vars.vyos_eth0_mac
@@ -195,6 +199,12 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   }
 #+end_src
 #+begin_src tofu
+**** CD-ROM
+#+begin_src tofu
+  cdrom {
+    file_id = "local:iso/${local.vyos_seed_iso_name}"
+  }
+#+end_src
 **** Initialization
 #+begin_src tofu :tangle no
   # Cloud-Init Bootstrap

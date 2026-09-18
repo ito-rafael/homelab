@@ -21,6 +21,8 @@ locals {
   # extract the final filename
   vyos_image_name = basename(local.path_step2)
 
+  vyos_seed_iso_name = local.vyos_vars.vyos_seed_iso_name
+
   vyos_eth0_mac = local.vyos_vars.vyos_eth0_mac
   vyos_eth1_mac = local.vyos_vars.vyos_eth1_mac
 
@@ -70,5 +72,8 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   }
 
 
+  cdrom {
+    file_id = "local:iso/${local.vyos_seed_iso_name}"
+  }
 
 }
