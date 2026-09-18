@@ -169,6 +169,21 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   agent {
     enabled = true
   }
+#+end_src
+**** CPU
+#+begin_src tofu
+  cpu {
+    cores = 1
+    type  = "host"
+  }
+#+end_src
+**** Memory
+#+begin_src tofu
+  memory {
+    dedicated = 4096
+    floating  = 0
+  }
+#+end_src
 **** Network
 ***** eth0
 #+begin_src tofu

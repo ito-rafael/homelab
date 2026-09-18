@@ -47,6 +47,15 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   agent {
     enabled = true
   }
+  cpu {
+    cores = 1
+    type  = "host"
+  }
+
+  memory {
+    dedicated = 4096
+    floating  = 0
+  }
 
   # eth0: WAN Interface
   # Transit Network (facing the physical network)
