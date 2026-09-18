@@ -27,3 +27,7 @@
     dest: /tmp/install_tailscale.sh
     mode: '0700'
   when: tailscale_installed.rc != 0
+
+- name: core | headscale | execute Tailscale installer
+  ansible.builtin.command: /tmp/install_tailscale.sh
+  when: tailscale_installed.rc != 0
