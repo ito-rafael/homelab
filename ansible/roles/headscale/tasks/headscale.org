@@ -136,3 +136,12 @@
     update_cache: yes
   when: tailscale_installed.rc != 0
 #+end_src
+**** Download Tailscale installer
+#+begin_src yaml
+- name: core | headscale | download Tailscale install script
+  ansible.builtin.get_url:
+    url: https://tailscale.com/install.sh
+    dest: /tmp/install_tailscale.sh
+    mode: '0700'
+  when: tailscale_installed.rc != 0
+#+end_src
