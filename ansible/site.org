@@ -92,4 +92,9 @@ Runs against the LXC container to install and configure the VPN controller.
       ansible.builtin.import_role:
         name: headscale
         tasks_from: lxc_tun.yml
+
+    - name: core | headscale | install and configure Tailscale
+      ansible.builtin.import_role:
+        name: headscale
+        tasks_from: tailscale.yml
 #+end_src

@@ -8,6 +8,7 @@
 - [[#headscale][Headscale]]
   - [[#install--configure][Install & Configure]]
   - [[#tun-device-configuration][TUN Device Configuration]]
+  - [[#subnet-router-tailscale-client][Subnet router (Tailscale client)]]
 
 * Headscale
 ** Install & Configure
@@ -101,3 +102,8 @@
     timeout: 60
   when: headscale_tun_config.changed
 #+end_src
+** Subnet router (Tailscale client)
+:PROPERTIES:
+:header-args+: :tangle tailscale.yml
+:END:
+*** Enable IP forwarding
