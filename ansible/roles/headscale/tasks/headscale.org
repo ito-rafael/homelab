@@ -204,3 +204,12 @@
     register: headscale_authkey
     changed_when: false
 #+end_src
+**** Advertise the lab subnet
+#+begin_src yaml
+  - name: core | headscale | start Tailscale and advertise routes
+    ansible.builtin.command: >
+      tailscale up
+      --login-server http://10.10.20.2:8080
+      --advertise-routes=143.106.45.160/27
+      --authkey={{ headscale_authkey.stdout | trim }}
+#+end_src
