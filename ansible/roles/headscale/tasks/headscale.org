@@ -221,3 +221,9 @@
   register: headscale_nodes_raw
   changed_when: false
 #+end_src
+**** Extract node ID for headscale container
+#+begin_src yaml
+- name: core | headscale | extract node ID for headscale container
+  ansible.builtin.set_fact:
+    headscale_node_id: "{{ (headscale_nodes_raw.stdout | from_json | selectattr('name', 'equalto', 'headscale') | first).id }}"
+#+end_src

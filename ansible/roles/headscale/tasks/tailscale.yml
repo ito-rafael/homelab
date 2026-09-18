@@ -82,3 +82,7 @@
   ansible.builtin.command: headscale nodes list --output json
   register: headscale_nodes_raw
   changed_when: false
+
+- name: core | headscale | extract node ID for headscale container
+  ansible.builtin.set_fact:
+    headscale_node_id: "{{ (headscale_nodes_raw.stdout | from_json | selectattr('name', 'equalto', 'headscale') | first).id }}"
