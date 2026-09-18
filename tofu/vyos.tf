@@ -69,24 +69,6 @@ resource "proxmox_virtual_environment_vm" "vyos" {
     size         = 10
   }
 
-  # Cloud-Init Bootstrap
-  initialization {
 
-    user_account {
-      username = "vyos"
-      keys     = [
-        var.ssh_key_laptop,
-        var.ssh_key_desktop
-      ]
-    }
-
-    ip_config {
-      ipv4 {
-        address = var.vyos_ip_cidr
-        gateway = var.vyos_gateway
-      }
-    }
-
-}
 
 }

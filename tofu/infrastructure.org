@@ -194,13 +194,14 @@ resource "proxmox_virtual_environment_vm" "vyos" {
     size         = 10
   }
 #+end_src
-**** Initialization
 #+begin_src tofu
+**** Initialization
+#+begin_src tofu :tangle no
   # Cloud-Init Bootstrap
   initialization {
 #+end_src
 ***** SSH Keys
-#+begin_src tofu
+#+begin_src tofu :tangle no
     user_account {
       username = "vyos"
       keys     = [
@@ -210,7 +211,7 @@ resource "proxmox_virtual_environment_vm" "vyos" {
     }
 #+end_src
 ***** Network
-#+begin_src tofu
+#+begin_src tofu :tangle no
     ip_config {
       ipv4 {
         address = var.vyos_ip_cidr
@@ -219,7 +220,7 @@ resource "proxmox_virtual_environment_vm" "vyos" {
     }
 #+end_src
 ***** EoS
-#+begin_src tofu
+#+begin_src tofu :tangle no
 }
 #+end_src
 **** EoS
