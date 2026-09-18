@@ -153,7 +153,7 @@
 #+end_src
 *** Start Tailscale service
 #+begin_src yaml
-- name: core | headscale | ensure Tailscale daemon is started and enabled
+- name: core | headscale | start & enable Tailscale service
   ansible.builtin.systemd:
     name: tailscaled
     state: started

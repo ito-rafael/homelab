@@ -47,6 +47,8 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   agent {
     enabled = true
   }
+  stop_on_destroy = true
+
   cpu {
     cores = 1
     type  = "host"

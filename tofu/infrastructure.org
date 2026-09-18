@@ -169,6 +169,7 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   agent {
     enabled = true
   }
+  stop_on_destroy = true
 #+end_src
 **** CPU
 #+begin_src tofu
@@ -200,6 +201,7 @@ resource "proxmox_virtual_environment_vm" "vyos" {
   # Internal Trunk (VLAN Trunk for internal lab networks)
   network_device {
     bridge = "vmbr2"
+    mac_address = local.vyos_eth1_mac
   }
 #+end_src
 **** Console
