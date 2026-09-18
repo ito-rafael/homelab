@@ -213,3 +213,11 @@
       --advertise-routes=143.106.45.160/27
       --authkey={{ headscale_authkey.stdout | trim }}
 #+end_src
+*** Approve Routes
+**** Get nodes list
+#+begin_src yaml
+- name: core | headscale | get nodes list as JSON
+  ansible.builtin.command: headscale nodes list --output json
+  register: headscale_nodes_raw
+  changed_when: false
+#+end_src

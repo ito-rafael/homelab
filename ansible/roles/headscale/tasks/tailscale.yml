@@ -77,3 +77,8 @@
       --login-server http://10.10.20.2:8080
       --advertise-routes=143.106.45.160/27
       --authkey={{ headscale_authkey.stdout | trim }}
+
+- name: core | headscale | get nodes list as JSON
+  ansible.builtin.command: headscale nodes list --output json
+  register: headscale_nodes_raw
+  changed_when: false
