@@ -37,3 +37,12 @@
     name: tailscaled
     state: started
     enabled: true
+
+- name: core | headscale | create lbic user namespace
+  ansible.builtin.command: headscale users create lbic
+  register: headscale_user
+  failed_when:
+    - headscale_user.rc != 0
+    - "'UNIQUE constraint failed' not in headscale_user.stderr"
+    - "'already exists' not in headscale_user.stderr"
+  changed_when: headscale_user.rc == 0
