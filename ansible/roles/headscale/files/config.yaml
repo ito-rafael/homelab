@@ -1,7 +1,6 @@
 # URL clients will connect to
-# (set the raw IP for Day-0 testing --> update to FQDN later)
-server_url: http://10.10.20.2:8080
-listen_addr: 0.0.0.0:8080
+server_url: https://andira.lbic.fee.unicamp.br
+listen_addr: 0.0.0.0:8443
 metrics_listen_addr: 127.0.0.1:9090
 # enable CLI communication
 unix_socket: /var/run/headscale/headscale.sock
