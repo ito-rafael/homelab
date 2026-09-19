@@ -6,6 +6,7 @@
 #+auto_tangle: t
 
 * Table of Contents :toc:
+- [[#documentation][Documentation]]
 - [[#global-configuration][Global Configuration]]
   - [[#terraform][Terraform]]
   - [[#providers][Providers]]
@@ -14,6 +15,13 @@
   - [[#vyos][VyOS]]
   - [[#headscale][Headscale]]
 
+* Documentation
+|---------------+-------------+------+----------------+--------------+-----------------------------------------|
+| Category      | Application | Type | Version        | Directory    | Image                                   |
+|---------------+-------------+------+----------------+--------------+-----------------------------------------|
+| Headscale VPN | Headscale   | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
+| VyOS Router   | VyOS        | VM   | VyOS 1.5 QCOW2 | local:iso    | build from rolling @ 18a550b7 commit    |
+|---------------+-------------+------+----------------+--------------+-----------------------------------------|
 * Global Configuration
 :PROPERTIES:
 :header-args+: :tangle main.tf
