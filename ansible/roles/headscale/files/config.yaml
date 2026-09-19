@@ -7,6 +7,12 @@ metrics_listen_addr: 127.0.0.1:9090
 unix_socket: /var/run/headscale/headscale.sock
 unix_socket_permission: "0770"
 
+# Let's Encrypt automatic HTTPS (requires TCP 80 and 443)
+tls_letsencrypt_hostname: "andira.lbic.fee.unicamp.br"
+tls_letsencrypt_listen: "0.0.0.0:8080"
+tls_letsencrypt_cache_dir: "/var/lib/headscale/cache"
+tls_letsencrypt_challenge_type: HTTP-01
+
 # IP ranges for Tailscale clients
 prefixes:
   v4: 100.64.0.0/10
