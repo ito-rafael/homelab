@@ -8,6 +8,7 @@
       - set interfaces ethernet eth1 vif 20 address '10.10.20.1/24'
       - set interfaces ethernet eth1 vif 20 description 'INFRA-VLAN'
       - set system name-server '1.1.1.1'
+      - set protocols static route 0.0.0.0/0 next-hop '10.10.10.254'
       - set nat source rule 100 outbound-interface name 'eth0'
       - set nat source rule 100 source address '10.10.0.0/16'
       - set nat source rule 100 translation address 'masquerade'
