@@ -70,7 +70,7 @@
 *** Get Container ID
 #+begin_src yaml :padline no
 - name: core | proxmox | get Headscale LXC ID
-  ansible.builtin.shell: "pct list | awk '$2 == \"{{ inventory_hostname }}\" {print $1}'"
+  ansible.builtin.shell: "pct list | grep -w '{{ inventory_hostname }}' | awk '{print $1}'"
   delegate_to: proxmox
   register: headscale_lxc_id
   changed_when: false
