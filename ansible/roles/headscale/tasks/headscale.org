@@ -41,6 +41,17 @@
     state: directory
     mode: '0755'
 #+end_src
+*** Create Let's Encrypt directory
+#+begin_src yaml
+- name: core | headscale | create Let's Encrypt cache directory
+  ansible.builtin.file:
+    path: /var/lib/headscale/cache
+    state: directory
+    owner: headscale
+    group: headscale
+    mode: '0750'
+  notify: core | headscale | restart systemd service
+#+end_src
 *** Configure
 #+begin_src yaml
 - name: core | headscale | deploy Headscale config.yaml
