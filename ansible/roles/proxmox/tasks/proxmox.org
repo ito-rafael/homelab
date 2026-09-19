@@ -19,6 +19,17 @@
 #+begin_src yaml
 ---
 #+end_src
+*** Configure vmbr0
+#+begin_src yaml :padline no
+- name: core | proxmox | configure vmbr0 port forwarding for Headscale
+  ansible.builtin.blockinfile:
+    path: /etc/network/interfaces
+    insertafter: '^\s*bridge-fd 0'
+    marker: "        # {mark} ANSIBLE MANAGED BLOCK: VMBR0 HEADSCALE DNAT"
+    block: "{{ lookup('file', 'vmbr0_headscale.txt') }}"
+  delegate_to: proxmox
+  register: network_config_vmbr0
+#+end_src
 *** Configure vmbr1
 #+begin_src yaml :padline no
 - name: core | proxmox | configure vmbr1 NAT bridge
