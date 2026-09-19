@@ -35,6 +35,11 @@ provider "proxmox" {
     agent    = false
     username = "root"
     private_key = file("~/.ssh/id_ed25519")
+
+    node {
+      name    = "andira"
+      address = "andira.lbic.fee.unicamp.br"
+    }
   }
 }
 
