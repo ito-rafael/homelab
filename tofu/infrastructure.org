@@ -370,9 +370,10 @@ resource "proxmox_virtual_environment_container" "headscale" {
     hostname = "headscale"
 #+end_src
 ***** DNS
-#+begin_src tofu :tangle no
+#+begin_src tofu
     dns {
-      servers = ["10.10.20.x", "10.10.20.y"]  # DNS-1, DNS-2
+      #servers = ["10.10.20.x", "10.10.20.y"]  # DNS-1, DNS-2
+      servers = ["1.1.1.1", "1.0.0.1"]  # DNS-1, DNS-2
     }
 #+end_src
 ***** IP

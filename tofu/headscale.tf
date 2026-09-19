@@ -70,6 +70,11 @@ resource "proxmox_virtual_environment_container" "headscale" {
   initialization {
     hostname = "headscale"
 
+    dns {
+      #servers = ["10.10.20.x", "10.10.20.y"]  # DNS-1, DNS-2
+      servers = ["1.1.1.1", "1.0.0.1"]  # DNS-1, DNS-2
+    }
+
     ip_config {
       ipv4 {
         address = var.headscale_ip_cidr
