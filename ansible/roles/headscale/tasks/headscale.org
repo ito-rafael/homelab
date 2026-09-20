@@ -189,6 +189,14 @@
   changed_when: false
   failed_when: false
 #+end_src
+*** Map public domain to localhost for internal Tailscale client
+#+begin_src yaml
+- name: core | headscale | map public domain to localhost to bypass Hairpin NAT
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "127.0.0.1 andira.lbic.fee.unicamp.br"
+    state: present
+#+end_src
 *** Connect Tailscale
 #+begin_src yaml
 - name: core | headscale | connect and advertise routes
