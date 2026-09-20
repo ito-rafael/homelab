@@ -74,7 +74,7 @@
   - name: core | headscale | start Tailscale and advertise routes
     ansible.builtin.command: >
       tailscale up
-      --login-server https://andira.lbic.fee.unicamp.br
+      --login-server https://andira.lbic.fee.unicamp.br:8443
       --advertise-routes=143.106.45.160/27
       --authkey={{ headscale_authkey.stdout | trim }}
 
