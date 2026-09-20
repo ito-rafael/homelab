@@ -14,7 +14,7 @@
 :header-args+: :tangle headscale_onboard_student.yml
 :END:
 This playbook creates a user in Headscale and generates a Pre-Auth key.
-Usage: =ansible-playbook -i inventory.yml headscale_onboard_student.yml -e "student=rafael"=
+Usage: =ansible-playbook -i inventory/hosts.yml headscale_onboard_student.yml -e "student=<USERNAME>"=
 *** Playbook Definition
 #+begin_src yaml
 ---
@@ -58,5 +58,5 @@ Usage: =ansible-playbook -i inventory.yml headscale_onboard_student.yml -e "stud
         msg:
           - "User '{{ target_user }}' is ready."
           - "Send this exact command to the student:"
-          - "sudo tailscale up --login-server http://10.10.20.2:8080 --authkey {{ preauth_key.stdout }}"
+          - "sudo tailscale up --login-server https://andira.lbic.fee.unicamp.br --accept-routes --authkey {{ preauth_key.stdout }}"
 #+end_src

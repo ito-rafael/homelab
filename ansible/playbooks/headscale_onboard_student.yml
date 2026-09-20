@@ -31,4 +31,4 @@
         msg:
           - "User '{{ target_user }}' is ready."
           - "Send this exact command to the student:"
-          - "sudo tailscale up --login-server http://10.10.20.2:8080 --authkey {{ preauth_key.stdout }}"
+          - "sudo tailscale up --login-server https://andira.lbic.fee.unicamp.br --accept-routes --authkey {{ preauth_key.stdout }}"
