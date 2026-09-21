@@ -34,4 +34,5 @@ This configures Proxmox to pull time from the Brazilian NTP pool and serve it to
     owner: root
     group: root
     mode: '0644'
+  notify: core | ntp | restart chrony systemd service
 #+end_src
