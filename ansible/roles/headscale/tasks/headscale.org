@@ -7,6 +7,7 @@
 * Table of Contents :toc:
 - [[#headscale][Headscale]]
   - [[#install--configure][Install & Configure]]
+  - [[#timezone-configuration][Timezone Configuration]]
   - [[#tun-device-configuration][TUN Device Configuration]]
   - [[#subnet-router-tailscale-client][Subnet router (Tailscale client)]]
 
@@ -70,6 +71,19 @@
     name: headscale
     state: started
     enabled: true
+#+end_src
+** Timezone Configuration
+:PROPERTIES:
+:header-args+: :tangle timezone.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Configure Timezone
+#+begin_src yaml
+- name: core | headscale | set timezone
+  community.general.timezone:
+    name: America/Sao_Paulo
 #+end_src
 ** TUN Device Configuration
 :PROPERTIES:

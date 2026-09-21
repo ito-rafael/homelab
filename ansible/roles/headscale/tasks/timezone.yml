@@ -1,0 +1,5 @@
+---
+
+- name: core | headscale | set timezone
+  community.general.timezone:
+    name: America/Sao_Paulo

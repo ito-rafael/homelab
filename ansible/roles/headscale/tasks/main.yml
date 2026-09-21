@@ -1,4 +1,5 @@
 ---
 - ansible.builtin.import_tasks: headscale.yml
+- ansible.builtin.import_tasks: timezone.yml
 - ansible.builtin.import_tasks: lxc_tun.yml
 - ansible.builtin.import_tasks: tailscale.yml
