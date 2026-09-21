@@ -1,0 +1,73 @@
+#+TITLE: Ansible Role for configuring chrony NTP
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#tasks][Tasks]]
+  - [[#main][Main]]
+- [[#handlers][Handlers]]
+  - [[#main-1][Main]]
+- [[#templates][Templates]]
+  - [[#chrony-serverconf][chrony-server.conf]]
+
+* Tasks
+This configures Proxmox to pull time from the Brazilian NTP pool and serve it to the internal lab networks (10.10.0.0/16).
+** Main
+:PROPERTIES:
+:header-args+: :tangle tasks/main.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Install chrony
+#+begin_src yaml :padline no
+- name: core | ntp | install chrony
+  ansible.builtin.apt:
+    name: chrony
+    state: present
+    update_cache: yes
+#+end_src
+*** Configure chrony server
+#+begin_src yaml
+- name: core | ntp | copy chrony config file
+  ansible.builtin.template:
+    src: chrony-server.conf.j2
+    dest: /etc/chrony/chrony.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: core | ntp | restart chrony systemd service
+#+end_src
+* Handlers
+** Main
+#+begin_src conf :tangle handlers/main.yml
+---
+- name: core | ntp | restart chrony systemd service
+  ansible.builtin.systemd:
+    name: chronyd
+    state: restarted
+    enabled: yes
+#+end_src
+* Templates
+** chrony-server.conf
+#+begin_src conf :tangle templates/chrony-server.conf.j2
+# /etc/chrony/chrony.conf - Proxmox NTP Server
+# Use Brazilian NTP servers for lower latency
+pool pool.ntp.br iburst
+pool a.st1.ntp.br iburst
+
+# Record the rate at which the system clock gains/losses time
+driftfile /var/lib/chrony/chrony.drift
+
+# Allow the system clock to be stepped in the first three updates
+makestep 1 3
+
+# Allow NTP client access from the internal network (LXC/VM/VPN subnets)
+allow 10.10.0.0/16
+allow 143.106.45.0/24
+
+# Serve time even if disconnected from the internet (local stratum 10)
+local stratum 10
+#+end_src
