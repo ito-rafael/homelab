@@ -1,3 +1,4 @@
+---
 - name: core | headscale | restart systemd service
   tags: headscale
   ansible.builtin.systemd:

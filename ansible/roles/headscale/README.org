@@ -1,20 +1,35 @@
-#+TITLE: Ansible configuration for Headscale
+#+TITLE: Ansible Role for configuring Headscale VPN
 #+AUTHOR: Rafael Ito
 #+PROPERTY: header-args
 #+STARTUP: showeverything
 #+auto_tangle: t
 
 * Table of Contents :toc:
-- [[#headscale][Headscale]]
+- [[#tasks][Tasks]]
+  - [[#main][Main]]
   - [[#install--configure][Install & Configure]]
   - [[#timezone-configuration][Timezone Configuration]]
   - [[#tun-device-configuration][TUN Device Configuration]]
   - [[#subnet-router-tailscale-client][Subnet router (Tailscale client)]]
+- [[#handlers][Handlers]]
+  - [[#main-1][Main]]
+- [[#vars][Vars]]
+  - [[#main-2][Main]]
+- [[#files][Files]]
+  - [[#configyaml][config.yaml]]
 
-* Headscale
+* Tasks
+** Main
+#+begin_src yaml :tangle tasks/main.yml
+---
+- ansible.builtin.import_tasks: headscale.yml
+- ansible.builtin.import_tasks: timezone.yml
+- ansible.builtin.import_tasks: lxc_tun.yml
+- ansible.builtin.import_tasks: tailscale.yml
+#+end_src
 ** Install & Configure
 :PROPERTIES:
-:header-args+: :tangle headscale.yml
+:header -args+: :tangle tasks/headscale.yml
 :END:
 #+begin_src yaml
 ---
@@ -73,21 +88,16 @@
     enabled: true
 #+end_src
 ** Timezone Configuration
-:PROPERTIES:
-:header-args+: :tangle timezone.yml
-:END:
-#+begin_src yaml
----
-#+end_src
 *** Configure Timezone
-#+begin_src yaml
+#+begin_src yaml :tangle tasks/timezone.yml
+---
 - name: core | headscale | set timezone
   community.general.timezone:
     name: America/Sao_Paulo
 #+end_src
 ** TUN Device Configuration
 :PROPERTIES:
-:header-args+: :tangle lxc_tun.yml
+:header-args+: :tangle tasks/lxc_tun.yml
 :END:
 #+begin_src yaml
 ---
@@ -129,7 +139,7 @@
 #+end_src
 ** Subnet router (Tailscale client)
 :PROPERTIES:
-:header-args+: :tangle tailscale.yml
+:header-args+: :tangle tasks/tailscale.yml
 :END:
 #+begin_src yaml
 ---
@@ -268,4 +278,70 @@
 - name: core | headscale | approve advertised routes
   ansible.builtin.command: "headscale nodes approve-routes --identifier {{ headscale_node_id }} --routes 143.106.45.160/27"
   changed_when: false
+#+end_src
+* Handlers
+** Main
+#+begin_src conf :tangle handlers/main.yml
+---
+- name: core | headscale | restart systemd service
+  tags: headscale
+  ansible.builtin.systemd:
+    name: headscale
+    state: restarted
+    scope: system
+#+end_src
+* Vars
+** Main
+#+begin_src yaml :tangle vars/main.yml
+---
+headscale_version: "0.29.3"
+headscale_arch: "amd64"
+#+end_src
+* Files
+** config.yaml
+#+begin_src conf :tangle files/config.yaml
+# URL clients will connect to
+server_url: https://andira.lbic.fee.unicamp.br
+listen_addr: 0.0.0.0:8443
+metrics_listen_addr: 127.0.0.1:9090
+# enable CLI communication
+unix_socket: /var/run/headscale/headscale.sock
+unix_socket_permission: "0770"
+
+# Let's Encrypt automatic HTTPS (requires TCP 80 and 443)
+tls_letsencrypt_hostname: "andira.lbic.fee.unicamp.br"
+tls_letsencrypt_listen: "0.0.0.0:8080"
+tls_letsencrypt_cache_dir: "/var/lib/headscale/cache"
+tls_letsencrypt_challenge_type: HTTP-01
+
+# IP ranges for Tailscale clients
+prefixes:
+  v4: 100.64.0.0/10
+  v6: fd7a:115c:a1e0::/48
+
+# DNS
+dns:
+  magic_dns: true
+  base_domain: lbic.internal
+  nameservers:
+    global:
+      - 1.1.1.1
+      - 8.8.8.8
+  override_local_dns: true
+
+private_key_path: /var/lib/headscale/private.key
+noise:
+  private_key_path: /var/lib/headscale/noise_private.key
+
+# add Tailscale's default public DERP servers
+derp:
+  server:
+    enabled: false
+  urls:
+    - https://controlplane.tailscale.com/derpmap/default
+
+database:
+  type: sqlite
+  sqlite:
+    path: /var/lib/headscale/db.sqlite
 #+end_src
