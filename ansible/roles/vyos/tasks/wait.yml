@@ -1,0 +1,7 @@
+---
+
+- name: core | vyos | wait for VM boot and SSH available
+  ansible.builtin.wait_for_connection:
+    delay: 0      # start checking immediately
+    sleep: 5      # check again every 5 s
+    timeout: 300  # give up after 5 min
