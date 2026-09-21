@@ -11,9 +11,9 @@ lbic:
     ansible_user: ansible
   children:
 #+end_src
-** Experiment
+** Experiments
 #+begin_src yaml
-    lbic_experiment:
+    lbic_experiments:
       hosts:
         paubrasil:    # xxx.xx.xx.179
 #+end_src

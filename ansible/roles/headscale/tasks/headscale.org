@@ -131,6 +131,9 @@
 :PROPERTIES:
 :header-args+: :tangle tailscale.yml
 :END:
+#+begin_src yaml
+---
+#+end_src
 *** Enable IP forwarding
 #+begin_src yaml
 - name: core | headscale | enable IPv4 forwarding for subnet routing
