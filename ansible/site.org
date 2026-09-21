@@ -20,26 +20,19 @@ This is the master orchestration file. It maps host groups from the inventory to
 ---
 #+end_src
 ** Proxmox Hypervisor
-Runs against the physical host to configure bridges and networking.
+Runs against the physical host to configure bridges, networking, and foundational time synchronization.
 #+begin_src yaml
 - name: Configure Proxmox Hypervisor
   hosts: proxmox
   become: yes
   tasks:
-    - name: core | proxmox | configure Proxmox network interfaces
+    - name: core | proxmox | configure hypervisor foundation
       ansible.builtin.import_role:
         name: proxmox
-        tasks_from: network.yml
 
-    - name: core | proxmox | configure Proxmox APT repositories
+    - name: core | ntp | configure time synchronization
       ansible.builtin.import_role:
-        name: proxmox
-        tasks_from: repositories.yml
-
-    - name: core | proxmox | download LXC templates
-      ansible.builtin.import_role:
-        name: proxmox
-        tasks_from: download_lxc_templates.yml
+        name: ntp
 
     - name: core | vyos | build VyOS image on Proxmox server
       ansible.builtin.import_role:

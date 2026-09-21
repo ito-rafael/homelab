@@ -4,20 +4,13 @@
   hosts: proxmox
   become: yes
   tasks:
-    - name: core | proxmox | configure Proxmox network interfaces
+    - name: core | proxmox | configure hypervisor foundation
       ansible.builtin.import_role:
         name: proxmox
-        tasks_from: network.yml
 
-    - name: core | proxmox | configure Proxmox APT repositories
+    - name: core | ntp | configure time synchronization
       ansible.builtin.import_role:
-        name: proxmox
-        tasks_from: repositories.yml
-
-    - name: core | proxmox | download LXC templates
-      ansible.builtin.import_role:
-        name: proxmox
-        tasks_from: download_lxc_templates.yml
+        name: ntp
 
     - name: core | vyos | build VyOS image on Proxmox server
       ansible.builtin.import_role:

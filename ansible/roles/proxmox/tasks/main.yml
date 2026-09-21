@@ -1,0 +1,4 @@
+---
+- ansible.builtin.import_tasks: network.yml
+- ansible.builtin.import_tasks: repositories.yml
+- ansible.builtin.import_tasks: download_lxc_templates.yml
