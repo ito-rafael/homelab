@@ -1,20 +1,36 @@
-#+TITLE: Ansible configuration for Proxmox
+#+TITLE: Ansible Role for configuring Proxmox hypervisor
 #+AUTHOR: Rafael Ito
 #+PROPERTY: header-args
 #+STARTUP: showeverything
 #+auto_tangle: t
 
 * Table of Contents :toc:
-- [[#proxmox][Proxmox]]
+- [[#tasks][Tasks]]
+  - [[#main][Main]]
   - [[#networking][Networking]]
   - [[#repositories][Repositories]]
   - [[#download-lxc-templates][Download LXC templates]]
   - [[#provisioning][Provisioning]]
+- [[#vars][Vars]]
+  - [[#main-1][Main]]
+- [[#files][Files]]
+  - [[#vmbr0][vmbr0]]
+  - [[#vmbr1][vmbr1]]
+  - [[#vmbr2][vmbr2]]
+- [[#templates][Templates]]
+  - [[#resolvconf][resolv.conf]]
 
-* Proxmox
+* Tasks
+** Main
+#+begin_src yaml :tangle tasks/main.yml
+---
+- ansible.builtin.import_tasks: network.yml
+- ansible.builtin.import_tasks: repositories.yml
+- ansible.builtin.import_tasks: download_lxc_templates.yml
+#+end_src
 ** Networking
 :PROPERTIES:
-:header-args+: :tangle network.yml
+:header-args+: :tangle tasks/network.yml
 :END:
 #+begin_src yaml
 ---
@@ -72,7 +88,7 @@
 #+end_src
 ** Repositories
 :PROPERTIES:
-:header-args+: :tangle repositories.yml
+:header-args+: :tangle tasks/repositories.yml
 :END:
 #+begin_src yaml
 ---
@@ -117,7 +133,7 @@
 #+end_src
 ** Download LXC templates
 :PROPERTIES:
-:header-args+: :tangle download_lxc_templates.yml
+:header-args+: :tangle tasks/download_lxc_templates.yml
 :END:
 #+begin_src yaml
 ---
@@ -141,7 +157,7 @@
 #+end_src
 ** Provisioning
 :PROPERTIES:
-:header-args+: :tangle provision.yml
+:header-args+: :tangle tasks/provision.yml
 :END:
 #+begin_src yaml
 ---
@@ -197,4 +213,55 @@
   delegate_to: localhost
   # dynamically skips the task if the previous step found no changes
   when: tofu_plan is changed
+#+end_src
+* Vars
+** Main
+#+begin_src yaml :tangle vars/main.yml
+---
+lxc_template_headscale: "debian-13-standard_13.6-1_amd64.tar.zst"
+#+end_src
+* Files
+** vmbr0
+#+begin_src conf :tangle files/vmbr0_headscale.txt
+        # forward TCP 80 (Let's Encrypt) to Headscale
+        post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 80 -j DNAT --to-destination 10.10.20.2:8080
+        post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 80 -j DNAT --to-destination 10.10.20.2:8080
+
+        # forward TCP 443 (HTTPS) to Headscale
+        post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.2:8443
+        post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.2:8443
+
+        # forward UDP 41641 (WireGuard) to Headscale
+        post-up   iptables -t nat -A PREROUTING -i vmbr0 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.2:41641
+        post-down iptables -t nat -D PREROUTING -i vmbr0 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.2:41641
+#+end_src
+** vmbr1
+#+begin_src conf :tangle files/vmbr1.txt
+auto vmbr1
+iface vmbr1 inet static
+        address 10.10.10.254/24
+        bridge-ports none
+        bridge-stp off
+        bridge-fd 0
+        post-up   echo 1 > /proc/sys/net/ipv4/ip_forward
+        post-up   iptables -t nat -A POSTROUTING -s '10.10.10.0/16' -o vmbr0 -j MASQUERADE
+        post-down iptables -t nat -D POSTROUTING -s '10.10.10.0/16' -o vmbr0 -j MASQUERADE
+        post-up   ip route add 10.10.0.0/16 via 10.10.10.1
+#+end_src
+** vmbr2
+#+begin_src conf :tangle files/vmbr2.txt
+auto vmbr2
+iface vmbr2 inet manual
+        bridge-ports none
+        bridge-stp off
+        bridge-fd 0
+        bridge-vlan-aware yes
+        bridge-vids 2-4094
+#+end_src
+* Templates
+** resolv.conf
+#+begin_src conf :tangle templates/resolv.conf.j2
+search lbic.fee.unicamp.br
+nameserver 143.106.8.30
+nameserver 143.106.2.5
 #+end_src

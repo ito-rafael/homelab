@@ -1,11 +1,11 @@
         # forward TCP 80 (Let's Encrypt) to Headscale
-	post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 80 -j DNAT --to-destination 10.10.20.2:8080
-	post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 80 -j DNAT --to-destination 10.10.20.2:8080
+        post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 80 -j DNAT --to-destination 10.10.20.2:8080
+        post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 80 -j DNAT --to-destination 10.10.20.2:8080
 
-	# forward TCP 443 (HTTPS) to Headscale
-	post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.2:8443
-	post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.2:8443
+        # forward TCP 443 (HTTPS) to Headscale
+        post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.2:8443
+        post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.2:8443
 
-	# forward UDP 41641 (WireGuard) to Headscale
-	post-up   iptables -t nat -A PREROUTING -i vmbr0 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.2:41641
-	post-down iptables -t nat -D PREROUTING -i vmbr0 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.2:41641
+        # forward UDP 41641 (WireGuard) to Headscale
+        post-up   iptables -t nat -A PREROUTING -i vmbr0 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.2:41641
+        post-down iptables -t nat -D PREROUTING -i vmbr0 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.2:41641
