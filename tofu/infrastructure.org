@@ -11,6 +11,7 @@
   - [[#terraform][Terraform]]
   - [[#providers][Providers]]
   - [[#variables][Variables]]
+  - [[#locals][Locals]]
 - [[#core][Core]]
   - [[#vyos-router][VyOS Router]]
   - [[#headscale-vpn][Headscale VPN]]
@@ -114,6 +115,13 @@ variable "infra_vlan_gateway" {
   type        = string
   description = "The default gateway for the Infra VLAN 20"
   default     = "10.10.20.1"  # VyOS Router IP in this network
+}
+#+end_src
+** Locals
+#+begin_src tofu
+locals {
+  # read the Ansible variables from the proxmox role once for all modules
+  proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))
 }
 #+end_src
 * Core
@@ -305,9 +313,6 @@ variable "headscale_ip_cidr" {
 **** Local
 #+begin_src tofu
 locals {
-  # read the Ansible variables from the proxmox role
-  proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))
-
   # extract the LXC template filename
   headscale_lxc_template = local.proxmox_vars.lxc_template_headscale
 }

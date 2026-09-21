@@ -5,9 +5,6 @@ variable "headscale_ip_cidr" {
 }
 
 locals {
-  # read the Ansible variables from the proxmox role
-  proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))
-
   # extract the LXC template filename
   headscale_lxc_template = local.proxmox_vars.lxc_template_headscale
 }

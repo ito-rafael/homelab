@@ -64,3 +64,8 @@ variable "infra_vlan_gateway" {
   description = "The default gateway for the Infra VLAN 20"
   default     = "10.10.20.1"  # VyOS Router IP in this network
 }
+
+locals {
+  # read the Ansible variables from the proxmox role once for all modules
+  proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))
+}
