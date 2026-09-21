@@ -1,0 +1,56 @@
+#+TITLE: Ansible Role for configuring TBD
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#tasks][Tasks]]
+  - [[#main][Main]]
+  - [[#tbd][TBD]]
+- [[#handlers][Handlers]]
+  - [[#main-1][Main]]
+- [[#vars][Vars]]
+  - [[#main-2][Main]]
+- [[#files][Files]]
+  - [[#tbd-1][TBD]]
+- [[#templates][Templates]]
+  - [[#tbd-2][TBD]]
+
+* Tasks
+** Main
+#+begin_src yaml :tangle tasks/main.yml
+---
+- ansible.builtin.import_tasks: tbd.yml
+#+end_src
+** TBD
+:PROPERTIES:
+:header-args+: :tangle tasks/tbd.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** TBD #1
+#+begin_src yaml :padline no
+#+end_src
+*** TBD #2
+#+begin_src yaml
+#+end_src
+* Handlers
+** Main
+#+begin_src conf :tangle handlers/main.yml
+---
+#+end_src
+* Vars
+** Main
+#+begin_src yaml :tangle vars/main.yml
+---
+#+end_src
+* Files
+** TBD
+#+begin_src conf :tangle files/tbd
+#+end_src
+* Templates
+** TBD
+#+begin_src conf :tangle templates/tbd.j2
+#+end_src
