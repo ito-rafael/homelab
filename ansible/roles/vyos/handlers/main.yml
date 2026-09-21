@@ -1,0 +1,4 @@
+---
+- name: vyos | routing | save configuration
+  vyos.vyos.vyos_config:
+    save: true

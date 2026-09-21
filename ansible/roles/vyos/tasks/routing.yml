@@ -12,13 +12,4 @@
       - set nat source rule 100 outbound-interface name 'eth0'
       - set nat source rule 100 source address '10.10.0.0/16'
       - set nat source rule 100 translation address 'masquerade'
-  register: vyos_config_result
-
-- name: vyos | routing | save configuration
-  vyos.vyos.vyos_command:
-    commands:
-      - configure
-      - save
-      - exit
-  changed_when: true
-  when: vyos_config_result.changed
+  notify: vyos | routing | save configuration
