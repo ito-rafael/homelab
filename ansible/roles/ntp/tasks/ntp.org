@@ -25,3 +25,13 @@ This configures Proxmox to pull time from the Brazilian NTP pool and serve it to
     state: present
     update_cache: yes
 #+end_src
+*** Configure chrony server
+#+begin_src yaml
+- name: core | ntp | copy chrony config file
+  ansible.builtin.template:
+    src: chrony-server.conf.j2
+    dest: /etc/chrony/chrony.conf
+    owner: root
+    group: root
+    mode: '0644'
+#+end_src
