@@ -31,7 +31,7 @@
   register: network_config_vmbr0
 #+end_src
 *** Configure vmbr1
-#+begin_src yaml :padline no
+#+begin_src yaml
 - name: core | proxmox | configure vmbr1 NAT bridge
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
@@ -59,6 +59,16 @@
 - name: core | proxmox | bring up vmbr2 interface
   ansible.builtin.command: ifup vmbr2
   when: network_config_vmbr2.changed
+#+end_src
+*** Configure host DNS
+#+begin_src yaml
+- name: core | proxmox | configure DNS resolution
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: '0644'
 #+end_src
 ** Repositories
 :PROPERTIES:

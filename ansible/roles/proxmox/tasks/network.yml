@@ -7,6 +7,7 @@
     block: "{{ lookup('file', 'vmbr0_headscale.txt') }}"
   delegate_to: proxmox
   register: network_config_vmbr0
+
 - name: core | proxmox | configure vmbr1 NAT bridge
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
@@ -28,3 +29,11 @@
 - name: core | proxmox | bring up vmbr2 interface
   ansible.builtin.command: ifup vmbr2
   when: network_config_vmbr2.changed
+
+- name: core | proxmox | configure DNS resolution
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: '0644'
