@@ -1,3 +1,4 @@
 ---
 - ansible.builtin.import_tasks: wait.yml
 - ansible.builtin.import_tasks: routing.yml
+- ansible.builtin.import_tasks: ntp.yml

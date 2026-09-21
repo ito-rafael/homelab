@@ -1,0 +1,15 @@
+---
+- name: vyos | ntp | configure NTP client and timezone
+  vyos.vyos.vyos_config:
+    lines:
+      # delete VyOS defaults
+      - delete service ntp server time1.vyos.net
+      - delete service ntp server time2.vyos.net
+      - delete service ntp server time3.vyos.net
+
+      # point exclusively to the Proxmox host
+      - set service ntp server 10.10.10.254
+
+      # set local timezone for accurate logging
+      - set system time-zone America/Sao_Paulo
+  notify: vyos | routing | save configuration

@@ -469,3 +469,27 @@ This applies the core routing, VLANs, and NAT masquerade to the VyOS instance.
       - set nat source rule 100 translation address 'masquerade'
   notify: vyos | routing | save configuration
 #+end_src
+** NTP and Timezone Configuration
+:PROPERTIES:
+:header-args+: :tangle ntp.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Configure NTP and Timezone
+#+begin_src yaml :padline no
+- name: vyos | ntp | configure NTP client and timezone
+  vyos.vyos.vyos_config:
+    lines:
+      # delete VyOS defaults
+      - delete system ntp server 0.pool.ntp.org
+      - delete system ntp server 1.pool.ntp.org
+      - delete system ntp server 2.pool.ntp.org
+
+      # point exclusively to the Proxmox host
+      - set system ntp server 10.10.10.254
+
+      # set local timezone for accurate logging
+      - set system time-zone America/Sao_Paulo
+  notify: vyos | routing | save configuration
+#+end_src
