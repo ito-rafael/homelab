@@ -1,13 +1,38 @@
-#+TITLE: Ansible configuration for VyOS
+#+TITLE: Ansible Role for configuring VyOS router
 #+AUTHOR: Rafael Ito
 #+PROPERTY: header-args
 #+STARTUP: showeverything
 #+auto_tangle: t
 
-* VyOS
+* Table of Contents :toc:
+- [[#tasks][Tasks]]
+  - [[#main][Main]]
+  - [[#build-image][Build Image]]
+  - [[#wait-for-ssh][Wait for SSH]]
+  - [[#routing-configuration][Routing Configuration]]
+  - [[#ntp-and-timezone-configuration][NTP and Timezone Configuration]]
+- [[#handlers][Handlers]]
+  - [[#main-1][Main]]
+- [[#vars][Vars]]
+  - [[#main-2][Main]]
+- [[#files][Files]]
+  - [[#proxmoxtoml][proxmox.toml]]
+- [[#templates][Templates]]
+  - [[#meta-data][meta-data]]
+  - [[#network-config][network-config]]
+  - [[#user-data][user-data]]
+
+* Tasks
+** Main
+#+begin_src yaml :tangle tasks/main.yml
+---
+- ansible.builtin.import_tasks: wait.yml
+- ansible.builtin.import_tasks: routing.yml
+- ansible.builtin.import_tasks: ntp.yml
+#+end_src
 ** Build Image
 :PROPERTIES:
-:header-args+: :tangle build_image.yml
+:header-args+: :tangle tasks/build_image.yml
 :END:
 These tasks build a reproducible VyOS Rolling QCOW2 image.
 
@@ -432,7 +457,7 @@ important than retaining the build environment.
 #+end_src
 ** Wait for SSH
 :PROPERTIES:
-:header-args+: :tangle wait.yml
+:header-args+: :tangle tasks/wait.yml
 :END:
 #+begin_src yaml
 ---
@@ -447,7 +472,7 @@ important than retaining the build environment.
 #+end_src
 ** Routing Configuration
 :PROPERTIES:
-:header-args+: :tangle routing.yml
+:header-args+: :tangle tasks/routing.yml
 :END:
 This applies the core routing, VLANs, and NAT masquerade to the VyOS instance.
 #+begin_src yaml
@@ -470,26 +495,141 @@ This applies the core routing, VLANs, and NAT masquerade to the VyOS instance.
   notify: vyos | routing | save configuration
 #+end_src
 ** NTP and Timezone Configuration
-:PROPERTIES:
-:header-args+: :tangle ntp.yml
-:END:
-#+begin_src yaml
----
-#+end_src
 *** Configure NTP and Timezone
-#+begin_src yaml :padline no
+#+begin_src yaml  :tangle tasks/ntp.yml
+---
 - name: vyos | ntp | configure NTP client and timezone
   vyos.vyos.vyos_config:
     lines:
       # delete VyOS defaults
-      - delete system ntp server 0.pool.ntp.org
-      - delete system ntp server 1.pool.ntp.org
-      - delete system ntp server 2.pool.ntp.org
+      - delete service ntp server time1.vyos.net
+      - delete service ntp server time2.vyos.net
+      - delete service ntp server time3.vyos.net
 
       # point exclusively to the Proxmox host
-      - set system ntp server 10.10.10.254
+      - set service ntp server 10.10.10.254
 
       # set local timezone for accurate logging
       - set system time-zone America/Sao_Paulo
   notify: vyos | routing | save configuration
+#+end_src
+* Handlers
+** Main
+#+begin_src conf :tangle handlers/main.yml
+---
+- name: vyos | routing | save configuration
+  vyos.vyos.vyos_config:
+    save: true
+#+end_src
+* Vars
+** Main
+#+begin_src yaml :tangle vars/main.yml
+---
+vyos_build_repo: "https://github.com/vyos/vyos-build.git"
+vyos_build_ref: "18a550b7f857bdea5eb84e1553664bd203173566"
+vyos_build_dir: "/opt/vyos-build"
+vyos_build_version: "18a550b7"
+# "2026.09.09-0029-rolling"
+
+vyos_architecture: "amd64"
+vyos_build_flavor: "proxmox"
+vyos_build_by: "ansible@unicamp"
+
+vyos_ip_cidr: "10.10.10.1/24"
+vyos_gateway: "10.10.10.254"
+vyos_eth0_mac: "02:00:00:00:10:01"
+vyos_eth1_mac: "02:00:00:00:10:02"
+
+vyos_seed_dir: "{{ vyos_build_dir }}/seed"
+vyos_seed_iso: "{{ vyos_build_dir }}/seed.iso"
+vyos_seed_iso_name: "vyos-seed.iso"
+vyos_seed_iso_target: "/var/lib/vz/template/iso/{{ vyos_seed_iso_name }}"
+
+vyos_target_image: "/var/lib/vz/template/iso/vyos-{{ vyos_build_version }}-{{ vyos_architecture }}-proxmox.img"
+vyos_builder_image: "vyos-build:{{ vyos_build_ref }}"
+#+end_src
+* Files
+** proxmox.toml
+#+begin_src conf :tangle files/proxmox.toml
+image_format = "qcow2"
+
+packages = [
+  "qemu-guest-agent",
+  "cloud-init"
+]
+
+default_config = '''
+interfaces {
+    loopback lo {
+    }
+}
+
+system {
+    config-management {
+        commit-revisions "100"
+    }
+
+    console {
+        device ttyS0 {
+            speed "115200"
+        }
+    }
+
+    host-name "vyos"
+
+    login {
+        user vyos {
+            authentication {
+                plaintext-password "vyos"
+            }
+        }
+    }
+
+    syslog {
+        local {
+            facility all {
+                level "info"
+            }
+        }
+    }
+}
+'''
+
+[[includes_chroot]]
+path = "etc/cloud/cloud.cfg.d/90_dpkg.cfg"
+data = "datasource_list: [NoCloud]"
+#+end_src
+* Templates
+** meta-data
+#+begin_src conf :tangle templates/meta-data.j2
+#+end_src
+** network-config
+#+begin_src conf :tangle templates/network-config.j2
+#+end_src
+** user-data
+#+begin_src conf :tangle templates/user-data.j2
+#cloud-config
+
+vyos_config_commands:
+  # Hostname
+  - set system host-name 'vyos'
+
+  # SSH key for laptop IPF
+  - set system login user vyos authentication public-keys ipf type 'ssh-ed25519'
+  - set system login user vyos authentication public-keys ipf key '{{ ssh_public_key_ipf }}'
+
+  # SSH key for workstation Catuaba
+  - set system login user vyos authentication public-keys catuaba type 'ssh-ed25519'
+  - set system login user vyos authentication public-keys catuaba key '{{ ssh_public_key_catuaba }}'
+
+  # Disable password authentication
+  - set service ssh port '22'
+  - set service ssh disable-password-authentication
+
+  # Network: WAN Interface
+  - set interfaces ethernet eth0 hw-id '{{ vyos_eth0_mac }}'
+  - set interfaces ethernet eth0 address '{{ vyos_ip_cidr }}'
+
+  # Network: LAN Interface
+  - set interfaces ethernet eth1 hw-id '{{ vyos_eth1_mac }}'
 #+end_src

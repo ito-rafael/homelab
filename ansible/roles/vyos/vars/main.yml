@@ -1,3 +1,4 @@
+---
 vyos_build_repo: "https://github.com/vyos/vyos-build.git"
 vyos_build_ref: "18a550b7f857bdea5eb84e1553664bd203173566"
 vyos_build_dir: "/opt/vyos-build"
