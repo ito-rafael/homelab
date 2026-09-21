@@ -12,8 +12,8 @@
   - [[#providers][Providers]]
   - [[#variables][Variables]]
 - [[#core][Core]]
-  - [[#vyos][VyOS]]
-  - [[#headscale][Headscale]]
+  - [[#vyos-router][VyOS Router]]
+  - [[#headscale-vpn][Headscale VPN]]
 
 * Documentation
 |---------------+-------------+------+----------------+--------------+-----------------------------------------|
@@ -108,12 +108,19 @@ variable "tofu_state_passphrase" {
   sensitive   = true
 }
 #+end_src
+*** Infra VLAN Gateway
+#+begin_src tofu
+variable "infra_vlan_gateway" {
+  type        = string
+  description = "The default gateway for the Infra VLAN 20"
+  default     = "10.10.20.1"  # VyOS Router IP in this network
+}
+#+end_src
 * Core
-** VyOS :noexport_1:
+** VyOS Router :noexport_1:
 :PROPERTIES:
 :header-args+: :tangle vyos.tf
 :END:
-Core Router.
 *** Variables
 **** Network IP
 #+begin_src tofu
@@ -282,11 +289,10 @@ resource "proxmox_virtual_environment_vm" "vyos" {
 #+begin_src tofu
 }
 #+end_src
-** Headscale :noexport_1:
+** Headscale VPN :noexport_1:
 :PROPERTIES:
 :header-args+: :tangle headscale.tf
 :END:
-VPN.
 *** Variables
 **** Network IP
 #+begin_src tofu
@@ -294,14 +300,6 @@ variable "headscale_ip_cidr" {
   type        = string
   description = "The IP address and CIDR for the Headscale LXC"
   default     = "10.10.20.2/24"
-}
-#+end_src
-**** Network Gateway
-#+begin_src tofu
-variable "headscale_gateway" {
-  type        = string
-  description = "The default gateway for the Headscale LXC"
-  default     = "10.10.20.1"
 }
 #+end_src
 **** Local
@@ -374,7 +372,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
   network_interface {
     name   = "eth0"
     bridge = "vmbr2"
-    vlan_id = 20  # "Infra" VLAN
+    vlan_id = 20  # Infra VLAN
   }
 #+end_src
 **** Initialization
@@ -394,7 +392,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
     ip_config {
       ipv4 {
         address = var.headscale_ip_cidr
-        gateway = var.headscale_gateway
+        gateway = var.infra_vlan_gateway
       }
     }
 #+end_src

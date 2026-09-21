@@ -58,3 +58,9 @@ variable "tofu_state_passphrase" {
   description = "Passphrase for OpenTofu client-side state encryption"
   sensitive   = true
 }
+
+variable "infra_vlan_gateway" {
+  type        = string
+  description = "The default gateway for the Infra VLAN 20"
+  default     = "10.10.20.1"  # VyOS Router IP in this network
+}

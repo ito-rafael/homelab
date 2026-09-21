@@ -4,12 +4,6 @@ variable "headscale_ip_cidr" {
   default     = "10.10.20.2/24"
 }
 
-variable "headscale_gateway" {
-  type        = string
-  description = "The default gateway for the Headscale LXC"
-  default     = "10.10.20.1"
-}
-
 locals {
   # read the Ansible variables from the proxmox role
   proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))
@@ -64,7 +58,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
   network_interface {
     name   = "eth0"
     bridge = "vmbr2"
-    vlan_id = 20  # "Infra" VLAN
+    vlan_id = 20  # Infra VLAN
   }
 
   initialization {
@@ -78,7 +72,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
     ip_config {
       ipv4 {
         address = var.headscale_ip_cidr
-        gateway = var.headscale_gateway
+        gateway = var.infra_vlan_gateway
       }
     }
 
