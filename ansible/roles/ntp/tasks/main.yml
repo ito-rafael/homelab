@@ -1,0 +1,6 @@
+---
+- name: core | ntp | install chrony
+  ansible.builtin.apt:
+    name: chrony
+    state: present
+    update_cache: yes
