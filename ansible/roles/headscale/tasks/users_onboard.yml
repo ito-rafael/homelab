@@ -27,3 +27,13 @@
   ansible.builtin.command: "headscale preauthkeys list --output json"
   register: all_keys
   changed_when: false
+
+- name: core | headscale onboarding | generate pre-auth keys for users without active keys
+  ansible.builtin.command: "headscale preauthkeys create --user {{ (registered_users.stdout | from_json | selectattr('name', 'equalto', item.username) | first).id }} --expiration 24h"
+  loop: "{{ users }}"
+  when:
+    # check 1: user has no registered devices
+    - (all_nodes.stdout | default('[]', true) | from_json | selectattr('user.name', 'equalto', item.username) | list | length) == 0
+    # check 2: user has no unused pre-auth keys (defaults to false if the 'used' JSON key is omitted)
+    - (all_keys.stdout | default('[]', true) | from_json | selectattr('user.name', 'equalto', item.username) | map(attribute='used', default=false) | reject | list | length) == 0
+  register: generated_keys
