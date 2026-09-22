@@ -65,6 +65,12 @@ variable "infra_vlan_gateway" {
   default     = "10.10.20.1"  # VyOS Router IP in this network
 }
 
+variable "infra_dns_servers" {
+  type        = list(string)
+  description = "The internal Technitium DNS servers for the Infra VLAN"
+  default     = ["10.10.20.3", "10.10.20.4"]
+}
+
 locals {
   # read the Ansible variables from the proxmox role once for all modules
   proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))

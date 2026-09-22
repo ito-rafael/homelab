@@ -118,6 +118,14 @@ variable "infra_vlan_gateway" {
   default     = "10.10.20.1"  # VyOS Router IP in this network
 }
 #+end_src
+*** Infra DNS Servers
+#+begin_src tofu
+variable "infra_dns_servers" {
+  type        = list(string)
+  description = "The internal Technitium DNS servers for the Infra VLAN"
+  default     = ["10.10.20.3", "10.10.20.4"]
+}
+#+end_src
 ** Locals
 #+begin_src tofu
 locals {
