@@ -1,0 +1,9 @@
+---
+- name: core | dns | install prerequisites
+  ansible.builtin.apt:
+    name:
+      - curl
+      - ca-certificates
+      - sudo
+    state: present
+    update_cache: yes

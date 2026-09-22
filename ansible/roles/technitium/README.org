@@ -1,0 +1,35 @@
+#+TITLE: Ansible Role for configuring Technitium DNS
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#tasks][Tasks]]
+  - [[#main][Main]]
+  - [[#install--configure][Install & Configure]]
+
+* Tasks
+** Main
+#+begin_src yaml :tangle tasks/main.yml
+---
+- ansible.builtin.import_tasks: config_dns.yml
+#+end_src
+** Install & Configure
+:PROPERTIES:
+:header-args+: :tangle tasks/config_dns.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Install Prerequisites
+#+begin_src yaml :padline no
+- name: core | dns | install prerequisites
+  ansible.builtin.apt:
+    name:
+      - curl
+      - ca-certificates
+      - sudo
+    state: present
+    update_cache: yes
+#+end_src
