@@ -17,3 +17,8 @@
   ansible.builtin.command: "headscale nodes list --output json"
   register: all_nodes
   changed_when: false
+
+- name: core | headscale onboarding | fetch registered users to get IDs
+  ansible.builtin.command: "headscale users list --output json"
+  register: registered_users
+  changed_when: false

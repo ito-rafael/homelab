@@ -313,6 +313,13 @@
   register: all_nodes
   changed_when: false
 #+end_src
+*** Fetch Registered Users
+#+begin_src yaml
+- name: core | headscale onboarding | fetch registered users to get IDs
+  ansible.builtin.command: "headscale users list --output json"
+  register: registered_users
+  changed_when: false
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
