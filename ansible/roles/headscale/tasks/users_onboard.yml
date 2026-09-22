@@ -1,0 +1,4 @@
+---
+- name: core | headscale onboarding | load student directory variables
+  ansible.builtin.include_vars:
+    file: users.yml

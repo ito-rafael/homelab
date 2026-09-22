@@ -11,6 +11,7 @@
   - [[#timezone-configuration][Timezone Configuration]]
   - [[#tun-device-configuration][TUN Device Configuration]]
   - [[#subnet-router-tailscale-client][Subnet router (Tailscale client)]]
+  - [[#user-onboarding-automation][User Onboarding Automation]]
 - [[#handlers][Handlers]]
   - [[#main-1][Main]]
 - [[#vars][Vars]]
@@ -26,6 +27,7 @@
 - ansible.builtin.import_tasks: timezone.yml
 - ansible.builtin.import_tasks: lxc_tun.yml
 - ansible.builtin.import_tasks: tailscale.yml
+- ansible.builtin.import_tasks: users_onboard.yml
 #+end_src
 ** Install & Configure
 :PROPERTIES:
@@ -278,6 +280,19 @@
 - name: core | headscale | approve advertised routes
   ansible.builtin.command: "headscale nodes approve-routes --identifier {{ headscale_node_id }} --routes 143.106.45.160/27"
   changed_when: false
+#+end_src
+** User Onboarding Automation
+:PROPERTIES:
+:header-args+: :tangle tasks/users_onboard.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Load Student Directory
+#+begin_src yaml :padline no
+- name: core | headscale onboarding | load student directory variables
+  ansible.builtin.include_vars:
+    file: users.yml
 #+end_src
 * Handlers
 ** Main
