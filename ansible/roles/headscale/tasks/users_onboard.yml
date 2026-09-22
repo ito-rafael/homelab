@@ -22,3 +22,8 @@
   ansible.builtin.command: "headscale users list --output json"
   register: registered_users
   changed_when: false
+
+- name: core | headscale onboarding | fetch all existing pre-auth keys
+  ansible.builtin.command: "headscale preauthkeys list --output json"
+  register: all_keys
+  changed_when: false
