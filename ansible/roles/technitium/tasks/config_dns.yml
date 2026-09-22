@@ -16,3 +16,10 @@
 - name: core | dns | install Technitium
   ansible.builtin.shell: "curl -sSL https://download.technitium.com/dns/install.sh | sudo bash"
   when: not technitium_service.stat.exists
+
+- name: core | dns | start & enable systemd service
+  ansible.builtin.systemd:
+    name: dns
+    state: started
+    enabled: yes
+    daemon_reload: yes
