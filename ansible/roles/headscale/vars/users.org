@@ -1,0 +1,25 @@
+#+TITLE: LBIC VPN Users List
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+DESCRIPTION: Declarative inventory of lab members for automated Headscale VPN provisioning, ACL management, and email onboarding via Ansible.
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#users][Users]]
+  - [[#test][Test]]
+
+* Users
+:PROPERTIES:
+:header-args+: :padline no :tangle users.yml
+:END:
+#+begin_src yaml
+---
+users:
+#+end_src
+** Test
+#+begin_src yaml
+  - username: "test.student"
+    name: "Test Student"
+    email: "test.student@gmail.com"
+#+end_src

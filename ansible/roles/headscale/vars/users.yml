@@ -1,0 +1,5 @@
+---
+users:
+  - username: "test.student"
+    name: "Test Student"
+    email: "test.student@gmail.com"
