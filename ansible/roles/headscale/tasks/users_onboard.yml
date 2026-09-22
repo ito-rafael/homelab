@@ -37,3 +37,9 @@
     # check 2: user has no unused pre-auth keys (defaults to false if the 'used' JSON key is omitted)
     - (all_keys.stdout | default('[]', true) | from_json | selectattr('user.name', 'equalto', item.username) | map(attribute='used', default=false) | reject | list | length) == 0
   register: generated_keys
+
+- name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/ito-rafael/ansible-provision/main/roles/lab_experiments/cheatsheet/cheatsheet.pdf"
+    dest: "/tmp/cheatsheet.pdf"
+    mode: '0644'
