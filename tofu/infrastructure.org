@@ -15,6 +15,7 @@
 - [[#core][Core]]
   - [[#vyos-router][VyOS Router]]
   - [[#headscale-vpn][Headscale VPN]]
+  - [[#technitium-dns][Technitium DNS]]
 
 * Documentation
 |---------------+-------------+------+----------------+--------------+-----------------------------------------|
@@ -416,5 +417,94 @@ resource "proxmox_virtual_environment_container" "headscale" {
 #+end_src
 **** EoS
 #+begin_src tofu
+}
+#+end_src
+** Technitium DNS
+:PROPERTIES:
+:header-args+: :tangle technitium.tf
+:END:
+*** Variables
+**** Local
+#+begin_src tofu
+locals {
+  # extract the LXC template filename
+  technitium_lxc_template = local.proxmox_vars.lxc_template_technitium
+}
+#+end_src
+*** LXC Container
+**** Resource
+#+begin_src terraform
+resource "proxmox_virtual_environment_container" "dns" {
+  count = 2
+
+  node_name = "andira"
+  vm_id        = 203 + count.index
+  # dns-1 will be vm_id 203, dns-2 will be vm_id 204
+
+  unprivileged = true
+  start_on_boot = true
+#+end_src
+**** OS
+#+begin_src terraform
+  operating_system {
+    template_file_id = "local:vztmpl/${local.technitium_lxc_template}"
+    type             = "debian"
+#+end_src
+**** CPU
+#+begin_src tofu
+  cpu {
+    cores = 1
+  }
+#+end_src
+**** Memory
+#+begin_src terraform
+  memory {
+    dedicated = 512
+  }
+#+end_src
+**** Disk
+#+begin_src terraform
+  disk {
+    datastore_id = "local-lvm"
+    size         = 4
+  }
+#+end_src
+**** Network
+#+begin_src terraform
+  network_interface {
+    name = "eth0"
+    bridge = "vmbr2"
+    vlan_id = 20  # Infra VLAN
+  }
+#+end_src
+**** Initialization
+#+begin_src terraform
+  initialization {
+    hostname = "dns-${count.index + 1}"
+#+end_src
+***** IP
+#+begin_src terraform
+    ip_config {
+      ipv4 {
+        address = "10.10.20.${count.index + 3}/24"
+        gateway = var.infra_vlan_gateway
+      }
+    }
+#+end_src
+***** SSH Keys
+#+begin_src terraform
+    user_account {
+      keys = [
+        var.ssh_key_laptop,
+        var.ssh_key_desktop
+      ]
+    }
+#+end_src
+***** EoS
+#+begin_src terraform
+  }
+#+end_src
+**** EoS
+#+begin_src terraform
 }
 #+end_src
