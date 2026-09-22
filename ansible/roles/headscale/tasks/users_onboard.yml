@@ -43,3 +43,39 @@
     url: "https://raw.githubusercontent.com/ito-rafael/ansible-provision/main/roles/lab_experiments/cheatsheet/cheatsheet.pdf"
     dest: "/tmp/cheatsheet.pdf"
     mode: '0644'
+
+- name: core | headscale onboarding | send email instructions to new users
+  community.general.mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "{{ vault_smtp_user }}"
+    password: "{{ vault_smtp_password }}"
+    from: "LBiC Cluster Admin <{{ vault_smtp_user }}>"
+    to: "{{ item.item.name }} <{{ item.item.email }}>"
+    cc: "Fernando Von Zuben <{{ vault_professor_email }}>"
+    subject: "Acesso ao cluster do LBIC (VPN)"
+    subtype: html
+    body: |
+      <p>Olá {{ item.item.name.split(' ')[0] }},</p>
+
+      <p>Sua conta para acessar os computadores do LBiC foi criada.<br>
+      Para utilizar a VPN do laboratório, instale o <a href="https://tailscale.com/download">Tailscale</a> em seu computador e execute o comando abaixo no terminal:</p>
+
+      <div style="background-color: #f4f4f4; border: 1px solid #ccc; border-radius: 4px; padding: 12px; font-family: monospace; margin: 15px 0; word-wrap: break-word;">
+        sudo tailscale up --login-server https://andira.lbic.fee.unicamp.br --accept-routes --authkey {{ item.stdout | trim }}
+      </div>
+
+      <p><b>Atenção:</b> esta chave expira em 24 horas.</p>
+
+      <p>Aproveito para enviar em anexo um guia rápido sobre a utilização dos recursos computacionais do laboratório.<br>
+      Qualquer dúvida, fico à disposição.</p>
+
+      <p>Atenciosamente,<br>
+      Rafael Ito</p>
+    attach:
+      - "/tmp/cheatsheet.pdf"
+  loop: "{{ generated_keys.results }}"
+  # send the email only to accounts that actually had a new key generated in the previous task
+  when: item.changed
+  # report "changed" when the email is actually dispatched
+  changed_when: true
