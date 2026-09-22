@@ -7,3 +7,8 @@
       - sudo
     state: present
     update_cache: yes
+
+- name: core | dns | check if Technitium is installed
+  ansible.builtin.stat:
+    path: /etc/systemd/system/dns.service
+  register: technitium_service

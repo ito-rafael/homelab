@@ -33,3 +33,10 @@
     state: present
     update_cache: yes
 #+end_src
+*** Check if Technitium is installed
+#+begin_src yaml
+- name: core | dns | check if Technitium is installed
+  ansible.builtin.stat:
+    path: /etc/systemd/system/dns.service
+  register: technitium_service
+#+end_src
