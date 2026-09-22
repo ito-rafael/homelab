@@ -294,6 +294,18 @@
   ansible.builtin.include_vars:
     file: users.yml
 #+end_src
+*** Create User Namespaces
+#+begin_src yaml
+- name: core | headscale onboarding | create user namespaces in Headscale
+  ansible.builtin.command: "headscale users create {{ item.username }}"
+  loop: "{{ users }}"
+  register: user_creation
+  failed_when:
+    - user_creation.rc != 0
+    - "'UNIQUE constraint failed' not in user_creation.stderr"
+    - "'already exists' not in user_creation.stderr" # kept for backwards compatibility
+  changed_when: user_creation.rc == 0
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
