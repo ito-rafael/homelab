@@ -1,0 +1,4 @@
+---
+- name: core | dns | set timezone
+  community.general.timezone:
+    name: America/Sao_Paulo

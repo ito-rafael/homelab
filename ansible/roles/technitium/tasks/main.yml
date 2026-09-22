@@ -1,2 +1,3 @@
 ---
 - ansible.builtin.import_tasks: config_dns.yml
+- ansible.builtin.import_tasks: timezone.yml
