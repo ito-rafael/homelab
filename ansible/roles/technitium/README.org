@@ -40,3 +40,9 @@
     path: /etc/systemd/system/dns.service
   register: technitium_service
 #+end_src
+*** Install
+#+begin_src yaml
+- name: core | dns | install Technitium
+  ansible.builtin.shell: "curl -sSL https://download.technitium.com/dns/install.sh | sudo bash"
+  when: not technitium_service.stat.exists
+#+end_src
