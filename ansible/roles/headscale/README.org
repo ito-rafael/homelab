@@ -306,6 +306,13 @@
     - "'already exists' not in user_creation.stderr" # kept for backwards compatibility
   changed_when: user_creation.rc == 0
 #+end_src
+*** Fetch Registered Devices
+#+begin_src yaml
+- name: core | headscale onboarding | fetch registered devices
+  ansible.builtin.command: "headscale nodes list --output json"
+  register: all_nodes
+  changed_when: false
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
