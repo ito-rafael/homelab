@@ -219,6 +219,7 @@
 #+begin_src yaml :tangle vars/main.yml
 ---
 lxc_template_headscale: "debian-13-standard_13.6-1_amd64.tar.zst"
+lxc_template_technitium: "debian-13-standard_13.6-1_amd64.tar.zst"
 #+end_src
 * Files
 ** vmbr0
