@@ -2,10 +2,9 @@
 - name: core | proxmox | configure vmbr0 port forwarding for Headscale
   ansible.builtin.blockinfile:
     path: /etc/network/interfaces
-    insertafter: '^\s*bridge-fd 0'
+    insertbefore: '^source /etc/network/interfaces\.d/.*'
     marker: "        # {mark} ANSIBLE MANAGED BLOCK: VMBR0 HEADSCALE DNAT"
     block: "{{ lookup('file', 'vmbr0_headscale.txt') }}"
-  delegate_to: proxmox
   register: network_config_vmbr0
 
 - name: core | proxmox | configure vmbr1 NAT bridge
