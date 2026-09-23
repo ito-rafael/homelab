@@ -10,3 +10,15 @@
   register: login_secure
   failed_when: false
   changed_when: false
+
+- name: core | dns | fallback to default password (first run only)
+  ansible.builtin.uri:
+    url: "http://localhost:5380/api/user/login"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      user: "admin"
+      pass: "admin"
+  register: login_default
+  when: login_secure.json.get('status') != 'ok'
+  changed_when: false
