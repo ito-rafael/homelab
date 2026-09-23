@@ -29,3 +29,7 @@
   when:
     - login_secure.json.get('status') != 'ok'
     - login_default.json.get('status') != 'ok'
+
+- name: core | dns | set active token fact
+  ansible.builtin.set_fact:
+    active_token: "{{ login_secure.json.get('token') if login_secure.json.get('status') == 'ok' else login_default.json.get('token') }}"

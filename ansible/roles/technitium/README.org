@@ -111,3 +111,9 @@
     - login_secure.json.get('status') != 'ok'
     - login_default.json.get('status') != 'ok'
 #+end_src
+*** Set Active Token Fact
+#+begin_src yaml
+- name: core | dns | set active token fact
+  ansible.builtin.set_fact:
+    active_token: "{{ login_secure.json.get('token') if login_secure.json.get('status') == 'ok' else login_default.json.get('token') }}"
+#+end_src
