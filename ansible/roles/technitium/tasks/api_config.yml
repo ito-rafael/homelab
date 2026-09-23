@@ -1,0 +1,12 @@
+---
+- name: core | dns | attempt login with secure password
+  ansible.builtin.uri:
+    url: "http://localhost:5380/api/user/login"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      user: "admin"
+      pass: "{{ technitium_admin_password }}"
+  register: login_secure
+  failed_when: false
+  changed_when: false

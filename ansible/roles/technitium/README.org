@@ -9,6 +9,7 @@
   - [[#main][Main]]
   - [[#install--configure][Install & Configure]]
   - [[#timezone-configuration][Timezone Configuration]]
+  - [[#configure-api-settings][Configure API Settings]]
 
 * Tasks
 ** Main
@@ -16,6 +17,7 @@
 ---
 - ansible.builtin.import_tasks: config_dns.yml
 - ansible.builtin.import_tasks: timezone.yml
+- ansible.builtin.import_tasks: api_config.yml
 #+end_src
 ** Install & Configure
 :PROPERTIES:
@@ -64,4 +66,25 @@
 - name: core | dns | set timezone
   community.general.timezone:
     name: America/Sao_Paulo
+#+end_src
+** Configure API Settings
+:PROPERTIES:
+:header-args+: :tangle tasks/api_config.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Attempt Secure Login
+#+begin_src yaml :padline no
+- name: core | dns | attempt login with secure password
+  ansible.builtin.uri:
+    url: "http://localhost:5380/api/user/login"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      user: "admin"
+      pass: "{{ technitium_admin_password }}"
+  register: login_secure
+  failed_when: false
+  changed_when: false
 #+end_src
