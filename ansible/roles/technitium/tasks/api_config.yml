@@ -59,3 +59,17 @@
     status_code: 200
   # API does not tell if forwarders were different
   changed_when: false
+
+- name: core | dns | create local authoritative zone
+  ansible.builtin.uri:
+    url: "http://localhost:5380/api/zones/create"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      token: "{{ active_token }}"
+      domain: "internal"
+      type: "Primary"
+    status_code: 200
+  register: zone_result
+  failed_when: false
+  changed_when: zone_result.json.get('status') == 'ok'
