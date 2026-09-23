@@ -47,3 +47,15 @@
   register: password_change
   failed_when: false
   changed_when: password_change.json.get('status') == 'ok'
+
+- name: core | dns | configure upstream forwarders
+  ansible.builtin.uri:
+    url: "http://localhost:5380/api/settings/set"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      token: "{{ active_token }}"
+      forwarders: "143.106.8.30,143.106.2.5,1.1.1.1,1.0.0.1,8.8.8.8,8.8.4.4"
+    status_code: 200
+  # API does not tell if forwarders were different
+  changed_when: false
