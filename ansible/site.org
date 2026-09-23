@@ -6,6 +6,7 @@
 
 * Table of Contents :toc:
 - [[#master-playbook][Master Playbook]]
+  - [[#secure-variables-vault][Secure Variables (Vault)]]
   - [[#proxmox-hypervisor][Proxmox Hypervisor]]
   - [[#opentofu][OpenTofu]]
   - [[#vyos-router][VyOS Router]]
@@ -13,11 +14,16 @@
 
 * Master Playbook
 :PROPERTIES:
-:header-args+: :tangle site.yml
+:header-args:yaml+: :tangle site.yml
 :END:
 This is the master orchestration file. It maps host groups from the inventory to specific task files within the =lbic= role.
 #+begin_src yaml
 ---
+#+end_src
+** Secure Variables (Vault)
+Secrets are stored in an encrypted Ansible vault and should not be stored in plaintext. To edit the vault, run:
+#+begin_src sh
+ansible-vault edit group_vars/all/vault.yml
 #+end_src
 ** Proxmox Hypervisor
 Runs against the physical host to configure bridges, networking, and foundational time synchronization.
