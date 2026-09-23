@@ -102,3 +102,12 @@
   when: login_secure.json.get('status') != 'ok'
   changed_when: false
 #+end_src
+*** Verify Login Success
+#+begin_src yaml
+- name: core | dns | verify successful login
+  ansible.builtin.fail:
+    msg: "Both logins failed! Check your vault.yml password."
+  when:
+    - login_secure.json.get('status') != 'ok'
+    - login_default.json.get('status') != 'ok'
+#+end_src
