@@ -33,3 +33,17 @@
 - name: core | dns | set active token fact
   ansible.builtin.set_fact:
     active_token: "{{ login_secure.json.get('token') if login_secure.json.get('status') == 'ok' else login_default.json.get('token') }}"
+
+- name: core | dns | secure the server by changing default password
+  ansible.builtin.uri:
+    url: "http://localhost:5380/api/user/changePassword"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      token: "{{ active_token }}"
+      pass: "admin"                               # current password
+      newPass: "{{ technitium_admin_password }}"  # new password
+  when: login_secure.json.get('status') != 'ok'
+  register: password_change
+  failed_when: false
+  changed_when: password_change.json.get('status') == 'ok'
