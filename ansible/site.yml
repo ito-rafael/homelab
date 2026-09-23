@@ -1,5 +1,4 @@
 ---
-
 - name: Configure Proxmox Hypervisor
   hosts: proxmox
   become: yes
@@ -10,7 +9,7 @@
 
     - name: core | ntp | configure time synchronization
       ansible.builtin.import_role:
-        name: ntp
+        name: chrony
 
     - name: core | vyos | build VyOS image on Proxmox server
       ansible.builtin.import_role:

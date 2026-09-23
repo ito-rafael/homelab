@@ -27,7 +27,7 @@ ansible-vault edit group_vars/all/vault.yml
 #+end_src
 ** Proxmox Hypervisor
 Runs against the physical host to configure bridges, networking, and foundational time synchronization.
-#+begin_src yaml
+#+begin_src yaml :padline no
 - name: Configure Proxmox Hypervisor
   hosts: proxmox
   become: yes
@@ -38,7 +38,7 @@ Runs against the physical host to configure bridges, networking, and foundationa
 
     - name: core | ntp | configure time synchronization
       ansible.builtin.import_role:
-        name: ntp
+        name: chrony
 
     - name: core | vyos | build VyOS image on Proxmox server
       ansible.builtin.import_role:
