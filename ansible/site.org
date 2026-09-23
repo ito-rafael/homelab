@@ -11,6 +11,7 @@
   - [[#opentofu][OpenTofu]]
   - [[#vyos-router][VyOS Router]]
   - [[#headscale-vpn][Headscale VPN]]
+  - [[#technitium-dns][Technitium DNS]]
 
 * Master Playbook
 :PROPERTIES:
@@ -78,4 +79,15 @@ Runs against the LXC container to install and configure the VPN controller.
     - name: core | headscale | deploy VPN controller and subnet router
       ansible.builtin.import_role:
         name: headscale
+#+end_src
+** Technitium DNS
+Runs against the DNS LXCs to install and configure Technitium.
+#+begin_src yaml
+- name: Configure Technitium DNS Servers
+  hosts: technitium
+  become: yes
+  tasks:
+    - name: core | dns | deploy authoritative and recursive DNS
+      ansible.builtin.import_role:
+        name: technitium
 #+end_src
