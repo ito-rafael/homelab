@@ -163,3 +163,26 @@
   failed_when: false
   changed_when: zone_result.json.get('status') == 'ok'
 #+end_src
+*** Add Infrastructure A Records
+#+begin_src yaml
+- name: core | dns | add A records for core infrastructure
+  ansible.builtin.uri:
+    url: "http://localhost:5380/api/zones/records/add"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      token: "{{ active_token }}"
+      domain: "{{ item.name }}.internal"
+      type: "A"
+      ipAddress: "{{ item.ip }}"
+    status_code: 200
+  register: record_results
+  failed_when: false
+  changed_when: record_results.json.get('status') == 'ok'
+  loop:
+    - { name: 'proxmox',   ip: '10.10.10.254' }
+    - { name: 'vyos',      ip: '10.10.10.1' }
+    - { name: 'headscale', ip: '10.10.20.2' }
+    - { name: 'dns-1',     ip: '10.10.20.3' }
+    - { name: 'dns-2',     ip: '10.10.20.4' }
+#+end_src
