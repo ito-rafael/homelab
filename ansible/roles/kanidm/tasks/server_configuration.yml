@@ -48,3 +48,13 @@
     owner: root
     group: kanidmd
     mode: '0640'
+
+- name: core | kanidm setup | generate CSR for Kanidm
+  community.crypto.openssl_csr:
+    path: /etc/kanidm/server.csr
+    privatekey_path: /etc/kanidm/key.pem
+    common_name: "{{ kanidm_domain }}"
+    subject_alt_name:
+      - "DNS:kanidm"
+      - "DNS:{{ kanidm_domain }}"
+      - "IP:{{ kanidm_ip }}"

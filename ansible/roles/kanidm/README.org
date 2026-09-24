@@ -97,3 +97,15 @@ Kanidm enforces strict TLS. Since we are using a self-signed chain, we generate 
     group: kanidmd
     mode: '0640'
 #+end_src
+**** Generate CSR
+#+begin_src yaml
+- name: core | kanidm setup | generate CSR for Kanidm
+  community.crypto.openssl_csr:
+    path: /etc/kanidm/server.csr
+    privatekey_path: /etc/kanidm/key.pem
+    common_name: "{{ kanidm_domain }}"
+    subject_alt_name:
+      - "DNS:kanidm"
+      - "DNS:{{ kanidm_domain }}"
+      - "IP:{{ kanidm_ip }}"
+#+end_src
