@@ -33,3 +33,11 @@
       - kanidmd  # Kanidm Server Daemon
     state: present
     update_cache: yes
+
+- name: core | kanidm setup | create kanidm config directory
+  ansible.builtin.file:
+    path: /etc/kanidm
+    state: directory
+    owner: root
+    group: kanidmd
+    mode: '0770'
