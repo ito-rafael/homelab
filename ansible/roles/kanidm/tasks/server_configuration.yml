@@ -85,3 +85,8 @@
     group: kanidmd
     mode: '0640'
   notify: core | kanidm setup | restart systemd service
+
+- name: core | kanidm setup | validate server configuration
+  ansible.builtin.command:
+    cmd: kanidmd configtest -c /etc/kanidm/server.toml
+  changed_when: false
