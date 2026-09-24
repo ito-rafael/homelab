@@ -1,0 +1,6 @@
+---
+- name: core | kanidm setup | restart systemd service
+  ansible.builtin.systemd:
+    name: kanidmd
+    state: restarted
+    daemon_reload: true
