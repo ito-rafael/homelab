@@ -1,0 +1,6 @@
+---
+#kanidm_unixd_token: <variable in ansible-vault>
+kanidm_domain: kanidm.internal
+kanidm_origin: https://kanidm.internal
+kanidm_headscale_oidc_callback: https://andira.lbic.fee.unicamp.br/oidc/callback
+kanidm_ip: 10.10.20.5
