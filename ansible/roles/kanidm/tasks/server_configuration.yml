@@ -41,3 +41,10 @@
     owner: root
     group: kanidmd
     mode: '0770'
+
+- name: core | kanidm setup | generate private key for TLS
+  community.crypto.openssl_privatekey:
+    path: /etc/kanidm/key.pem
+    owner: root
+    group: kanidmd
+    mode: '0640'
