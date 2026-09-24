@@ -25,3 +25,11 @@
     components: stable
     signed_by: /etc/apt/trusted.gpg.d/kanidm_ppa.asc
     state: present
+
+- name: core | kanidm setup | install Kanidm server and clients
+  ansible.builtin.apt:
+    name:
+      - kanidm   # Kanidm Client Tools
+      - kanidmd  # Kanidm Server Daemon
+    state: present
+    update_cache: yes
