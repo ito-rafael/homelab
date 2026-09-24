@@ -11,6 +11,8 @@
   - [[#server-configuration][Server Configuration]]
 - [[#vars][Vars]]
   - [[#main-2][Main]]
+- [[#templates][Templates]]
+  - [[#servertomlj2][server.toml.j2]]
 
 * Tasks
 ** Main
@@ -154,4 +156,16 @@ kanidm_domain: kanidm.internal
 kanidm_origin: https://kanidm.internal
 kanidm_headscale_oidc_callback: https://andira.lbic.fee.unicamp.br/oidc/callback
 kanidm_ip: 10.10.20.5
+#+end_src
+* Templates
+** server.toml.j2
+#+begin_src conf :tangle templates/server.toml.j2
+version = "2"
+bindaddress = "0.0.0.0:443"
+ldapbindaddress = "0.0.0.0:636"
+origin =  "{{ kanidm_origin }}"
+domain = "{{ kanidm_domain }}"
+db_path = "/var/lib/kanidmd/kanidm.db"
+tls_chain = "/etc/kanidm/chain.pem"
+tls_key = "/etc/kanidm/key.pem"
 #+end_src
