@@ -78,23 +78,21 @@ Host andira
           ansible_network_cli_ssh_type: libssh
           ansible_libssh_proxy_command: 'ssh -W %h:%p -q root@andira'
 #+end_src
+*** Technitium DNS
+#+begin_src yaml
+        dns-1:
+          ansible_host: 10.10.20.3
+          ansible_user: root
+          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@10.10.10.1'
+        dns-2:
+          ansible_host: 10.10.20.4
+          ansible_user: root
+          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@10.10.10.1'
+#+end_src
 *** Headscale VPN
 #+begin_src yaml
         headscale:
           ansible_host: 10.10.20.2
           ansible_user: root
           ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@10.10.10.1'
-#+end_src
-*** Technitium DNS
-#+begin_src yaml
-      children:
-        technitium:
-          hosts:
-            dns-1:
-              ansible_host: 10.10.20.3
-            dns-2:
-              ansible_host: 10.10.20.4
-          vars:
-            ansible_user: root
-            ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@10.10.10.1'
 #+end_src

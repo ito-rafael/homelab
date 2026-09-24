@@ -33,6 +33,14 @@
       ansible.builtin.import_role:
         name: vyos
 
+- name: Configure Technitium DNS Servers
+  hosts: dns-*
+  become: yes
+  tasks:
+    - name: core | dns | deploy authoritative and recursive DNS
+      ansible.builtin.import_role:
+        name: technitium
+
 - name: Configure Headscale VPN Controller
   hosts: headscale
   become: yes
@@ -40,11 +48,3 @@
     - name: core | headscale | deploy VPN controller and subnet router
       ansible.builtin.import_role:
         name: headscale
-
-- name: Configure Technitium DNS Servers
-  hosts: technitium
-  become: yes
-  tasks:
-    - name: core | dns | deploy authoritative and recursive DNS
-      ansible.builtin.import_role:
-        name: technitium
