@@ -8,3 +8,9 @@
       - python3-cryptography
     state: present
     update_cache: yes
+
+- name: core | kanidm setup | download Kanidm GPG key
+  ansible.builtin.get_url:
+    url: https://kanidm.github.io/kanidm_ppa/kanidm_ppa.asc
+    dest: /etc/apt/trusted.gpg.d/kanidm_ppa.asc
+    mode: '0644'

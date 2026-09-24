@@ -44,3 +44,12 @@
     state: present
     update_cache: yes
 #+end_src
+*** Configure APT Repository
+**** Download Kanidm GPG key
+#+begin_src yaml
+- name: core | kanidm setup | download Kanidm GPG key
+  ansible.builtin.get_url:
+    url: https://kanidm.github.io/kanidm_ppa/kanidm_ppa.asc
+    dest: /etc/apt/trusted.gpg.d/kanidm_ppa.asc
+    mode: '0644'
+#+end_src
