@@ -89,6 +89,13 @@ Host andira
           ansible_user: root
           ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@10.10.10.1'
 #+end_src
+*** Kanidm IAM
+#+begin_src yaml
+        kanidm:
+          ansible_host: 10.10.20.5
+          ansible_user: root
+          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@10.10.10.1'
+#+end_src
 *** Headscale VPN
 #+begin_src yaml
         headscale:
