@@ -53,3 +53,16 @@
     dest: /etc/apt/trusted.gpg.d/kanidm_ppa.asc
     mode: '0644'
 #+end_src
+**** Add Kanidm APT repository
+#+begin_src yaml
+- name: core | kanidm setup | add Kanidm APT repository (deb822 format)
+  ansible.builtin.deb822_repository:
+    name: kanidm
+    types: deb
+    architectures: amd64
+    uris: https://kanidm.github.io/kanidm_ppa
+    suites: "{{ ansible_facts['distribution_release'] | lower }}"
+    components: stable
+    signed_by: /etc/apt/trusted.gpg.d/kanidm_ppa.asc
+    state: present
+#+end_src
