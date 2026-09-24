@@ -58,3 +58,13 @@
       - "DNS:kanidm"
       - "DNS:{{ kanidm_domain }}"
       - "IP:{{ kanidm_ip }}"
+
+- name: core | kanidm setup | generate self-signed TLS certificate
+  community.crypto.x509_certificate:
+    path: /etc/kanidm/chain.pem
+    privatekey_path: /etc/kanidm/key.pem
+    csr_path: /etc/kanidm/server.csr
+    provider: selfsigned
+    owner: root
+    group: kanidmd
+    mode: '0640'
