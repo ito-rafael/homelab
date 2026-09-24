@@ -18,12 +18,13 @@
   - [[#technitium-dns][Technitium DNS]]
 
 * Documentation
-|---------------+-------------+------+----------------+--------------+-----------------------------------------|
-| Category      | Application | Type | Version        | Directory    | Image                                   |
-|---------------+-------------+------+----------------+--------------+-----------------------------------------|
-| Headscale VPN | Headscale   | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
-| VyOS Router   | VyOS        | VM   | VyOS 1.5 QCOW2 | local:iso    | build from rolling @ 18a550b7 commit    |
-|---------------+-------------+------+----------------+--------------+-----------------------------------------|
+|----------+-------------+------+----------------+--------------+-----------------------------------------|
+| Category | Application | Type | Version        | Directory    | Image                                   |
+|----------+-------------+------+----------------+--------------+-----------------------------------------|
+| Router   | VyOS        | VM   | VyOS 1.5 QCOW2 | local:iso    | build from rolling @ 18a550b7 commit    |
+| VPN      | Headscale   | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
+| DNS      | Technitium  | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
+|----------+-------------+------+----------------+--------------+-----------------------------------------|
 * Global Configuration
 :PROPERTIES:
 :header-args+: :tangle main.tf
@@ -457,6 +458,7 @@ resource "proxmox_virtual_environment_container" "dns" {
   operating_system {
     template_file_id = "local:vztmpl/${local.technitium_lxc_template}"
     type             = "debian"
+  }
 #+end_src
 **** CPU
 #+begin_src tofu

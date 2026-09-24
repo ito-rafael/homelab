@@ -16,6 +16,7 @@ resource "proxmox_virtual_environment_container" "dns" {
   operating_system {
     template_file_id = "local:vztmpl/${local.technitium_lxc_template}"
     type             = "debian"
+  }
 
   cpu {
     cores = 1
