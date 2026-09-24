@@ -1,0 +1,25 @@
+#+TITLE: Ansible Role for configuring Kanidm IAM
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#tasks][Tasks]]
+  - [[#main][Main]]
+  - [[#timezone-configuration][Timezone Configuration]]
+
+* Tasks
+** Main
+#+begin_src yaml :tangle tasks/main.yml
+---
+- ansible.builtin.import_tasks: timezone.yml
+#+end_src
+** Timezone Configuration
+*** Configure Timezone
+#+begin_src yaml :tangle tasks/timezone.yml
+---
+- name: core | kanidm setup | set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+#+end_src

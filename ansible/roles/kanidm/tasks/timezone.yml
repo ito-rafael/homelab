@@ -1,0 +1,4 @@
+---
+- name: core | kanidm setup | set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
