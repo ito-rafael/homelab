@@ -156,6 +156,15 @@ Kanidm enforces strict TLS. Since we are using a self-signed chain, we generate 
     cmd: kanidmd configtest -c /etc/kanidm/server.toml
   changed_when: false
 #+end_src
+**** Enable and start service
+#+begin_src yaml
+- name: core | kanidm setup | enable and start kanidmd service
+  ansible.builtin.systemd:
+    name: kanidmd
+    state: started
+    enabled: yes
+    daemon_reload: true
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml

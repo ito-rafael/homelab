@@ -90,3 +90,10 @@
   ansible.builtin.command:
     cmd: kanidmd configtest -c /etc/kanidm/server.toml
   changed_when: false
+
+- name: core | kanidm setup | enable and start kanidmd service
+  ansible.builtin.systemd:
+    name: kanidmd
+    state: started
+    enabled: yes
+    daemon_reload: true
