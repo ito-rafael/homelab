@@ -288,12 +288,6 @@
 #+begin_src yaml
 ---
 #+end_src
-*** Load Student Directory
-#+begin_src yaml :padline no
-- name: core | headscale onboarding | load student directory variables
-  ansible.builtin.include_vars:
-    file: users.yml
-#+end_src
 *** Create User Namespaces
 #+begin_src yaml
 - name: core | headscale onboarding | create user namespaces in Headscale
