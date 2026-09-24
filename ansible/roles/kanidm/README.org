@@ -8,12 +8,14 @@
 - [[#tasks][Tasks]]
   - [[#main][Main]]
   - [[#timezone-configuration][Timezone Configuration]]
+  - [[#server-configuration][Server Configuration]]
 
 * Tasks
 ** Main
 #+begin_src yaml :tangle tasks/main.yml
 ---
 - ansible.builtin.import_tasks: timezone.yml
+- ansible.builtin.import_tasks: server_configuration.yml
 #+end_src
 ** Timezone Configuration
 *** Configure Timezone
@@ -22,4 +24,23 @@
 - name: core | kanidm setup | set timezone
   community.general.timezone:
     name: "{{ timezone }}"
+#+end_src
+** Server Configuration
+:PROPERTIES:
+:header-args+: :tangle tasks/server_configuration.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Install Dependencies
+#+begin_src yaml :padline no
+- name: core | kanidm setup | install repository and cryptography dependencies
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gnupg
+      - apt-transport-https
+      - python3-cryptography
+    state: present
+    update_cache: yes
 #+end_src

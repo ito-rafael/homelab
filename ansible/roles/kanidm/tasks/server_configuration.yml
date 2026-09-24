@@ -1,0 +1,10 @@
+---
+- name: core | kanidm setup | install repository and cryptography dependencies
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gnupg
+      - apt-transport-https
+      - python3-cryptography
+    state: present
+    update_cache: yes
