@@ -68,3 +68,11 @@
     owner: root
     group: kanidmd
     mode: '0640'
+
+- name: core | kanidm setup | create kanidmd database directory
+  ansible.builtin.file:
+    path: /var/lib/kanidmd
+    state: directory
+    owner: root
+    group: kanidmd
+    mode: '0750'
