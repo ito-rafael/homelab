@@ -1,11 +1,16 @@
-        # forward TCP 80 (Let's Encrypt) to Headscale
+        #----------------------------------------------
+        # Headscale: Forward TCP 80 (Let's Encrypt)
         post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 80 -j DNAT --to-destination 10.10.20.2:8080
         post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 80 -j DNAT --to-destination 10.10.20.2:8080
-
-        # forward TCP 443 (HTTPS) to Headscale
+        # Headscale: Forward TCP 443 (HTTPS)
         post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.2:8443
         post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.2:8443
-
-        # forward UDP 41641 (WireGuard) to Headscale
+        # Headscale: Forward UDP 41641 (WireGuard)
         post-up   iptables -t nat -A PREROUTING -i vmbr0 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.2:41641
         post-down iptables -t nat -D PREROUTING -i vmbr0 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.2:41641
+        #----------------------------------------------
+        # Technitium DNS-1 Port Forwarding
+        post-up   iptables -t nat -A PREROUTING -i vmbr0 -p udp --dport 53 -j DNAT --to-destination 10.10.20.3:53
+        post-down iptables -t nat -D PREROUTING -i vmbr0 -p udp --dport 53 -j DNAT --to-destination 10.10.20.3:53
+        post-up   iptables -t nat -A PREROUTING -i vmbr0 -p tcp --dport 53 -j DNAT --to-destination 10.10.20.3:53
+        post-down iptables -t nat -D PREROUTING -i vmbr0 -p tcp --dport 53 -j DNAT --to-destination 10.10.20.3:53
