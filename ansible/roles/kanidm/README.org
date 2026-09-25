@@ -269,6 +269,14 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
     mode: '0600'
   when: not idm_admin_recovered.stat.exists
 #+end_src
+**** Mark idm_admin password as recovered
+#+begin_src yaml
+- name: core | kanidm setup | mark idm_admin password as recovered
+  ansible.builtin.file:
+    path: /etc/kanidm/.idm_admin_recovered
+    state: touch
+  when: not idm_admin_recovered.stat.exists
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
