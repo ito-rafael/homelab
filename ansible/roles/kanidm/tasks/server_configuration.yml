@@ -146,3 +146,10 @@
     dest: /root/kanidm_admin_password.txt
     mode: '0600'
   when: not admin_recovered.stat.exists
+
+- name: core | kanidm setup | mark admin password as recovered
+  ansible.builtin.file:
+    path: /etc/kanidm/.admin_recovered
+    state: touch
+  when: not admin_recovered.stat.exists
+  no_log: true
