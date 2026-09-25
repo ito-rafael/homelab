@@ -91,6 +91,13 @@
     cmd: kanidmd configtest -c /etc/kanidm/server.toml
   changed_when: false
 
+- name: core | kanidm setup | create systemd service drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/kanidmd.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
 - name: core | kanidm setup | enable and start kanidmd service
   ansible.builtin.systemd:
     name: kanidmd
