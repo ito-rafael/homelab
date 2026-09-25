@@ -117,3 +117,14 @@
     state: started
     enabled: yes
     daemon_reload: true
+
+- name: core | kanidm setup | configure local CLI client
+  ansible.builtin.copy:
+    dest: /etc/kanidm/config
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      uri = "https://127.0.0.1:443"
+      verify_ca = false
+      verify_hostnames = false

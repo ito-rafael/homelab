@@ -189,6 +189,19 @@ Kanidm enforces strict TLS. Since we are using a self-signed chain, we generate 
     enabled: yes
     daemon_reload: true
 #+end_src
+*** Configure local Kanidm CLI
+#+begin_src yaml
+- name: core | kanidm setup | configure local CLI client
+  ansible.builtin.copy:
+    dest: /etc/kanidm/config
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      uri = "https://127.0.0.1:443"
+      verify_ca = false
+      verify_hostnames = false
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
