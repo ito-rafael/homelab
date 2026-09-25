@@ -153,3 +153,7 @@
     state: touch
   when: not admin_recovered.stat.exists
   no_log: true
+
+- name: core | kanidm setup | authenticate CLI as system admin
+  ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_admin_password.txt) kanidm login --name admin"
+  changed_when: false
