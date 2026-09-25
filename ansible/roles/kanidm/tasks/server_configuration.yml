@@ -128,3 +128,8 @@
       uri = "https://127.0.0.1:443"
       verify_ca = false
       verify_hostnames = false
+
+- name: core | kanidm setup | check if admin password was already recovered
+  ansible.builtin.stat:
+    path: /etc/kanidm/.admin_recovered
+  register: admin_recovered

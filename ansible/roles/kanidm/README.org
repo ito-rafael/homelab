@@ -202,6 +202,15 @@ Kanidm enforces strict TLS. Since we are using a self-signed chain, we generate 
       verify_ca = false
       verify_hostnames = false
 #+end_src
+*** Recover Default admin Account
+Kanidm separates global configuration (admin) from user management (idm_admin).
+**** Check if admin password was recovered
+#+begin_src yaml
+- name: core | kanidm setup | check if admin password was already recovered
+  ansible.builtin.stat:
+    path: /etc/kanidm/.admin_recovered
+  register: admin_recovered
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
