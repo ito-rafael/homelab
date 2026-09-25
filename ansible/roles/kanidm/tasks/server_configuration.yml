@@ -98,6 +98,19 @@
     owner: root
     group: root
     mode: '0755'
+
+- name: core | kanidm setup | configure systemd service
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/kanidmd.service.d/override.conf
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/bin/kanidmd server -c /etc/kanidm/server.toml
+  notify: core | kanidm setup | restart systemd service
+
 - name: core | kanidm setup | enable and start kanidmd service
   ansible.builtin.systemd:
     name: kanidmd
