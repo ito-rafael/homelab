@@ -162,3 +162,8 @@
   ansible.builtin.stat:
     path: /etc/kanidm/.idm_admin_recovered
   register: idm_admin_recovered
+
+- name: core | kanidm setup | recover idm_admin password
+  ansible.builtin.command: kanidmd recover-account -c /etc/kanidm/server.toml idm_admin
+  register: kanidm_idm_admin_recovery
+  when: not idm_admin_recovered.stat.exists
