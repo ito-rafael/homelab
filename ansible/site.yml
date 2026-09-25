@@ -41,6 +41,14 @@
       ansible.builtin.import_role:
         name: technitium
 
+- name: Configure Kanidm IAM Server
+  hosts: kanidm
+  become: yes
+  tasks:
+    - name: core | kanidm | deploy server and headscale integration
+      ansible.builtin.import_role:
+        name: kanidm
+
 - name: Configure Headscale VPN Controller
   hosts: headscale
   become: yes

@@ -80,6 +80,17 @@ Runs against the DNS LXCs to install and configure Technitium.
       ansible.builtin.import_role:
         name: technitium
 #+end_src
+** Kanidm IAM
+Runs against the Kanidm LXC container to deploy the directory database, administrative recovery, and OIDC clients.
+#+begin_src yaml
+- name: Configure Kanidm IAM Server
+  hosts: kanidm
+  become: yes
+  tasks:
+    - name: core | kanidm | deploy server and headscale integration
+      ansible.builtin.import_role:
+        name: kanidm
+#+end_src
 ** Headscale VPN
 Runs against the LXC container to install and configure the VPN controller.
 #+begin_src yaml
