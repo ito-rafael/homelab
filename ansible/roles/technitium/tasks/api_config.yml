@@ -96,3 +96,4 @@
     - { name: 'headscale', ip: '10.10.20.2' }
     - { name: 'dns-1',     ip: '10.10.20.3' }
     - { name: 'dns-2',     ip: '10.10.20.4' }
+    - { name: 'kanidm',    ip: '10.10.20.5' }
