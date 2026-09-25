@@ -218,6 +218,16 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   register: kanidm_sys_admin_recovery
   when: not admin_recovered.stat.exists
 #+end_src
+**** Save system admin password
+#+begin_src yaml
+- name: core | kanidm setup | save system admin password to root home directory
+  ansible.builtin.copy:
+    content: >-
+      {{ (kanidm_sys_admin_recovery.stdout | split('new_password: "'))[1] | replace('"', '') | trim }}
+    dest: /root/kanidm_admin_password.txt
+    mode: '0600'
+  when: not admin_recovered.stat.exists
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml

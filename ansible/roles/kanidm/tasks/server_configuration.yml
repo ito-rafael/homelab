@@ -138,3 +138,11 @@
   ansible.builtin.command: kanidmd recover-account -c /etc/kanidm/server.toml admin
   register: kanidm_sys_admin_recovery
   when: not admin_recovered.stat.exists
+
+- name: core | kanidm setup | save system admin password to root home directory
+  ansible.builtin.copy:
+    content: >-
+      {{ (kanidm_sys_admin_recovery.stdout | split('new_password: "'))[1] | replace('"', '') | trim }}
+    dest: /root/kanidm_admin_password.txt
+    mode: '0600'
+  when: not admin_recovered.stat.exists
