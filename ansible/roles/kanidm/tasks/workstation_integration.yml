@@ -1,0 +1,16 @@
+---
+- name: core | kanidm unix backend | create a read-only service account for workstations
+  ansible.builtin.command: kanidm service-account create unix-clients "Unix Clients Service Account" idm_admin --name idm_admin
+  register: kanidm_sa_create
+  changed_when:
+    - kanidm_sa_create.rc == 0
+    - "'409' not in kanidm_sa_create.stderr"
+    - "'409' not in kanidm_sa_create.stdout"
+    - "'already' not in kanidm_sa_create.stderr | lower"
+    - "'already' not in kanidm_sa_create.stdout | lower"
+  failed_when:
+    - kanidm_sa_create.rc != 0
+    - "'already exists' not in kanidm_sa_create.stderr | lower"
+    - "'already exists' not in kanidm_sa_create.stdout | lower"
+    - "'409' not in kanidm_sa_create.stderr"
+    - "'409' not in kanidm_sa_create.stdout"
