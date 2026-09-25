@@ -157,3 +157,8 @@
 - name: core | kanidm setup | authenticate CLI as system admin
   ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_admin_password.txt) kanidm login --name admin"
   changed_when: false
+
+- name: core | kanidm setup | check if idm_admin password was already recovered
+  ansible.builtin.stat:
+    path: /etc/kanidm/.idm_admin_recovered
+  register: idm_admin_recovered

@@ -243,6 +243,15 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_admin_password.txt) kanidm login --name admin"
   changed_when: false
 #+end_src
+*** Recover Default idm_admin Account
+Kanidm separates global configuration (admin) from user management (idm_admin).
+**** Check if idm_admin password was recovered
+#+begin_src yaml
+- name: core | kanidm setup | check if idm_admin password was already recovered
+  ansible.builtin.stat:
+    path: /etc/kanidm/.idm_admin_recovered
+  register: idm_admin_recovered
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
