@@ -33,3 +33,6 @@ destroy:
 
 destroy-fast:
 	$(TOFU_ENV) destroy -refresh=false -auto-approve
+
+state-list:
+	$(TOFU_ENV) state list
