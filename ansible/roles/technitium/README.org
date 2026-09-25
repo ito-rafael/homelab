@@ -133,9 +133,9 @@
   failed_when: false
   changed_when: password_change.json.get('status') == 'ok'
 #+end_src
-*** Configure Upstream Forwarders
+*** Configure Core DNS Settings (Forwarders & Recursion)
 #+begin_src yaml
-- name: core | dns | configure upstream forwarders
+- name: core | dns | configure upstream forwarders and recursion
   ansible.builtin.uri:
     url: "http://localhost:5380/api/settings/set"
     method: POST
@@ -143,8 +143,10 @@
     body:
       token: "{{ active_token }}"
       forwarders: "143.106.8.30,143.106.2.5,1.1.1.1,1.0.0.1,8.8.8.8,8.8.4.4"
+      recursion: "UseSpecifiedNetworkACL"
+      recursionNetworkAcl: "10.10.20.0/24,143.106.45.160/27"
     status_code: 200
-  # API does not tell if forwarders were different
+  # API does not tell if settings were different
   changed_when: false
 #+end_src
 *** Create Local Authoritative Zone
