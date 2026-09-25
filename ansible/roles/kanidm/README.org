@@ -277,6 +277,13 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
     state: touch
   when: not idm_admin_recovered.stat.exists
 #+end_src
+**** Authenticate CLI as idm_admin
+#+begin_src yaml
+- name: core | kanidm setup | authenticate CLI as idm_admin
+  ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm login --name idm_admin"
+  changed_when: false
+  no_log: true
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
