@@ -29,7 +29,7 @@ auto-apply:
 	$(TOFU_ENV) apply -auto-approve
 
 destroy:
-	$(TOFU_ENV) destroy
+	$(TOFU_ENV) destroy $(TOFU_ARGS)
 
 destroy-fast:
 	$(TOFU_ENV) destroy -refresh=false -auto-approve
