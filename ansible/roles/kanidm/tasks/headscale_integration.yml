@@ -39,3 +39,8 @@
   ansible.builtin.command: kanidm system oauth2 update-scope-map headscale headscale_users openid email profile --name idm_admin
   register: kanidm_oauth2_scope
   changed_when: false
+
+- name: core | kanidm headscale | fetch Headscale OIDC client secret
+  ansible.builtin.command: kanidm system oauth2 show-basic-secret headscale --name idm_admin
+  register: kanidm_oauth2_secret
+  changed_when: false
