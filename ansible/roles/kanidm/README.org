@@ -439,6 +439,19 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   changed_when: false
   failed_when: false
 #+end_src
+*** Give POSIX Attributes Users
+#+begin_src yaml
+- name: core | kanidm headscale | give the student POSIX attributes (bash shell)
+  ansible.builtin.command: kanidm person posix set {{ item.username }} --shell /bin/bash --name idm_admin
+  loop: "{{ users }}"
+  loop_control:
+    index_var: kanidm_user_index
+  when: >-
+    kanidm_posix_state.results[kanidm_user_index].rc != 0 or
+    'shell: /bin/bash' not in kanidm_posix_state.results[kanidm_user_index].stdout
+  register: kanidm_posix
+  changed_when: kanidm_posix.rc == 0
+#+end_src
 ** Workstation Backend Integration
 :PROPERTIES:
 :header-args+: :tangle tasks/workstation_integration.yml

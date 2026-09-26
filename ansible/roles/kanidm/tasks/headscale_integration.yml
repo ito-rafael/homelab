@@ -122,3 +122,14 @@
   register: kanidm_posix_state
   changed_when: false
   failed_when: false
+
+- name: core | kanidm headscale | give the student POSIX attributes (bash shell)
+  ansible.builtin.command: kanidm person posix set {{ item.username }} --shell /bin/bash --name idm_admin
+  loop: "{{ users }}"
+  loop_control:
+    index_var: kanidm_user_index
+  when: >-
+    kanidm_posix_state.results[kanidm_user_index].rc != 0 or
+    'shell: /bin/bash' not in kanidm_posix_state.results[kanidm_user_index].stdout
+  register: kanidm_posix
+  changed_when: kanidm_posix.rc == 0
