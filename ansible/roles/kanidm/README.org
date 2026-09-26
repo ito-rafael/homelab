@@ -516,6 +516,14 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
     - "'409' not in kanidm_sa_posix.stderr"
     - "'409' not in kanidm_sa_posix.stdout"
 #+end_src
+*** Check unix-clients Read Membership
+#+begin_src yaml
+- name: core | kanidm unix backend | check unix authentication read membership
+  ansible.builtin.command:
+    cmd: kanidm group list-members idm_unix_authentication_read --name idm_admin
+  register: kanidm_unix_auth_read_members
+  changed_when: false
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml

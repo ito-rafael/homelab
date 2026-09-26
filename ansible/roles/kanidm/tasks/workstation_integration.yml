@@ -30,3 +30,9 @@
     - "'already' not in kanidm_sa_posix.stdout | lower"
     - "'409' not in kanidm_sa_posix.stderr"
     - "'409' not in kanidm_sa_posix.stdout"
+
+- name: core | kanidm unix backend | check unix authentication read membership
+  ansible.builtin.command:
+    cmd: kanidm group list-members idm_unix_authentication_read --name idm_admin
+  register: kanidm_unix_auth_read_members
+  changed_when: false
