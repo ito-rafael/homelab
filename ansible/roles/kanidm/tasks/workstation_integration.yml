@@ -42,3 +42,8 @@
     cmd: kanidm group add-members idm_unix_authentication_read unix-clients --name idm_admin
   when: "'unix-clients' not in kanidm_unix_auth_read_members.stdout"
   changed_when: true
+
+- name: core | kanidm unix backend | check existing workstation service account tokens
+  ansible.builtin.command: kanidm service-account api-token status unix-clients --name idm_admin
+  register: kanidm_sa_tokens
+  changed_when: false

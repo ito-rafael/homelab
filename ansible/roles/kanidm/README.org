@@ -532,6 +532,13 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   when: "'unix-clients' not in kanidm_unix_auth_read_members.stdout"
   changed_when: true
 #+end_src
+*** Check Existing Tokens
+#+begin_src yaml
+- name: core | kanidm unix backend | check existing workstation service account tokens
+  ansible.builtin.command: kanidm service-account api-token status unix-clients --name idm_admin
+  register: kanidm_sa_tokens
+  changed_when: false
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
