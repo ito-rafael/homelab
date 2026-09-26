@@ -133,3 +133,9 @@
     'shell: /bin/bash' not in kanidm_posix_state.results[kanidm_user_index].stdout
   register: kanidm_posix
   changed_when: kanidm_posix.rc == 0
+
+- name: core | kanidm headscale | inspect Headscale VPN group membership
+  ansible.builtin.command: kanidm person get {{ item.username }} --name idm_admin
+  loop: "{{ users }}"
+  register: kanidm_person_state
+  changed_when: false
