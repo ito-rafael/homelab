@@ -376,6 +376,14 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   register: kanidm_setup_tokens
   changed_when: true
 #+end_src
+*** Download Cheatsheet
+#+begin_src yaml
+- name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/ito-rafael/ansible-provision/main/roles/lab_experiments/cheatsheet/cheatsheet.pdf"
+    dest: "/tmp/cheatsheet.pdf"
+    mode: '0644'
+#+end_src
 ** Workstation Backend Integration
 :PROPERTIES:
 :header-args+: :tangle tasks/workstation_integration.yml

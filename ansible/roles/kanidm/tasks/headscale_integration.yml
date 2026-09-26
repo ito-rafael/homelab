@@ -65,3 +65,9 @@
   when: item.changed
   register: kanidm_setup_tokens
   changed_when: true
+
+- name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/ito-rafael/ansible-provision/main/roles/lab_experiments/cheatsheet/cheatsheet.pdf"
+    dest: "/tmp/cheatsheet.pdf"
+    mode: '0644'
