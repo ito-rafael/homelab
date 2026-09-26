@@ -16,7 +16,8 @@
 - [[#vars][Vars]]
   - [[#main-2][Main]]
 - [[#templates][Templates]]
-  - [[#servertomlj2][server.toml.j2]]
+  - [[#servertoml][server.toml]]
+  - [[#config][config]]
 
 * Tasks
 ** Main
@@ -199,15 +200,12 @@ Kanidm enforces strict TLS. Since we are using a self-signed chain, we generate 
 *** Configure local Kanidm CLI
 #+begin_src yaml
 - name: core | kanidm setup | configure local CLI client
-  ansible.builtin.copy:
+  ansible.builtin.template:
+    src: config.j2
     dest: /etc/kanidm/config
     owner: root
     group: root
     mode: '0644'
-    content: |
-      uri = "https://127.0.0.1:443"
-      verify_ca = false
-      verify_hostnames = false
 #+end_src
 *** Recover Default admin Account
 Kanidm separates global configuration (admin) from user management (idm_admin).
@@ -521,7 +519,7 @@ kanidm_headscale_oidc_callback: https://andira.lbic.fee.unicamp.br/oidc/callback
 kanidm_ip: 10.10.20.5
 #+end_src
 * Templates
-** server.toml.j2
+** server.toml
 #+begin_src conf :tangle templates/server.toml.j2
 version = "2"
 bindaddress = "0.0.0.0:443"
@@ -531,4 +529,10 @@ domain = "{{ kanidm_domain }}"
 db_path = "/var/lib/kanidmd/kanidm.db"
 tls_chain = "/etc/kanidm/chain.pem"
 tls_key = "/etc/kanidm/key.pem"
+#+end_src
+** config
+#+begin_src conf :tangle templates/config.j2
+uri = "https://127.0.0.1:443"
+verify_ca = false
+verify_hostnames = false
 #+end_src

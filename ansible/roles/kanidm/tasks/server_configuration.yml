@@ -122,15 +122,12 @@
     daemon_reload: true
 
 - name: core | kanidm setup | configure local CLI client
-  ansible.builtin.copy:
+  ansible.builtin.template:
+    src: config.j2
     dest: /etc/kanidm/config
     owner: root
     group: root
     mode: '0644'
-    content: |
-      uri = "https://127.0.0.1:443"
-      verify_ca = false
-      verify_hostnames = false
 
 - name: core | kanidm setup | check if admin password was already recovered
   ansible.builtin.stat:
