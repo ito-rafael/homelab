@@ -71,3 +71,47 @@
     url: "https://raw.githubusercontent.com/ito-rafael/ansible-provision/main/roles/lab_experiments/cheatsheet/cheatsheet.pdf"
     dest: "/tmp/cheatsheet.pdf"
     mode: '0644'
+
+- name: core | kanidm headscale | send email instructions to new users
+  community.general.mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "{{ vault_smtp_user }}"
+    password: "{{ vault_smtp_password }}"
+    from: "LBiC Cluster Admin <{{ vault_smtp_user }}>"
+    to: "{{ item.item.item.name }} <{{ item.item.item.email }}>"
+    #cc:
+    #  - "Fernando Von Zuben <{{ vault_professor_email }}>"
+    #  - "Rafael Ito <{{ vault_admin_email }}>"
+    subject: "Acesso ao Cluster do LBIC (Conta e VPN)"
+    subtype: html
+    body: |
+      Olá {{ item.item.item.name.split(' ')[0] }},<br><br>
+
+      Sua conta para acessar os computadores do LBiC foi criada.<br><br>
+
+      <b>1. Configuração da Senha</b><br>
+      O laboratório utiliza um sistema unificado de credenciais. Para definir sua senha pessoal, acesse a página abaixo:<br>
+      🔗 <a href="https://andira.lbic.fee.unicamp.br/ui/reset">https://andira.lbic.fee.unicamp.br/ui/reset</a><br>
+      👤 <b>Usuário:</b> {{ item.item.item.username }}<br>
+      🔑 <b>Token de configuração:</b> <pre>{{ item.stdout | trim }}</pre><br>
+      <i>Atenção: este token expira em 24 horas.</i><br><br>
+
+      <b>2. Acesso à VPN (Tailscale)</b><br>
+      Após criar a sua senha, você poderá acessar a rede de qualquer lugar. Instale o <a href="https://tailscale.com/download">Tailscale</a> em seu computador e execute o comando abaixo no terminal:<br>
+      <pre>sudo tailscale up --login-server https://andira.lbic.fee.unicamp.br:8443 --accept-routes</pre><br>
+      Isso abrirá uma janela no seu navegador solicitando o seu usuário ({{ item.item.item.username }}) e a senha que você acabou de criar.<br><br>
+
+      Aproveito para enviar em anexo um guia rápido sobre a utilização dos recursos computacionais do laboratório.<br><br>
+
+      Qualquer dúvida, fico à disposição.<br><br>
+
+      Atenciosamente,<br><br>
+      Rafael Ito
+    attach:
+      - "/tmp/cheatsheet.pdf"
+  loop: "{{ kanidm_setup_tokens.results }}"
+  # send the email only to accounts that actually had a new token generated in the previous task
+  when: item.changed
+  # report "changed" when the email is actually dispatched
+  changed_when: true
