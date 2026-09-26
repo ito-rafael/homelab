@@ -498,6 +498,24 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
     - "'409' not in kanidm_sa_create.stderr"
     - "'409' not in kanidm_sa_create.stdout"
 #+end_src
+*** Enable POSIX Extensions for Workstation Service Account
+#+begin_src yaml
+- name: core | kanidm unix backend | enable POSIX access for workstation service account
+  ansible.builtin.command: kanidm service-account posix set unix-clients --name idm_admin
+  register: kanidm_sa_posix
+  changed_when:
+    - kanidm_sa_posix.rc == 0
+    - "'409' not in kanidm_sa_posix.stderr"
+    - "'409' not in kanidm_sa_posix.stdout"
+    - "'already' not in kanidm_sa_posix.stderr | lower"
+    - "'already' not in kanidm_sa_posix.stdout | lower"
+  failed_when:
+    - kanidm_sa_posix.rc != 0
+    - "'already' not in kanidm_sa_posix.stderr | lower"
+    - "'already' not in kanidm_sa_posix.stdout | lower"
+    - "'409' not in kanidm_sa_posix.stderr"
+    - "'409' not in kanidm_sa_posix.stdout"
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml
