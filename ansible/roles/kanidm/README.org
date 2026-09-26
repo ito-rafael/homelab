@@ -367,6 +367,15 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
     - "'Entry already exists' not in kanidm_user_create.stderr"
     - "'409 Conflict' not in kanidm_user_create.stderr"
 #+end_src
+*** Generate Token For New Users
+#+begin_src yaml
+- name: core | kanidm headscale | generate setup token for new users
+  ansible.builtin.command: kanidm person credential create-reset-token {{ item.item.username }} --name idm_admin
+  loop: "{{ kanidm_user_create.results }}"
+  when: item.changed
+  register: kanidm_setup_tokens
+  changed_when: true
+#+end_src
 ** Workstation Backend Integration
 :PROPERTIES:
 :header-args+: :tangle tasks/workstation_integration.yml
