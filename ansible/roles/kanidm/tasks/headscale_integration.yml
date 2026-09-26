@@ -115,3 +115,10 @@
   when: item.changed
   # report "changed" when the email is actually dispatched
   changed_when: true
+
+- name: core | kanidm headscale | inspect POSIX attributes for users
+  ansible.builtin.command: kanidm person posix show --name idm_admin {{ item.username }}
+  loop: "{{ users }}"
+  register: kanidm_posix_state
+  changed_when: false
+  failed_when: false

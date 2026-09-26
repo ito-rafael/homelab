@@ -430,6 +430,15 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   # report "changed" when the email is actually dispatched
   changed_when: true
 #+end_src
+*** Check POSIX Attributes For Users
+#+begin_src yaml
+- name: core | kanidm headscale | inspect POSIX attributes for users
+  ansible.builtin.command: kanidm person posix show --name idm_admin {{ item.username }}
+  loop: "{{ users }}"
+  register: kanidm_posix_state
+  changed_when: false
+  failed_when: false
+#+end_src
 ** Workstation Backend Integration
 :PROPERTIES:
 :header-args+: :tangle tasks/workstation_integration.yml
