@@ -16,15 +16,18 @@
   - [[#vyos-router][VyOS Router]]
   - [[#headscale-vpn][Headscale VPN]]
   - [[#technitium-dns][Technitium DNS]]
+  - [[#kanidm-iam][Kanidm IAM]]
 
 * Documentation
-|----------+-------------+------+----------------+--------------+-----------------------------------------|
-| Category | Application | Type | Version        | Directory    | Image                                   |
-|----------+-------------+------+----------------+--------------+-----------------------------------------|
-| Router   | VyOS        | VM   | VyOS 1.5 QCOW2 | local:iso    | build from rolling @ 18a550b7 commit    |
-| VPN      | Headscale   | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
-| DNS      | Technitium  | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
-|----------+-------------+------+----------------+--------------+-----------------------------------------|
+|---------------+-------------+------+----------------+--------------+-----------------------------------------|
+| Category      | Application | Type | Version        | Directory    | Image                                   |
+|---------------+-------------+------+----------------+--------------+-----------------------------------------|
+| Hypervisor    | Proxmox     | ---  | Proxmox VE 9.2 | ---          | ---                                     |
+| Router        | VyOS        | VM   | VyOS 1.5 QCOW2 | local:iso    | build from rolling @ 18a550b7 commit    |
+| DNS           | Technitium  | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
+| IAM           | Kanidm      | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
+| VPN           | Headscale   | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
+|---------------+-------------+------+----------------+--------------+-----------------------------------------|
 * Global Configuration
 :PROPERTIES:
 :header-args+: :tangle main.tf
@@ -516,5 +519,126 @@ resource "proxmox_virtual_environment_container" "dns" {
 #+end_src
 **** EoS
 #+begin_src terraform
+}
+#+end_src
+** Kanidm IAM
+:PROPERTIES:
+:header-args+: :tangle kanidm.tf
+:END:
+*** Variables
+**** Network IP
+#+begin_src tofu
+variable "kanidm_ip_cidr" {
+  type        = string
+  description = "The IP address and CIDR for the Kanidm LXC"
+  default     = "10.10.20.5/24"
+}
+#+end_src
+**** Local
+#+begin_src tofu
+locals {
+  # extract the LXC template filename
+  kanidm_lxc_template = local.proxmox_vars.lxc_template_kanidm
+}
+#+end_src
+*** LXC Container
+This block provisions the Debian 13 (Trixie) container for Kanidm IAM on the internal bridge (=vmbr2=).
+**** Resource
+#+begin_src tofu
+resource "proxmox_virtual_environment_container" "kanidm" {
+  description = "Kanidm IAM Server"
+  tags        = ["core", "iam", "kanidm"]
+  node_name   = "andira"
+  vm_id       = 205
+
+  # ensure unprivileged mode
+  unprivileged = true
+
+  # autostart
+  start_on_boot = true
+
+  # enable nesting (recommended for systemd/auth daemons)
+  features {
+    nesting = true
+  }
+
+  # ensure the container starts after the network and DNS
+  startup {
+    order      = 15
+    up_delay   = 5
+    down_delay = 5
+  }
+#+end_src
+**** OS
+#+begin_src tofu
+  operating_system {
+    template_file_id = "local:vztmpl/${local.kanidm_lxc_template}"
+    type             = "debian"
+  }
+#+end_src
+**** CPU
+#+begin_src tofu
+  cpu {
+    cores = 1
+  }
+#+end_src
+**** Memory
+#+begin_src tofu
+  memory {
+    dedicated = 1024
+    swap      = 256
+  }
+#+end_src
+**** Disk
+#+begin_src tofu
+  disk {
+    datastore_id = "local-lvm"
+    size         = 10
+  }
+#+end_src
+**** Network
+#+begin_src tofu
+  network_interface {
+    name    = "eth0"
+    bridge  = "vmbr2"
+    vlan_id = 20  # Infra VLAN
+  }
+#+end_src
+**** Initialization
+#+begin_src tofu
+  initialization {
+    hostname = "kanidm"
+#+end_src
+***** DNS
+#+begin_src tofu
+    dns {
+      # use internal DNS so Kanidm can resolve infrastructure names if needed
+      servers = var.infra_dns_servers
+    }
+#+end_src
+***** IP
+#+begin_src tofu
+    ip_config {
+      ipv4 {
+        address = var.kanidm_ip_cidr
+        gateway = var.infra_vlan_gateway
+      }
+    }
+#+end_src
+***** SSH Keys
+#+begin_src tofu
+    user_account {
+      keys = [
+        var.ssh_key_laptop,
+        var.ssh_key_desktop
+      ]
+    }
+#+end_src
+***** EoS
+#+begin_src tofu
+  }
+#+end_src
+**** EoS
+#+begin_src tofu
 }
 #+end_src
