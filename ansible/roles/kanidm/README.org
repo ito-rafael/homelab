@@ -548,6 +548,16 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   changed_when: true
   no_log: true
 #+end_src
+*** Save Token to Disk
+#+begin_src yaml
+- name: core | kanidm | save newly generated token to root directory
+  ansible.builtin.copy:
+    content: "{{ kanidm_sa_token_generate.stdout_lines[-1] }}"
+    dest: /root/kanidm_unixd_token.txt
+    mode: '0600'
+  when: kanidm_sa_token_generate.changed
+  no_log: true
+#+end_src
 * Handlers
 ** Main
 #+begin_src conf :tangle handlers/main.yml

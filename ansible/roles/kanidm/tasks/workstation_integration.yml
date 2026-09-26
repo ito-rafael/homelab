@@ -54,3 +54,11 @@
   when: "'shared-token' not in kanidm_sa_tokens.stdout"
   changed_when: true
   no_log: true
+
+- name: core | kanidm | save newly generated token to root directory
+  ansible.builtin.copy:
+    content: "{{ kanidm_sa_token_generate.stdout_lines[-1] }}"
+    dest: /root/kanidm_unixd_token.txt
+    mode: '0600'
+  when: kanidm_sa_token_generate.changed
+  no_log: true
