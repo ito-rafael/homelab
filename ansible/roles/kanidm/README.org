@@ -460,6 +460,18 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   register: kanidm_person_state
   changed_when: false
 #+end_src
+*** Add Users to Headscale Group
+#+begin_src yaml
+- name: core | kanidm headscale | add users to Headscale VPN group
+  ansible.builtin.command: kanidm group add-members headscale_users {{ item.username }} --name idm_admin
+  loop: "{{ users }}"
+  loop_control:
+    index_var: kanidm_user_index
+  when:
+    - "'memberof: headscale_users@' not in kanidm_person_state.results[kanidm_user_index].stdout"
+  register: kanidm_group_add
+  changed_when: kanidm_group_add.rc == 0
+#+end_src
 ** Workstation Backend Integration
 :PROPERTIES:
 :header-args+: :tangle tasks/workstation_integration.yml
