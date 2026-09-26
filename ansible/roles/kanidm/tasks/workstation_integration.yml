@@ -36,3 +36,9 @@
     cmd: kanidm group list-members idm_unix_authentication_read --name idm_admin
   register: kanidm_unix_auth_read_members
   changed_when: false
+
+- name: core | kanidm unix backend | grant unix authentication read permission
+  ansible.builtin.command:
+    cmd: kanidm group add-members idm_unix_authentication_read unix-clients --name idm_admin
+  when: "'unix-clients' not in kanidm_unix_auth_read_members.stdout"
+  changed_when: true
