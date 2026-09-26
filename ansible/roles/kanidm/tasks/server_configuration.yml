@@ -45,6 +45,9 @@
 - name: core | kanidm setup | generate private key for TLS
   community.crypto.openssl_privatekey:
     path: /etc/kanidm/key.pem
+    type: RSA
+    size: 2048
+    format: pkcs8
     owner: root
     group: kanidmd
     mode: '0640'
