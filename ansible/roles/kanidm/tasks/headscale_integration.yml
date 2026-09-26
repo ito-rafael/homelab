@@ -28,3 +28,9 @@
     - "'already exists' not in kanidm_group_create.stdout | lower"
     - "'409' not in kanidm_group_create.stderr"
     - "'409' not in kanidm_group_create.stdout"
+
+- name: core | kanidm headscale | enable POSIX on Headscale group
+  ansible.builtin.command:
+    cmd: kanidm group posix set headscale_users --name idm_admin
+  register: kanidm_headscale_group_posix
+  changed_when: true
