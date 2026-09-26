@@ -311,6 +311,24 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
     - "'already exists' not in kanidm_oauth2_create.stderr"
     - "'409 Conflict' not in kanidm_oauth2_create.stderr"
 #+end_src
+*** Create Headscale Users Group
+#+begin_src yaml
+- name: core | kanidm headscale | create headscale_users group
+  ansible.builtin.command: kanidm group create headscale_users --name idm_admin
+  register: kanidm_group_create
+  changed_when:
+    - kanidm_group_create.rc == 0
+    - "'409' not in kanidm_group_create.stderr"
+    - "'409' not in kanidm_group_create.stdout"
+    - "'already' not in kanidm_group_create.stderr | lower"
+    - "'already' not in kanidm_group_create.stdout | lower"
+  failed_when:
+    - kanidm_group_create.rc != 0
+    - "'already exists' not in kanidm_group_create.stderr | lower"
+    - "'already exists' not in kanidm_group_create.stdout | lower"
+    - "'409' not in kanidm_group_create.stderr"
+    - "'409' not in kanidm_group_create.stdout"
+#+end_src
 ** Workstation Backend Integration
 :PROPERTIES:
 :header-args+: :tangle tasks/workstation_integration.yml
