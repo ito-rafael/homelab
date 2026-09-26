@@ -337,6 +337,13 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
   register: kanidm_headscale_group_posix
   changed_when: true
 #+end_src
+*** Grant Profile Access to Group
+#+begin_src yaml
+- name: core | kanidm headscale | map openid scopes to the headscale_users group
+  ansible.builtin.command: kanidm system oauth2 update-scope-map headscale headscale_users openid email profile --name idm_admin
+  register: kanidm_oauth2_scope
+  changed_when: false
+#+end_src
 ** Workstation Backend Integration
 :PROPERTIES:
 :header-args+: :tangle tasks/workstation_integration.yml

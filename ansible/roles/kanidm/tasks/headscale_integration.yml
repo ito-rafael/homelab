@@ -34,3 +34,8 @@
     cmd: kanidm group posix set headscale_users --name idm_admin
   register: kanidm_headscale_group_posix
   changed_when: true
+
+- name: core | kanidm headscale | map openid scopes to the headscale_users group
+  ansible.builtin.command: kanidm system oauth2 update-scope-map headscale headscale_users openid email profile --name idm_admin
+  register: kanidm_oauth2_scope
+  changed_when: false
