@@ -573,10 +573,10 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
 #+begin_src yaml :tangle vars/main.yml
 ---
 #kanidm_unixd_token: <variable in ansible-vault>
-kanidm_domain: kanidm.internal
-kanidm_origin: https://kanidm.internal
-kanidm_headscale_oidc_callback: https://andira.lbic.fee.unicamp.br/oidc/callback
-kanidm_ip: 10.10.20.5
+kanidm_domain: andira.lbic.fee.unicamp.br
+kanidm_origin: https://andira.lbic.fee.unicamp.br
+kanidm_headscale_oidc_callback: https://andira.lbic.fee.unicamp.br:8443/oidc/callback
+kanidm_ip: "{{ ip_kanidm_iam }}"
 #+end_src
 * Templates
 ** server.toml
