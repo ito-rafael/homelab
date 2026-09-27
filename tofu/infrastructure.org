@@ -15,6 +15,7 @@
 - [[#core][Core]]
   - [[#vyos-router][VyOS Router]]
   - [[#technitium-dns][Technitium DNS]]
+  - [[#caddy-reverse-proxy][Caddy Reverse Proxy]]
   - [[#kanidm-iam][Kanidm IAM]]
   - [[#headscale-vpn][Headscale VPN]]
 
@@ -24,6 +25,7 @@
 |---------------+-------------+------+----------------+--------------+-----------------------------------------|
 | Hypervisor    | Proxmox     | ---  | Proxmox VE 9.2 | ---          | ---                                     |
 | Router        | VyOS        | VM   | VyOS 1.5 QCOW2 | local:iso    | build from rolling @ 18a550b7 commit    |
+| Reverse Proxy | Caddy       | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
 | DNS           | Technitium  | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
 | IAM           | Kanidm      | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
 | VPN           | Headscale   | LXC  | Debian 13      | local:vztmpl | debian-13-standard_13.6-1_amd64.tar.zst |
@@ -351,6 +353,112 @@ resource "proxmox_virtual_environment_container" "dns" {
       ipv4 {
         # dynamically pulls dns1 for count.index 0, and dns2 for count.index 1
         address = "${[local.ip_vars.ip_technitium_dns1, local.ip_vars.ip_technitium_dns2][count.index]}/24"
+        gateway = local.ip_vars.ip_vyos_router
+      }
+    }
+#+end_src
+***** SSH Keys
+#+begin_src tofu
+    user_account {
+      keys = [
+        var.ssh_key_laptop,
+        var.ssh_key_desktop
+      ]
+    }
+#+end_src
+***** EoS
+#+begin_src tofu
+  }
+#+end_src
+**** EoS
+#+begin_src tofu
+}
+#+end_src
+** Caddy Reverse Proxy
+:PROPERTIES:
+:header-args+: :tangle caddy.tf
+:END:
+*** Variables
+**** Local
+#+begin_src tofu
+locals {
+  # extract the LXC template filename
+  caddy_lxc_template = local.proxmox_vars.lxc_template_caddy
+}
+#+end_src
+*** LXC Container
+This block provisions the Debian container for the Caddy Reverse Proxy on the internal bridge (=vmbr2=).
+**** Resource
+#+begin_src tofu
+resource "proxmox_virtual_environment_container" "caddy" {
+  description = "Caddy Reverse Proxy & Let's Encrypt TLS"
+  tags        = ["network", "proxy", "caddy"]
+  node_name   = "andira"
+  vm_id       = 206
+
+  # ensure unprivileged mode
+  unprivileged = true
+
+  # autostart
+  start_on_boot = true
+
+  # ensure the container starts after DNS but before IAM/VPN
+  startup {
+    order      = 12
+    up_delay   = 5
+    down_delay = 5
+  }
+#+end_src
+**** OS
+#+begin_src tofu
+  operating_system {
+    template_file_id = "local:vztmpl/${local.caddy_lxc_template}"
+    type             = "debian"
+  }
+#+end_src
+**** CPU
+#+begin_src tofu
+  cpu {
+    cores = 1
+  }
+#+end_src
+**** Memory
+#+begin_src tofu
+  memory {
+    dedicated = 512
+  }
+#+end_src
+**** Disk
+#+begin_src tofu
+  disk {
+    datastore_id = "local-lvm"
+    size         = 4
+  }
+#+end_src
+**** Network
+#+begin_src tofu
+  network_interface {
+    name    = "eth0"
+    bridge  = "vmbr2"
+    vlan_id = 20  # Infra VLAN
+  }
+#+end_src
+**** Initialization
+#+begin_src tofu
+  initialization {
+    hostname = "caddy"
+#+end_src
+***** DNS
+#+begin_src tofu
+    dns {
+      servers = [local.ip_vars.ip_technitium_dns1, local.ip_vars.ip_technitium_dns2]
+    }
+#+end_src
+***** IP
+#+begin_src tofu
+    ip_config {
+      ipv4 {
+        address = "${local.ip_vars.ip_caddy_reverseproxy}/24"
         gateway = local.ip_vars.ip_vyos_router
       }
     }
