@@ -218,12 +218,13 @@
   changed_when: false
   failed_when: false
 #+end_src
-*** Map public domain to localhost for internal Tailscale client
+*** Map public domain to Caddy for internal Tailscale client
 #+begin_src yaml
-- name: core | headscale | map public domain to localhost to bypass Hairpin NAT
+- name: core | headscale | map public domain to caddy to bypass Hairpin NAT
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    line: "127.0.0.1 andira.lbic.fee.unicamp.br"
+    # routes internal requests through Caddy (10.10.20.4) to get valid TLS
+    line: "{{ ip_caddy_reverseproxy }} andira.lbic.fee.unicamp.br"
     state: present
 #+end_src
 *** Connect Tailscale
