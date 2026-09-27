@@ -91,9 +91,10 @@
   failed_when: false
   changed_when: record_results.json.get('status') == 'ok'
   loop:
-    - { name: 'proxmox',   ip: '10.10.10.254' }
-    - { name: 'vyos',      ip: '10.10.10.1' }
-    - { name: 'headscale', ip: '10.10.20.2' }
-    - { name: 'dns-1',     ip: '10.10.20.3' }
-    - { name: 'dns-2',     ip: '10.10.20.4' }
-    - { name: 'kanidm',    ip: '10.10.20.5' }
+    - { name: 'proxmox',   ip: '{{ ip_proxmox_hypervisor }}' }
+    - { name: 'vyos',      ip: '{{ ip_vyos_router }}' }
+    - { name: 'dns-1',     ip: '{{ ip_technitium_dns1 }}' }
+    - { name: 'dns-2',     ip: '{{ ip_technitium_dns2 }}' }
+    - { name: 'caddy',     ip: '{{ ip_caddy_reverseproxy }}' }
+    - { name: 'kanidm',    ip: '{{ ip_kanidm_iam }}' }
+    - { name: 'headscale', ip: '{{ ip_headscale_vpn }}' }

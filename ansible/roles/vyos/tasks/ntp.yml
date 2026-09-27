@@ -8,7 +8,7 @@
       - delete service ntp server time3.vyos.net
 
       # point exclusively to the Proxmox host
-      - set service ntp server 10.10.10.254
+      - set service ntp server {{ ip_proxmox_hypervisor }}
 
       # set local timezone for accurate logging
       - set system time-zone America/Sao_Paulo
