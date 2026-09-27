@@ -24,3 +24,9 @@
     components: main
     signed_by: /usr/share/keyrings/caddy-stable-archive-keyring.asc
     state: present
+
+- name: core | caddy | install Caddy
+  ansible.builtin.apt:
+    name: caddy
+    state: present
+    update_cache: yes

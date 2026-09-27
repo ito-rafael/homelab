@@ -65,3 +65,11 @@
     signed_by: /usr/share/keyrings/caddy-stable-archive-keyring.asc
     state: present
 #+end_src
+*** Install Caddy web server
+#+begin_src yaml
+- name: core | caddy | install Caddy
+  ansible.builtin.apt:
+    name: caddy
+    state: present
+    update_cache: yes
+#+end_src
