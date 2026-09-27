@@ -39,3 +39,10 @@
     group: root
     mode: '0644'
   notify: core | caddy | restart systemd service
+
+- name: core | caddy | enable and start caddy service
+  ansible.builtin.systemd:
+    name: caddy
+    state: started
+    enabled: yes
+    daemon_reload: true
