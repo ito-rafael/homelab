@@ -1,0 +1,4 @@
+---
+- name: core | caddy | set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
