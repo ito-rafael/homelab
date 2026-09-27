@@ -73,3 +73,14 @@
     state: present
     update_cache: yes
 #+end_src
+*** Configure and Start Daemon
+**** Deploy Caddyfile configuration
+#+begin_src yaml
+- name: core | caddy | deploy Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: '0644'
+#+end_src

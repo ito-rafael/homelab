@@ -30,3 +30,11 @@
     name: caddy
     state: present
     update_cache: yes
+
+- name: core | caddy | deploy Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: /etc/caddy/Caddyfile
+    owner: root
+    group: root
+    mode: '0644'
