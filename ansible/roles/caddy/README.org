@@ -9,6 +9,8 @@
   - [[#main][Main]]
   - [[#timezone-configuration][Timezone Configuration]]
   - [[#caddy-setup][Caddy Setup]]
+- [[#handlers][Handlers]]
+  - [[#main-1][Main]]
 
 * Tasks
 ** Main
@@ -83,4 +85,15 @@
     owner: root
     group: root
     mode: '0644'
+  notify: core | caddy | restart systemd service
+#+end_src
+* Handlers
+** Main
+#+begin_src yaml :tangle handlers/main.yml
+---
+- name: core | caddy | restart systemd service
+  ansible.builtin.systemd:
+    name: caddy
+    state: restarted
+    daemon_reload: true
 #+end_src
