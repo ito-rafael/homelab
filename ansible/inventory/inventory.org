@@ -89,6 +89,13 @@ Host andira
           ansible_user: root
           ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@{{ ip_vyos_router }}'
 #+end_src
+*** Caddy Reverse Proxy
+#+begin_src yaml
+        caddy:
+          ansible_host: "{{ ip_caddy_reverseproxy }}"
+          ansible_user: root
+          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@{{ ip_vyos_router }}'
+#+end_src
 *** Kanidm IAM
 #+begin_src yaml
         kanidm:
