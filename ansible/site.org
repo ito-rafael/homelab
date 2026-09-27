@@ -11,6 +11,8 @@
   - [[#opentofu][OpenTofu]]
   - [[#vyos-router][VyOS Router]]
   - [[#technitium-dns][Technitium DNS]]
+  - [[#caddy-reverse-proxy][Caddy Reverse Proxy]]
+  - [[#kanidm-iam][Kanidm IAM]]
   - [[#headscale-vpn][Headscale VPN]]
 
 * Master Playbook
@@ -79,6 +81,17 @@ Runs against the DNS LXCs to install and configure Technitium.
     - name: core | dns | deploy authoritative and recursive DNS
       ansible.builtin.import_role:
         name: technitium
+#+end_src
+** Caddy Reverse Proxy
+Runs against the Caddy LXC container to manage automated Let's Encrypt TLS certificates and edge routing.
+#+begin_src yaml
+- name: Configure Caddy Reverse Proxy
+  hosts: caddy
+  become: yes
+  tasks:
+    - name: core | caddy | deploy reverse proxy and tls
+      ansible.builtin.import_role:
+        name: caddy
 #+end_src
 ** Kanidm IAM
 Runs against the Kanidm LXC container to deploy the directory database, administrative recovery, and OIDC clients.

@@ -41,6 +41,14 @@
       ansible.builtin.import_role:
         name: technitium
 
+- name: Configure Caddy Reverse Proxy
+  hosts: caddy
+  become: yes
+  tasks:
+    - name: core | caddy | deploy reverse proxy and tls
+      ansible.builtin.import_role:
+        name: caddy
+
 - name: Configure Kanidm IAM Server
   hosts: kanidm
   become: yes
