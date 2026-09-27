@@ -8,12 +8,14 @@
 - [[#tasks][Tasks]]
   - [[#main][Main]]
   - [[#timezone-configuration][Timezone Configuration]]
+  - [[#caddy-setup][Caddy Setup]]
 
 * Tasks
 ** Main
 #+begin_src yaml :tangle tasks/main.yml
 ---
 - ansible.builtin.import_tasks: timezone.yml
+- ansible.builtin.import_tasks: setup.yml
 #+end_src
 ** Timezone Configuration
 *** Configure Timezone
@@ -22,4 +24,23 @@
 - name: core | caddy | set timezone
   community.general.timezone:
     name: "{{ timezone }}"
+#+end_src
+** Caddy Setup
+:PROPERTIES:
+:header-args+: :tangle tasks/setup.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Install Dependencies
+#+begin_src yaml :padline no
+- name: core | caddy | install repository dependencies
+  ansible.builtin.apt:
+    name:
+      - debian-keyring
+      - debian-archive-keyring
+      - apt-transport-https
+      - curl
+    state: present
+    update_cache: yes
 #+end_src
