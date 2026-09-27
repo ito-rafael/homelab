@@ -9,6 +9,11 @@ resource "proxmox_virtual_environment_container" "kanidm" {
   node_name   = "andira"
   vm_id       = 205
 
+  # prevent accidental destruction
+  lifecycle {
+    prevent_destroy = true
+  }
+
   # ensure unprivileged mode
   unprivileged = true
 
