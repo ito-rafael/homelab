@@ -1,9 +1,3 @@
-variable "kanidm_ip_cidr" {
-  type        = string
-  description = "The IP address and CIDR for the Kanidm LXC"
-  default     = "10.10.20.5/24"
-}
-
 locals {
   # extract the LXC template filename
   kanidm_lxc_template = local.proxmox_vars.lxc_template_kanidm
@@ -63,13 +57,13 @@ resource "proxmox_virtual_environment_container" "kanidm" {
 
     dns {
       # use internal DNS so Kanidm can resolve infrastructure names if needed
-      servers = var.infra_dns_servers
+      servers = [local.ip_vars.ip_technitium_dns1, local.ip_vars.ip_technitium_dns2]
     }
 
     ip_config {
       ipv4 {
-        address = var.kanidm_ip_cidr
-        gateway = var.infra_vlan_gateway
+        address = "${local.ip_vars.ip_kanidm_iam}/24"
+        gateway = local.ip_vars.ip_vyos_router
       }
     }
 

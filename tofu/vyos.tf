@@ -1,15 +1,3 @@
-variable "vyos_ip_cidr" {
-  type        = string
-  description = "The management IP address and CIDR for the VyOS router"
-  default     = "10.10.10.1/24"
-}
-
-variable "vyos_gateway" {
-  type        = string
-  description = "The default gateway for the VyOS router (usually the university network gateway)"
-  default     = "10.10.10.254"
-}
-
 locals {
   # read the Ansible variables
   vyos_vars = yamldecode(file("${path.module}/../ansible/roles/vyos/vars/main.yml"))

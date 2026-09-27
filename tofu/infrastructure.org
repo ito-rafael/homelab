@@ -14,9 +14,9 @@
   - [[#locals][Locals]]
 - [[#core][Core]]
   - [[#vyos-router][VyOS Router]]
-  - [[#headscale-vpn][Headscale VPN]]
   - [[#technitium-dns][Technitium DNS]]
   - [[#kanidm-iam][Kanidm IAM]]
+  - [[#headscale-vpn][Headscale VPN]]
 
 * Documentation
 |---------------+-------------+------+----------------+--------------+-----------------------------------------|
@@ -114,27 +114,14 @@ variable "tofu_state_passphrase" {
   sensitive   = true
 }
 #+end_src
-*** Infra VLAN Gateway
-#+begin_src tofu
-variable "infra_vlan_gateway" {
-  type        = string
-  description = "The default gateway for the Infra VLAN 20"
-  default     = "10.10.20.1"  # VyOS Router IP in this network
-}
-#+end_src
-*** Infra DNS Servers
-#+begin_src tofu
-variable "infra_dns_servers" {
-  type        = list(string)
-  description = "The internal Technitium DNS servers for the Infra VLAN"
-  default     = ["10.10.20.3", "10.10.20.4"]
-}
-#+end_src
 ** Locals
 #+begin_src tofu
 locals {
   # read the Ansible variables from the proxmox role once for all modules
   proxmox_vars = yamldecode(file("${path.module}/../ansible/roles/proxmox/vars/main.yml"))
+
+  # read the global IP assignments from the master inventory
+  ip_vars = yamldecode(file("${path.module}/../ansible/group_vars/all/ip.yml"))
 }
 #+end_src
 * Core
@@ -143,22 +130,6 @@ locals {
 :header-args+: :tangle vyos.tf
 :END:
 *** Variables
-**** Network IP
-#+begin_src tofu
-variable "vyos_ip_cidr" {
-  type        = string
-  description = "The management IP address and CIDR for the VyOS router"
-  default     = "10.10.10.1/24"
-}
-#+end_src
-**** Network Gateway
-#+begin_src tofu
-variable "vyos_gateway" {
-  type        = string
-  description = "The default gateway for the VyOS router (usually the university network gateway)"
-  default     = "10.10.10.254"
-}
-#+end_src
 **** Local
 #+begin_src tofu
 locals {
@@ -297,8 +268,8 @@ resource "proxmox_virtual_environment_vm" "vyos" {
 #+begin_src tofu :tangle no
     ip_config {
       ipv4 {
-        address = var.vyos_ip_cidr
-        gateway = var.vyos_gateway
+        address = "${local.ip_vars.ip_vyos_router}/24"
+        gateway = local.ip_vars.ip_proxmox_hypervisor
       }
     }
 #+end_src
@@ -310,19 +281,216 @@ resource "proxmox_virtual_environment_vm" "vyos" {
 #+begin_src tofu
 }
 #+end_src
+** Technitium DNS
+:PROPERTIES:
+:header-args+: :tangle technitium.tf
+:END:
+*** Variables
+**** Local
+#+begin_src tofu
+locals {
+  # extract the LXC template filename
+  technitium_lxc_template = local.proxmox_vars.lxc_template_technitium
+}
+#+end_src
+*** LXC Container
+**** Resource
+#+begin_src tofu
+resource "proxmox_virtual_environment_container" "dns" {
+  count = 2
+
+  node_name = "andira"
+  vm_id        = 203 + count.index
+  # dns-1 will be vm_id 203, dns-2 will be vm_id 204
+
+  unprivileged = true
+  start_on_boot = true
+#+end_src
+**** OS
+#+begin_src tofu
+  operating_system {
+    template_file_id = "local:vztmpl/${local.technitium_lxc_template}"
+    type             = "debian"
+  }
+#+end_src
+**** CPU
+#+begin_src tofu
+  cpu {
+    cores = 1
+  }
+#+end_src
+**** Memory
+#+begin_src tofu
+  memory {
+    dedicated = 512
+  }
+#+end_src
+**** Disk
+#+begin_src tofu
+  disk {
+    datastore_id = "local-lvm"
+    size         = 4
+  }
+#+end_src
+**** Network
+#+begin_src tofu
+  network_interface {
+    name = "eth0"
+    bridge = "vmbr2"
+    vlan_id = 20  # Infra VLAN
+  }
+#+end_src
+**** Initialization
+#+begin_src tofu
+  initialization {
+    hostname = "dns-${count.index + 1}"
+#+end_src
+***** IP
+#+begin_src tofu
+    ip_config {
+      ipv4 {
+        # dynamically pulls dns1 for count.index 0, and dns2 for count.index 1
+        address = "${[local.ip_vars.ip_technitium_dns1, local.ip_vars.ip_technitium_dns2][count.index]}/24"
+        gateway = local.ip_vars.ip_vyos_router
+      }
+    }
+#+end_src
+***** SSH Keys
+#+begin_src tofu
+    user_account {
+      keys = [
+        var.ssh_key_laptop,
+        var.ssh_key_desktop
+      ]
+    }
+#+end_src
+***** EoS
+#+begin_src tofu
+  }
+#+end_src
+**** EoS
+#+begin_src tofu
+}
+#+end_src
+** Kanidm IAM
+:PROPERTIES:
+:header-args+: :tangle kanidm.tf
+:END:
+*** Variables
+**** Local
+#+begin_src tofu
+locals {
+  # extract the LXC template filename
+  kanidm_lxc_template = local.proxmox_vars.lxc_template_kanidm
+}
+#+end_src
+*** LXC Container
+This block provisions the Debian 13 (Trixie) container for Kanidm IAM on the internal bridge (=vmbr2=).
+**** Resource
+#+begin_src tofu
+resource "proxmox_virtual_environment_container" "kanidm" {
+  description = "Kanidm IAM Server"
+  tags        = ["core", "iam", "kanidm"]
+  node_name   = "andira"
+  vm_id       = 205
+
+
+  # ensure unprivileged mode
+  unprivileged = true
+
+  # autostart
+  start_on_boot = true
+
+  # enable nesting (recommended for systemd/auth daemons)
+  features {
+    nesting = true
+  }
+
+  # ensure the container starts after the network and DNS
+  startup {
+    order      = 15
+    up_delay   = 5
+    down_delay = 5
+  }
+#+end_src
+**** OS
+#+begin_src tofu
+  operating_system {
+    template_file_id = "local:vztmpl/${local.kanidm_lxc_template}"
+    type             = "debian"
+  }
+#+end_src
+**** CPU
+#+begin_src tofu
+  cpu {
+    cores = 1
+  }
+#+end_src
+**** Memory
+#+begin_src tofu
+  memory {
+    dedicated = 1024
+    swap      = 256
+  }
+#+end_src
+**** Disk
+#+begin_src tofu
+  disk {
+    datastore_id = "local-lvm"
+    size         = 10
+  }
+#+end_src
+**** Network
+#+begin_src tofu
+  network_interface {
+    name    = "eth0"
+    bridge  = "vmbr2"
+    vlan_id = 20  # Infra VLAN
+  }
+#+end_src
+**** Initialization
+#+begin_src tofu
+  initialization {
+    hostname = "kanidm"
+#+end_src
+***** DNS
+#+begin_src tofu
+    dns {
+      # use internal DNS so Kanidm can resolve infrastructure names if needed
+      servers = [local.ip_vars.ip_technitium_dns1, local.ip_vars.ip_technitium_dns2]
+    }
+#+end_src
+***** IP
+#+begin_src tofu
+    ip_config {
+      ipv4 {
+        address = "${local.ip_vars.ip_kanidm_iam}/24"
+        gateway = local.ip_vars.ip_vyos_router
+      }
+    }
+#+end_src
+***** SSH Keys
+#+begin_src tofu
+    user_account {
+      keys = [
+        var.ssh_key_laptop,
+        var.ssh_key_desktop
+      ]
+    }
+#+end_src
+***** EoS
+#+begin_src tofu
+  }
+#+end_src
+**** EoS
+#+begin_src tofu
+}
+#+end_src
 ** Headscale VPN :noexport_1:
 :PROPERTIES:
 :header-args+: :tangle headscale.tf
 :END:
 *** Variables
-**** Network IP
-#+begin_src tofu
-variable "headscale_ip_cidr" {
-  type        = string
-  description = "The IP address and CIDR for the Headscale LXC"
-  default     = "10.10.20.2/24"
-}
-#+end_src
 **** Local
 #+begin_src tofu
 locals {
@@ -401,7 +569,6 @@ resource "proxmox_virtual_environment_container" "headscale" {
 ***** DNS
 #+begin_src tofu
     dns {
-      #servers = ["10.10.20.x", "10.10.20.y"]  # DNS-1, DNS-2
       servers = ["1.1.1.1", "1.0.0.1"]  # DNS-1, DNS-2
     }
 #+end_src
@@ -409,8 +576,8 @@ resource "proxmox_virtual_environment_container" "headscale" {
 #+begin_src tofu
     ip_config {
       ipv4 {
-        address = var.headscale_ip_cidr
-        gateway = var.infra_vlan_gateway
+        address = "${local.ip_vars.ip_headscale_vpn}/24"
+        gateway = local.ip_vars.ip_vyos_router
       }
     }
 #+end_src
@@ -426,217 +593,6 @@ resource "proxmox_virtual_environment_container" "headscale" {
 ***** EoS
 #+begin_src tofu
 }
-#+end_src
-**** EoS
-#+begin_src tofu
-}
-#+end_src
-** Technitium DNS
-:PROPERTIES:
-:header-args+: :tangle technitium.tf
-:END:
-*** Variables
-**** Local
-#+begin_src tofu
-locals {
-  # extract the LXC template filename
-  technitium_lxc_template = local.proxmox_vars.lxc_template_technitium
-}
-#+end_src
-*** LXC Container
-**** Resource
-#+begin_src terraform
-resource "proxmox_virtual_environment_container" "dns" {
-  count = 2
-
-  node_name = "andira"
-  vm_id        = 203 + count.index
-  # dns-1 will be vm_id 203, dns-2 will be vm_id 204
-
-  unprivileged = true
-  start_on_boot = true
-#+end_src
-**** OS
-#+begin_src terraform
-  operating_system {
-    template_file_id = "local:vztmpl/${local.technitium_lxc_template}"
-    type             = "debian"
-  }
-#+end_src
-**** CPU
-#+begin_src tofu
-  cpu {
-    cores = 1
-  }
-#+end_src
-**** Memory
-#+begin_src terraform
-  memory {
-    dedicated = 512
-  }
-#+end_src
-**** Disk
-#+begin_src terraform
-  disk {
-    datastore_id = "local-lvm"
-    size         = 4
-  }
-#+end_src
-**** Network
-#+begin_src terraform
-  network_interface {
-    name = "eth0"
-    bridge = "vmbr2"
-    vlan_id = 20  # Infra VLAN
-  }
-#+end_src
-**** Initialization
-#+begin_src terraform
-  initialization {
-    hostname = "dns-${count.index + 1}"
-#+end_src
-***** IP
-#+begin_src terraform
-    ip_config {
-      ipv4 {
-        address = "10.10.20.${count.index + 3}/24"
-        gateway = var.infra_vlan_gateway
-      }
-    }
-#+end_src
-***** SSH Keys
-#+begin_src terraform
-    user_account {
-      keys = [
-        var.ssh_key_laptop,
-        var.ssh_key_desktop
-      ]
-    }
-#+end_src
-***** EoS
-#+begin_src terraform
-  }
-#+end_src
-**** EoS
-#+begin_src terraform
-}
-#+end_src
-** Kanidm IAM
-:PROPERTIES:
-:header-args+: :tangle kanidm.tf
-:END:
-*** Variables
-**** Network IP
-#+begin_src tofu
-variable "kanidm_ip_cidr" {
-  type        = string
-  description = "The IP address and CIDR for the Kanidm LXC"
-  default     = "10.10.20.5/24"
-}
-#+end_src
-**** Local
-#+begin_src tofu
-locals {
-  # extract the LXC template filename
-  kanidm_lxc_template = local.proxmox_vars.lxc_template_kanidm
-}
-#+end_src
-*** LXC Container
-This block provisions the Debian 13 (Trixie) container for Kanidm IAM on the internal bridge (=vmbr2=).
-**** Resource
-#+begin_src tofu
-resource "proxmox_virtual_environment_container" "kanidm" {
-  description = "Kanidm IAM Server"
-  tags        = ["core", "iam", "kanidm"]
-  node_name   = "andira"
-  vm_id       = 205
-
-  # ensure unprivileged mode
-  unprivileged = true
-
-  # autostart
-  start_on_boot = true
-
-  # enable nesting (recommended for systemd/auth daemons)
-  features {
-    nesting = true
-  }
-
-  # ensure the container starts after the network and DNS
-  startup {
-    order      = 15
-    up_delay   = 5
-    down_delay = 5
-  }
-#+end_src
-**** OS
-#+begin_src tofu
-  operating_system {
-    template_file_id = "local:vztmpl/${local.kanidm_lxc_template}"
-    type             = "debian"
-  }
-#+end_src
-**** CPU
-#+begin_src tofu
-  cpu {
-    cores = 1
-  }
-#+end_src
-**** Memory
-#+begin_src tofu
-  memory {
-    dedicated = 1024
-    swap      = 256
-  }
-#+end_src
-**** Disk
-#+begin_src tofu
-  disk {
-    datastore_id = "local-lvm"
-    size         = 10
-  }
-#+end_src
-**** Network
-#+begin_src tofu
-  network_interface {
-    name    = "eth0"
-    bridge  = "vmbr2"
-    vlan_id = 20  # Infra VLAN
-  }
-#+end_src
-**** Initialization
-#+begin_src tofu
-  initialization {
-    hostname = "kanidm"
-#+end_src
-***** DNS
-#+begin_src tofu
-    dns {
-      # use internal DNS so Kanidm can resolve infrastructure names if needed
-      servers = var.infra_dns_servers
-    }
-#+end_src
-***** IP
-#+begin_src tofu
-    ip_config {
-      ipv4 {
-        address = var.kanidm_ip_cidr
-        gateway = var.infra_vlan_gateway
-      }
-    }
-#+end_src
-***** SSH Keys
-#+begin_src tofu
-    user_account {
-      keys = [
-        var.ssh_key_laptop,
-        var.ssh_key_desktop
-      ]
-    }
-#+end_src
-***** EoS
-#+begin_src tofu
-  }
 #+end_src
 **** EoS
 #+begin_src tofu

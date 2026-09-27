@@ -1,9 +1,3 @@
-variable "headscale_ip_cidr" {
-  type        = string
-  description = "The IP address and CIDR for the Headscale LXC"
-  default     = "10.10.20.2/24"
-}
-
 locals {
   # extract the LXC template filename
   headscale_lxc_template = local.proxmox_vars.lxc_template_headscale
@@ -62,14 +56,13 @@ resource "proxmox_virtual_environment_container" "headscale" {
     hostname = "headscale"
 
     dns {
-      #servers = ["10.10.20.x", "10.10.20.y"]  # DNS-1, DNS-2
       servers = ["1.1.1.1", "1.0.0.1"]  # DNS-1, DNS-2
     }
 
     ip_config {
       ipv4 {
-        address = var.headscale_ip_cidr
-        gateway = var.infra_vlan_gateway
+        address = "${local.ip_vars.ip_headscale_vpn}/24"
+        gateway = local.ip_vars.ip_vyos_router
       }
     }
 

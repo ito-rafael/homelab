@@ -42,8 +42,9 @@ resource "proxmox_virtual_environment_container" "dns" {
 
     ip_config {
       ipv4 {
-        address = "10.10.20.${count.index + 3}/24"
-        gateway = var.infra_vlan_gateway
+        # dynamically pulls dns1 for count.index 0, and dns2 for count.index 1
+        address = "${[local.ip_vars.ip_technitium_dns1, local.ip_vars.ip_technitium_dns2][count.index]}/24"
+        gateway = local.ip_vars.ip_vyos_router
       }
     }
 
