@@ -1,0 +1,4 @@
+---
+caddy_domain: andira.lbic.fee.unicamp.br
+caddy_kanidm_ip: "{{ ip_kanidm_iam }}"
+caddy_headscale_ip: "{{ ip_headscale_vpn }}"
