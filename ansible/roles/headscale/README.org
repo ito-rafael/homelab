@@ -459,7 +459,4 @@ oidc:
 
   # request the scopes
   scope: ["openid", "profile", "email"]
-
-  # strips email domain (eg: "@dac.unicamp.br", "@gmail.com") so the Headscale namespace is just "test.student"
-  strip_email_domain: true
 #+end_src
