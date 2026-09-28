@@ -485,7 +485,7 @@ This applies the core routing, VLANs, and NAT masquerade to the VyOS instance.
     lines:
       - set interfaces ethernet eth0 description 'WAN-TRANSIT'
       - set interfaces ethernet eth1 description 'LAN-TRUNK'
-      - set interfaces ethernet eth1 vif 20 address '{{ ip_vyos_router }}/24'
+      - set interfaces ethernet eth1 vif 20 address '{{ ip_vyos_router_lan }}/24'
       - set interfaces ethernet eth1 vif 20 description 'INFRA-VLAN'
       - set system name-server '1.1.1.1'
       - set protocols static route 0.0.0.0/0 next-hop '{{ ip_proxmox_hypervisor }}'

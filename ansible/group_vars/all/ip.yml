@@ -1,5 +1,6 @@
 ip_proxmox_hypervisor: 10.10.10.254
-ip_vyos_router:        10.10.20.1
+ip_vyos_router_wan:    10.10.10.1
+ip_vyos_router_lan:    10.10.20.1
 ip_technitium_dns1:    10.10.20.2
 ip_technitium_dns2:    10.10.20.3
 ip_caddy_reverseproxy: 10.10.20.4

@@ -44,7 +44,7 @@ resource "proxmox_virtual_environment_container" "dns" {
       ipv4 {
         # dynamically pulls dns1 for count.index 0, and dns2 for count.index 1
         address = "${[local.ip_vars.ip_technitium_dns1, local.ip_vars.ip_technitium_dns2][count.index]}/24"
-        gateway = local.ip_vars.ip_vyos_router
+        gateway = local.ip_vars.ip_vyos_router_lan
       }
     }
 

@@ -270,7 +270,7 @@ resource "proxmox_virtual_environment_vm" "vyos" {
 #+begin_src tofu :tangle no
     ip_config {
       ipv4 {
-        address = "${local.ip_vars.ip_vyos_router}/24"
+        address = "${local.ip_vars.ip_vyos_router_lan}/24"
         gateway = local.ip_vars.ip_proxmox_hypervisor
       }
     }
@@ -353,7 +353,7 @@ resource "proxmox_virtual_environment_container" "dns" {
       ipv4 {
         # dynamically pulls dns1 for count.index 0, and dns2 for count.index 1
         address = "${[local.ip_vars.ip_technitium_dns1, local.ip_vars.ip_technitium_dns2][count.index]}/24"
-        gateway = local.ip_vars.ip_vyos_router
+        gateway = local.ip_vars.ip_vyos_router_lan
       }
     }
 #+end_src
@@ -459,7 +459,7 @@ resource "proxmox_virtual_environment_container" "caddy" {
     ip_config {
       ipv4 {
         address = "${local.ip_vars.ip_caddy_reverseproxy}/24"
-        gateway = local.ip_vars.ip_vyos_router
+        gateway = local.ip_vars.ip_vyos_router_lan
       }
     }
 #+end_src
@@ -577,7 +577,7 @@ resource "proxmox_virtual_environment_container" "kanidm" {
     ip_config {
       ipv4 {
         address = "${local.ip_vars.ip_kanidm_iam}/24"
-        gateway = local.ip_vars.ip_vyos_router
+        gateway = local.ip_vars.ip_vyos_router_lan
       }
     }
 #+end_src
@@ -689,7 +689,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
     ip_config {
       ipv4 {
         address = "${local.ip_vars.ip_headscale_vpn}/24"
-        gateway = local.ip_vars.ip_vyos_router
+        gateway = local.ip_vars.ip_vyos_router_lan
       }
     }
 #+end_src

@@ -62,7 +62,7 @@ resource "proxmox_virtual_environment_container" "headscale" {
     ip_config {
       ipv4 {
         address = "${local.ip_vars.ip_headscale_vpn}/24"
-        gateway = local.ip_vars.ip_vyos_router
+        gateway = local.ip_vars.ip_vyos_router_lan
       }
     }
 

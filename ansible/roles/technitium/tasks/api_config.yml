@@ -92,7 +92,7 @@
   changed_when: record_results.json.get('status') == 'ok'
   loop:
     - { name: 'proxmox',   ip: '{{ ip_proxmox_hypervisor }}' }
-    - { name: 'vyos',      ip: '{{ ip_vyos_router }}' }
+    - { name: 'vyos',      ip: '{{ ip_vyos_router_lan }}' }
     - { name: 'dns-1',     ip: '{{ ip_technitium_dns1 }}' }
     - { name: 'dns-2',     ip: '{{ ip_technitium_dns2 }}' }
     - { name: 'caddy',     ip: '{{ ip_caddy_reverseproxy }}' }
