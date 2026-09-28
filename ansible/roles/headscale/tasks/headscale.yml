@@ -26,13 +26,20 @@
   notify: core | headscale | restart systemd service
 
 - name: core | headscale | deploy Headscale config.yaml
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/headscale/config.yaml
-    src: config.yaml
+    src: config.yaml.j2
     owner: headscale
     group: headscale
     mode: '0644'
   notify: core | headscale | restart systemd service
+
+- name: core | headscale | map public domain to caddy to bypass Hairpin NAT
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    # routes internal requests through Caddy (10.10.20.4) to get valid TLS
+    line: "{{ ip_caddy_reverseproxy }} andira.lbic.fee.unicamp.br"
+    state: present
 
 - name: core | headscale | enable and start systemd service
   ansible.builtin.systemd:

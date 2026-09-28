@@ -55,13 +55,6 @@
   changed_when: false
   failed_when: false
 
-- name: core | headscale | map public domain to caddy to bypass Hairpin NAT
-  ansible.builtin.lineinfile:
-    path: /etc/hosts
-    # routes internal requests through Caddy (10.10.20.4) to get valid TLS
-    line: "{{ ip_caddy_reverseproxy }} andira.lbic.fee.unicamp.br"
-    state: present
-
 - name: core | headscale | connect and advertise routes
   when: tailscale_status.rc != 0
   block:
