@@ -4,6 +4,19 @@
 #+STARTUP: showeverything
 #+auto_tangle: t
 
+* Table of Contents :toc_4:
+- [[#lbic][LBiC]]
+  - [[#experiments][Experiments]]
+  - [[#workstation][Workstation]]
+  - [[#server][Server]]
+    - [[#proxmox-hypervisor][Proxmox Hypervisor]]
+    - [[#vyos-router][VyOS Router]]
+    - [[#internal-lxc-containers][Internal LXC Containers]]
+      - [[#technitium-dns][Technitium DNS]]
+      - [[#caddy-reverse-proxy][Caddy Reverse Proxy]]
+      - [[#kanidm-iam][Kanidm IAM]]
+      - [[#headscale-vpn][Headscale VPN]]
+
 * LBiC
 #+begin_src yaml
 lbic:
@@ -45,68 +58,64 @@ lbic:
         canabis:      # xxx.xxx.xxx.183
 #+end_src
 ** Server
-In order for the ='-o ProxyJump=root@andira'= jumps to work, this host config must be in the =~/.ssh/config= file of the machine that will run the Ansible commands.
-#+begin_src conf
-Host andira
-    HostName <SERVER-IP-ADDRESS>
-    User root
-#+end_src
-*** BoS
 #+begin_src yaml
     lbic_server:
       hosts:
 #+end_src
-*** Andirá
+*** Andirá :noexport:
 #+begin_src yaml
         andira:
-          ansible_host: andira
+          ansible_host: andira.lbic.fee.unicamp.br
           ansible_user: root
 #+end_src
 *** Proxmox Hypervisor
 #+begin_src yaml
         proxmox:
-          ansible_host: andira
+          ansible_host: andira.lbic.fee.unicamp.br
           ansible_user: root
 #+end_src
 *** VyOS Router
 #+begin_src yaml
         vyos:
-          ansible_host: "{{ ip_vyos_router }}"
+          ansible_host: "{{ ip_vyos_router_wan }}"
           ansible_user: vyos
           ansible_connection: ansible.netcommon.network_cli
           ansible_network_os: vyos.vyos.vyos
           ansible_network_cli_ssh_type: libssh
-          ansible_libssh_proxy_command: 'ssh -W %h:%p -q root@andira'
+          ansible_libssh_proxy_command: 'ssh -W %h:%p -q -o StrictHostKeyChecking=no root@andira.lbic.fee.unicamp.br'
 #+end_src
-*** Technitium DNS
-#+begin_src yaml
-        dns-1:
-          ansible_host: "{{ ip_technitium_dns1 }}"
-          ansible_user: root
-          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@{{ ip_vyos_router }}'
-        dns-2:
-          ansible_host: "{{ ip_technitium_dns2 }}"
-          ansible_user: root
-          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@{{ ip_vyos_router }}'
+*** Internal LXC Containers
+:PROPERTIES:
+:header-args:yaml+: :padline no
+:END:
+#+begin_src yaml :padline yes
+      children:
+        lxc_containers:
+          vars:
+            ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -W %h:%p -q -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -J root@andira.lbic.fee.unicamp.br vyos@{{ ip_vyos_router_wan }}"'
+            ansible_user: root
+
+          hosts:
 #+end_src
-*** Caddy Reverse Proxy
+**** Technitium DNS
 #+begin_src yaml
-        caddy:
-          ansible_host: "{{ ip_caddy_reverseproxy }}"
-          ansible_user: root
-          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@{{ ip_vyos_router }}'
+            dns-1:
+              ansible_host: "{{ ip_technitium_dns1 }}"
+            dns-2:
+              ansible_host: "{{ ip_technitium_dns2 }}"
 #+end_src
-*** Kanidm IAM
+**** Caddy Reverse Proxy
 #+begin_src yaml
-        kanidm:
-          ansible_host: "{{ ip_kanidm_iam }}"
-          ansible_user: root
-          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@{{ ip_vyos_router }}'
+            caddy:
+              ansible_host: "{{ ip_caddy_reverseproxy }}"
 #+end_src
-*** Headscale VPN
+**** Kanidm IAM
 #+begin_src yaml
-        headscale:
-          ansible_host: "{{ ip_headscale_vpn }}"
-          ansible_user: root
-          ansible_ssh_common_args: '-o ProxyJump=root@andira,vyos@{{ ip_vyos_router }}'
+            kanidm:
+              ansible_host: "{{ ip_kanidm_iam }}"
+#+end_src
+**** Headscale VPN
+#+begin_src yaml
+            headscale:
+              ansible_host: "{{ ip_headscale_vpn }}"
 #+end_src
