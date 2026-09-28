@@ -98,8 +98,8 @@
       <i>Atenção: este token expira em 24 horas.</i><br><br>
 
       <b>2. Acesso à VPN (Tailscale)</b><br>
-      Após criar a sua senha, você poderá acessar a rede de qualquer lugar. Instale o <a href="https://tailscale.com/download">Tailscale</a> em seu computador e execute o comando abaixo no terminal:<br>
-      <pre>sudo tailscale up --login-server https://andira.lbic.fee.unicamp.br:8443 --accept-routes</pre><br>
+      Após criar a sua senha, você poderá acessar a rede do laboratório de qualquer lugar. Instale o <a href="https://tailscale.com/download">Tailscale</a> em seu computador e execute o comando abaixo no terminal:<br>
+      <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">sudo tailscale up --login-server https://andira.lbic.fee.unicamp.br --accept-routes</pre><br>
       Isso abrirá uma janela no seu navegador solicitando o seu usuário ({{ item.item.item.username }}) e a senha que você acabou de criar.<br><br>
 
       Aproveito para enviar em anexo um guia rápido sobre a utilização dos recursos computacionais do laboratório.<br><br>
