@@ -15,21 +15,18 @@
     - "'409' not in kanidm_sa_create.stderr"
     - "'409' not in kanidm_sa_create.stdout"
 
+- name: core | kanidm unix backend | check if workstation service account has POSIX enabled
+  ansible.builtin.command: kanidm service-account get unix-clients --name idm_admin
+  register: unix_clients_get
+  changed_when: false
+  failed_when: false
+
 - name: core | kanidm unix backend | enable POSIX access for workstation service account
   ansible.builtin.command: kanidm service-account posix set unix-clients --name idm_admin
+  when:
+    - unix_clients_get.rc != 0 or 'posix' not in unix_clients_get.stdout | lower
   register: kanidm_sa_posix
-  changed_when:
-    - kanidm_sa_posix.rc == 0
-    - "'409' not in kanidm_sa_posix.stderr"
-    - "'409' not in kanidm_sa_posix.stdout"
-    - "'already' not in kanidm_sa_posix.stderr | lower"
-    - "'already' not in kanidm_sa_posix.stdout | lower"
-  failed_when:
-    - kanidm_sa_posix.rc != 0
-    - "'already' not in kanidm_sa_posix.stderr | lower"
-    - "'already' not in kanidm_sa_posix.stdout | lower"
-    - "'409' not in kanidm_sa_posix.stderr"
-    - "'409' not in kanidm_sa_posix.stdout"
+  changed_when: kanidm_sa_posix.rc == 0
 
 - name: core | kanidm unix backend | check unix authentication read membership
   ansible.builtin.command:
