@@ -446,4 +446,20 @@ database:
   type: sqlite
   sqlite:
     path: /var/lib/headscale/db.sqlite
+
+oidc:
+  # require OIDC to be functional for Headscale to start
+  only_start_if_oidc_is_available: true
+
+  # Kanidm issues tokens at this specific path:
+  issuer: "https://andira.lbic.fee.unicamp.br/oauth2/openid/headscale"
+
+  client_id: "headscale"
+  client_secret: "{{ vault_headscale_oidc_secret }}"
+
+  # request the scopes
+  scope: ["openid", "profile", "email"]
+
+  # strips email domain (eg: "@dac.unicamp.br", "@gmail.com") so the Headscale namespace is just "test.student"
+  strip_email_domain: true
 #+end_src
