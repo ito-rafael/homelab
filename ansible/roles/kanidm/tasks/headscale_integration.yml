@@ -29,11 +29,19 @@
     - "'409' not in kanidm_group_create.stderr"
     - "'409' not in kanidm_group_create.stdout"
 
+- name: core | kanidm headscale | check if Headscale group has POSIX enabled
+  ansible.builtin.command: kanidm group get headscale_users --name idm_admin
+  register: headscale_group_get
+  changed_when: false
+  failed_when: false
+
 - name: core | kanidm headscale | enable POSIX on Headscale group
   ansible.builtin.command:
     cmd: kanidm group posix set headscale_users --name idm_admin
+  when:
+    - headscale_group_get.rc != 0 or 'gidnumber' not in headscale_group_get.stdout | lower
   register: kanidm_headscale_group_posix
-  changed_when: true
+  changed_when: kanidm_headscale_group_posix.rc == 0
 
 - name: core | kanidm headscale | map openid scopes to the headscale_users group
   ansible.builtin.command: kanidm system oauth2 update-scope-map headscale headscale_users openid email profile --name idm_admin

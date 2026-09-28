@@ -330,13 +330,23 @@ Kanidm separates global configuration (admin) from user management (idm_admin).
     - "'409' not in kanidm_group_create.stderr"
     - "'409' not in kanidm_group_create.stdout"
 #+end_src
+*** Check POSIX For Headscale Group
+#+begin_src yaml
+- name: core | kanidm headscale | check if Headscale group has POSIX enabled
+  ansible.builtin.command: kanidm group get headscale_users --name idm_admin
+  register: headscale_group_get
+  changed_when: false
+  failed_when: false
+#+end_src
 *** Grant POSIX For Headscale Group
 #+begin_src yaml
 - name: core | kanidm headscale | enable POSIX on Headscale group
   ansible.builtin.command:
     cmd: kanidm group posix set headscale_users --name idm_admin
+  when:
+    - headscale_group_get.rc != 0 or 'gidnumber' not in headscale_group_get.stdout | lower
   register: kanidm_headscale_group_posix
-  changed_when: true
+  changed_when: kanidm_headscale_group_posix.rc == 0
 #+end_src
 *** Grant Profile Access to Group
 #+begin_src yaml
