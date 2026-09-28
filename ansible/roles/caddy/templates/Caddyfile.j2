@@ -5,23 +5,21 @@
 
 # port multiplexing: Headscale and Kanidm shares port 443
 {{ caddy_domain }} {
-  # route Headscale VPN traffic (matches specific Tailscale paths)
-  @headscale {
-    path /key* /register* /machine* /ts2021* /health /oidc/callback* /apple* /windows* /api* /admin* /verify* /metrics
-  }
-  # Headscale listens locally on plain HTTP, Caddy wraps it in HTTPS
-  reverse_proxy @headscale http://{{ caddy_headscale_ip }}:8080 {
-    header_up Host {host}
-  }
-
-  # route Kanidm IAM Traffic (everything else defaults to Kanidm)
-  handle {
-    # Kanidm uses HTTPS strictly. We tell Caddy to connect via HTTPS
-    # but ignore the backend's self-signed certificate.
-    reverse_proxy https://{{ caddy_kanidm_ip }}:443 {
-      transport http {
-        tls_insecure_skip_verify
+  # route Kanidm IAM Traffic
+  @kanidm path /ui* /oauth2* /v1* /status* /pkg* /icons* /favicon.ico
+    handle @kanidm {
+      # Kanidm uses HTTPS strictly. We tell Caddy to connect via HTTPS
+      # but ignore the backend's self-signed certificate.
+      reverse_proxy https://10.10.20.5:443 {
+        transport http {
+            tls_insecure_skip_verify
+        }
       }
     }
+
+    # Headscale: default fallback
+  handle {
+    # Headscale listens locally on plain HTTP, Caddy wraps it in HTTPS
+    reverse_proxy http://10.10.20.6:8080
   }
 }
