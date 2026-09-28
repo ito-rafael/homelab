@@ -16,7 +16,7 @@
   - [[#main-1][Main]]
 - [[#vars][Vars]]
   - [[#main-2][Main]]
-- [[#files][Files]]
+- [[#templates][Templates]]
   - [[#configyaml][config.yaml]]
 
 * Tasks
@@ -73,9 +73,9 @@
 *** Configure
 #+begin_src yaml
 - name: core | headscale | deploy Headscale config.yaml
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/headscale/config.yaml
-    src: config.yaml
+    src: config.yaml.j2
     owner: headscale
     group: headscale
     mode: '0644'
@@ -398,11 +398,11 @@
 headscale_version: "0.29.3"
 headscale_arch: "amd64"
 #+end_src
-* Files
+* Templates
 ** config.yaml
-#+begin_src conf :tangle files/config.yaml
+#+begin_src conf :tangle templates/config.yaml.j2
 # URL clients will connect to
-server_url: https://andira.lbic.fee.unicamp.br:8443
+server_url: https://andira.lbic.fee.unicamp.br
 listen_addr: 0.0.0.0:8080
 metrics_listen_addr: 127.0.0.1:9090
 # enable CLI communication
