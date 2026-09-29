@@ -54,5 +54,10 @@ oidc:
   client_id: "headscale"
   client_secret: "{{ vault_headscale_oidc_secret }}"
 
+  # enable PKCE for enhanced OAuth2 security
+  pkce:
+    enabled: true
+    method: S256
+
   # request the scopes
   scope: ["openid", "profile", "email"]
