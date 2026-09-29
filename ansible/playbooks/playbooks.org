@@ -220,3 +220,13 @@
     - "'does not exist' not in headscale_delete.stderr | lower"
   changed_when: headscale_delete.rc == 0
 #+end_src
+*** Delete Home Directories from Workstations
+#+begin_src yaml
+- name: ops | offboard | delete user home directories on workstations
+  ansible.builtin.file:
+    path: "/home/{{ item.0.username }}"
+    state: absent
+  # The 'product' filter creates a nested loop pairing every user with every workstation
+  loop: "{{ (users_offboard | default([])) | product(workstations | default([])) | list }}"
+  delegate_to: "{{ item.1.hostname }}"
+#+end_src
