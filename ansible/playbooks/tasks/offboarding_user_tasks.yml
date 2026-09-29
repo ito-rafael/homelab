@@ -3,3 +3,13 @@
   ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm login --name idm_admin"
   changed_when: false
   no_log: true
+
+- name: ops | offboard | delete user accounts from Kanidm
+  ansible.builtin.command: kanidm person delete {{ item.username }} --name idm_admin
+  loop: "{{ users_offboard | default([]) }}"
+  register: kanidm_user_delete
+  changed_when: kanidm_user_delete.rc == 0
+  failed_when:
+    - kanidm_user_delete.rc != 0
+    - "'No such entry' not in kanidm_user_delete.stderr"
+    - "'not found' not in kanidm_user_delete.stderr | lower"
