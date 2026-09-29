@@ -37,6 +37,15 @@
     state: directory
     mode: '0755'
 
+- name: core | caddy | set recursive ownership for Caddy state dir
+  ansible.builtin.file:
+    path: /var/lib/caddy
+    state: directory
+    owner: caddy
+    group: caddy
+    recurse: yes
+  notify: core | caddy | restart systemd service
+
 - name: core | caddy | deploy Caddyfile
   ansible.builtin.template:
     src: Caddyfile.j2

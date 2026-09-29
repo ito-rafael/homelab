@@ -87,6 +87,17 @@
     state: directory
     mode: '0755'
 #+end_src
+*** Fix Let's Encrypt Directory Permissions
+#+begin_src yaml
+- name: core | caddy | set recursive ownership for Caddy state dir
+  ansible.builtin.file:
+    path: /var/lib/caddy
+    state: directory
+    owner: caddy
+    group: caddy
+    recurse: yes
+  notify: core | caddy | restart systemd service
+#+end_src
 *** Configure and Start Daemon
 **** Deploy Caddyfile configuration
 #+begin_src yaml
