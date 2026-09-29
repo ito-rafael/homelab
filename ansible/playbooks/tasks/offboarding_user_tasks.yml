@@ -13,3 +13,14 @@
     - kanidm_user_delete.rc != 0
     - "'No such entry' not in kanidm_user_delete.stderr"
     - "'not found' not in kanidm_user_delete.stderr | lower"
+
+- name: ops | offboard | delete user namespace from Headscale
+  ansible.builtin.command: headscale users delete {{ item.username }}
+  loop: "{{ users_offboard | default([]) }}"
+  delegate_to: headscale
+  register: headscale_delete
+  failed_when:
+    - headscale_delete.rc != 0
+    - "'not found' not in headscale_delete.stderr | lower"
+    - "'does not exist' not in headscale_delete.stderr | lower"
+  changed_when: headscale_delete.rc == 0
