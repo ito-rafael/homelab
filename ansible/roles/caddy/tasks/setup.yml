@@ -31,6 +31,12 @@
     state: present
     update_cache: yes
 
+- name: core | caddy | create Let's Encrypt ACME directory
+  ansible.builtin.file:
+    path: /var/lib/caddy/.local/share/caddy
+    state: directory
+    mode: '0755'
+
 - name: core | caddy | deploy Caddyfile
   ansible.builtin.template:
     src: Caddyfile.j2
