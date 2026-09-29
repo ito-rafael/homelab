@@ -237,6 +237,13 @@ lxc_template_headscale:  "debian-13-standard_13.6-1_amd64.tar.zst"
         # UDP 41641: forward to Headscale --> WireGuard protocol
         post-up   iptables -t nat -A PREROUTING -d 143.106.45.162 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.6:41641
         post-down iptables -t nat -D PREROUTING -d 143.106.45.162 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.6:41641
+        #----------------------------------------------
+        # TCP/UDP 53: Technitium DNS-1 Port Forwarding
+        post-up   iptables -t nat -A PREROUTING -d 143.106.45.162 -p udp --dport 53 -j DNAT --to-destination 10.10.20.3:53
+        post-down iptables -t nat -D PREROUTING -d 143.106.45.162 -p udp --dport 53 -j DNAT --to-destination 10.10.20.3:53
+        post-up   iptables -t nat -A PREROUTING -d 143.106.45.162 -p tcp --dport 53 -j DNAT --to-destination 10.10.20.3:53
+        post-down iptables -t nat -D PREROUTING -d 143.106.45.162 -p tcp --dport 53 -j DNAT --to-destination 10.10.20.3:53
+        #----------------------------------------------
 #+end_src
 ** vmbr1
 #+begin_src conf :tangle files/vmbr1.txt
