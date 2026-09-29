@@ -29,3 +29,10 @@
     - kanidm_ws_admins_create.rc != 0
     - "'already exists' not in kanidm_ws_admins_create.stderr | lower"
     - "'409' not in kanidm_ws_admins_create.stderr"
+
+- name: ops | workstations | check if workstation users group has POSIX enabled
+  ansible.builtin.command: kanidm group posix get {{ item.hostname }}_users --name idm_admin
+  loop: "{{ workstations }}"
+  register: ws_users_posix_get
+  changed_when: false
+  failed_when: false
