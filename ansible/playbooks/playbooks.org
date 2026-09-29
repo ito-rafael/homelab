@@ -245,6 +245,14 @@
   register: kanidm_ws_users_posix
   changed_when: kanidm_ws_users_posix.rc == 0
 #+end_src
+*** Enforce Group Memberships (RBAC)
+#+begin_src yaml
+- name: ops | workstations | set exact members for workstation users
+  ansible.builtin.command: "kanidm group set-members {{ item.hostname }}_users {{ item.users_allowed | join(' ') }} --name idm_admin"
+  loop: "{{ workstations }}"
+  when: item.users_allowed is defined and item.users_allowed | length > 0
+  changed_when: true
+#+end_src
 * Offboarding User
 ** Playbook
 #+begin_src yaml :tangle offboarding_user.yml
