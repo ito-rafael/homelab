@@ -233,16 +233,27 @@ lxc_template_headscale:  "debian-13-standard_13.6-1_amd64.tar.zst"
         # TCP 443: forward to Caddy --> Kanidm IAM + Headscale VPN (port multiplexing)
         post-up   iptables -t nat -A PREROUTING -d 143.106.45.162 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.4:443
         post-down iptables -t nat -D PREROUTING -d 143.106.45.162 -p tcp --dport 443 -j DNAT --to-destination 10.10.20.4:443
+        # Allow Forwarding through the firewall (Filter)
+        post-up   iptables -A FORWARD -p tcp -d 10.10.20.4 -m multiport --dports 80,443 -j ACCEPT
+        post-down iptables -D FORWARD -p tcp -d 10.10.20.4 -m multiport --dports 80,443 -j ACCEPT
         #----------------------------------------------
         # UDP 41641: forward to Headscale --> WireGuard protocol
         post-up   iptables -t nat -A PREROUTING -d 143.106.45.162 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.6:41641
         post-down iptables -t nat -D PREROUTING -d 143.106.45.162 -p udp --dport 41641 -j DNAT --to-destination 10.10.20.6:41641
+        # Allow Forwarding through the firewall (Filter)
+        post-up   iptables -A FORWARD -p udp -d 10.10.20.6 --dport 41641 -j ACCEPT
+        post-down iptables -D FORWARD -p udp -d 10.10.20.6 --dport 41641 -j ACCEPT
         #----------------------------------------------
         # TCP/UDP 53: Technitium DNS-1 Port Forwarding
         post-up   iptables -t nat -A PREROUTING -d 143.106.45.162 -p udp --dport 53 -j DNAT --to-destination 10.10.20.3:53
         post-down iptables -t nat -D PREROUTING -d 143.106.45.162 -p udp --dport 53 -j DNAT --to-destination 10.10.20.3:53
         post-up   iptables -t nat -A PREROUTING -d 143.106.45.162 -p tcp --dport 53 -j DNAT --to-destination 10.10.20.3:53
         post-down iptables -t nat -D PREROUTING -d 143.106.45.162 -p tcp --dport 53 -j DNAT --to-destination 10.10.20.3:53
+        # Allow Forwarding through the firewall (Filter)
+        post-up   iptables -A FORWARD -p udp -d 10.10.20.3 --dport 53 -j ACCEPT
+        post-down iptables -D FORWARD -p udp -d 10.10.20.3 --dport 53 -j ACCEPT
+        post-up   iptables -A FORWARD -p tcp -d 10.10.20.3 --dport 53 -j ACCEPT
+        post-down iptables -D FORWARD -p tcp -d 10.10.20.3 --dport 53 -j ACCEPT
         #----------------------------------------------
 #+end_src
 ** vmbr1
