@@ -1,0 +1,10 @@
+---
+- name: Onboard and Manage Workstation RBAC
+  hosts: kanidm
+  vars_files:
+    - "../group_vars/all/main.yml"
+    - "../group_vars/all/workstations.yml"
+    - "../group_vars/all/vault.yml"
+  tasks:
+    - name: Import workstation onboarding tasks
+      ansible.builtin.import_tasks: tasks/onboarding_workstation.yml
