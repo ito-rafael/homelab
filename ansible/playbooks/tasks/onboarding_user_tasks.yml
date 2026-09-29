@@ -1,4 +1,8 @@
 ---
+- name: ops | kanidm users | authenticate CLI as idm_admin
+  ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm login --name idm_admin"
+  changed_when: false
+  no_log: true
 
 - name: ops | users | create user accounts
   ansible.builtin.command: kanidm person create {{ item.username }} "{{ item.name }}" --name idm_admin
