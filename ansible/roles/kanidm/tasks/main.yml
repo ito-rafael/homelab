@@ -1,0 +1,5 @@
+---
+- ansible.builtin.import_tasks: timezone.yml
+- ansible.builtin.import_tasks: server_configuration.yml
+- ansible.builtin.import_tasks: headscale_integration.yml
+- ansible.builtin.import_tasks: workstation_integration.yml
