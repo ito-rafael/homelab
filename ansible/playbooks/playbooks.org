@@ -194,6 +194,21 @@
   changed_when: false
   no_log: true
 #+end_src
+*** Create Workstation Users Groups
+#+begin_src yaml
+- name: ops | workstations | create workstation users group
+  ansible.builtin.command: kanidm group create {{ item.hostname }}_users --name idm_admin
+  loop: "{{ workstations }}"
+  register: kanidm_ws_users_create
+  changed_when:
+    - kanidm_ws_users_create.rc == 0
+    - "'already' not in kanidm_ws_users_create.stdout | lower"
+    - "'already' not in kanidm_ws_users_create.stderr | lower"
+  failed_when:
+    - kanidm_ws_users_create.rc != 0
+    - "'already exists' not in kanidm_ws_users_create.stderr | lower"
+    - "'409' not in kanidm_ws_users_create.stderr"
+#+end_src
 * Offboarding User
 ** Playbook
 #+begin_src yaml :tangle offboarding_user.yml
