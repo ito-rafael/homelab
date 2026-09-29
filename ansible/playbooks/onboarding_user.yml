@@ -1,0 +1,11 @@
+---
+- name: Onboard and Manage LBiC Students
+  hosts: kanidm
+  vars_files:
+    - "../group_vars/all/main.yml"
+    - "../group_vars/all/users.yml"
+    - "../group_vars/all/ip.yml"
+    - "../group_vars/all/vault.yml"
+  tasks:
+    - name: Import user onboarding tasks
+      ansible.builtin.import_tasks: tasks/onboarding_user.yml
