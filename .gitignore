@@ -10,3 +10,6 @@ proxmox/answer_lbic.toml
 **/*.tfstate.backup
 **/*.auto.tfvars
 **/*.tfvars
+
+# Ansible
+ansible/roles/headscale/tasks/users_onboard.yml

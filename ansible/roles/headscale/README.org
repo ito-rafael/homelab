@@ -27,7 +27,7 @@
 - ansible.builtin.import_tasks: timezone.yml
 - ansible.builtin.import_tasks: lxc_tun.yml
 - ansible.builtin.import_tasks: tailscale.yml
-- ansible.builtin.import_tasks: users_onboard.yml
+#- ansible.builtin.import_tasks: users_onboard.yml
 #+end_src
 ** Install & Configure
 :PROPERTIES:
@@ -286,11 +286,12 @@
 :PROPERTIES:
 :header-args+: :tangle tasks/users_onboard.yml
 :END:
+Tasks deprecated in favour of centralized authentication with Kanidm.
 #+begin_src yaml
 ---
 #+end_src
 *** Create User Namespaces
-#+begin_src yaml
+#+begin_src yaml :tangle tasks/users_onboard.yml :tangle no
 - name: core | headscale onboarding | create user namespaces in Headscale
   ansible.builtin.command: "headscale users create {{ item.username }}"
   loop: "{{ users }}"
@@ -302,28 +303,28 @@
   changed_when: user_creation.rc == 0
 #+end_src
 *** Fetch Registered Devices
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | headscale onboarding | fetch registered devices
   ansible.builtin.command: "headscale nodes list --output json"
   register: all_nodes
   changed_when: false
 #+end_src
 *** Fetch Registered Users
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | headscale onboarding | fetch registered users to get IDs
   ansible.builtin.command: "headscale users list --output json"
   register: registered_users
   changed_when: false
 #+end_src
 *** Fetch All Existing Pre-Auth Keys
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | headscale onboarding | fetch all existing pre-auth keys
   ansible.builtin.command: "headscale preauthkeys list --output json"
   register: all_keys
   changed_when: false
 #+end_src
 *** Generate Pre-Auth Keys
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | headscale onboarding | generate pre-auth keys for users without active keys
   ansible.builtin.command: "headscale preauthkeys create --user {{ (registered_users.stdout | from_json | selectattr('name', 'equalto', item.username) | first).id }} --expiration 24h"
   loop: "{{ users }}"
@@ -335,7 +336,7 @@
   register: generated_keys
 #+end_src
 *** Download Cheatsheet
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/ito-rafael/ansible-provision/main/roles/lab_experiments/cheatsheet/cheatsheet.pdf"
@@ -343,7 +344,7 @@
     mode: '0644'
 #+end_src
 *** Send Email Instructions
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | headscale onboarding | send email instructions to new users
   community.general.mail:
     host: smtp.gmail.com
