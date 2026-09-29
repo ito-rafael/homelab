@@ -480,7 +480,8 @@ tls_key = "/etc/kanidm/key.pem"
 #+end_src
 ** config
 #+begin_src conf :tangle templates/config.j2
-uri = "https://127.0.0.1:443"
-verify_ca = false
-verify_hostnames = false
+uri = "https://{{ kanidm_ip }}:443"
+verify_ca = true
+verify_hostnames = true
+ca_path = "/etc/kanidm/chain.pem"
 #+end_src
