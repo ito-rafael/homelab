@@ -17,9 +17,10 @@
       }
     }
 
-    # Headscale: default fallback
+  # Headscale: default fallback
   handle {
     # Headscale listens locally on plain HTTP, Caddy wraps it in HTTPS
     reverse_proxy http://10.10.20.6:8080
   }
+
 }
