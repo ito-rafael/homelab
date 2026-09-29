@@ -1,0 +1,69 @@
+---
+domain: "{{ lbic_domain }}"
+workstations:
+  - hostname: "andira"
+    users_allowed: []
+    admin: []
+  - hostname: "aroeira"
+    users_allowed: []
+    admin: []
+  - hostname: "baoba"
+    users_allowed: []
+    admin: []
+  - hostname: "barauna"
+    users_allowed: []
+    admin: []
+  - hostname: "cajazeira"
+    users_allowed: []
+    admin: []
+  - hostname: "cambuci"
+    users_allowed: []
+    admin: []
+  - hostname: "castanheiro"
+    users_allowed: []
+    admin: []
+  - hostname: "catuaba"
+    users_allowed: []
+    admin: []
+  - hostname: "cedro"
+    users_allowed: []
+    admin: []
+  - hostname: "embira"
+    users_allowed: []
+    admin: []
+  - hostname: "gameleira"
+    users_allowed: []
+    admin: []
+  - hostname: "imburana"
+    users_allowed: []
+    admin: []
+  - hostname: "ipe"
+    users_allowed: []
+    admin: []
+  - hostname: "jacaranda"
+    users_allowed: []
+    admin: []
+  - hostname: "jatoba"
+    users_allowed: []
+    admin: []
+  - hostname: "jequitiba"
+    users_allowed: []
+    admin: []
+  - hostname: "mogno"
+    users_allowed: []
+    admin: []
+  - hostname: "paubrasil"
+    users_allowed: []
+    admin: []
+  - hostname: "peroba"
+    users_allowed: []
+    admin: []
+  - hostname: "seringueira"
+    users_allowed: []
+    admin: []
+  - hostname: "umbu"
+    users_allowed: []
+    admin: []
+  - hostname: "canabis"
+    users_allowed: []
+    admin: []

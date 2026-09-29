@@ -1,0 +1,173 @@
+#+TITLE: LBiC Workstations List
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+DESCRIPTION: Declarative inventory of lab workstations for automated ACL management with Kanidm via Ansible.
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#workstations][Workstations]]
+  - [[#andirá][Andirá]]
+  - [[#aroeira][Aroeira]]
+  - [[#baobá][Baobá]]
+  - [[#baraúna][Baraúna]]
+  - [[#cajazeira][Cajazeira]]
+  - [[#cambuci][Cambuci]]
+  - [[#castanheiro][Castanheiro]]
+  - [[#catuaba][Catuaba]]
+  - [[#cedro][Cedro]]
+  - [[#embira][Embira]]
+  - [[#gameleira][Gameleira]]
+  - [[#imburana][Imburana]]
+  - [[#ipê][Ipê]]
+  - [[#jacarandá][Jacarandá]]
+  - [[#jatobá][Jatobá]]
+  - [[#jequitibá][Jequitibá]]
+  - [[#mogno][Mogno]]
+  - [[#pau-brasil][Pau-Brasil]]
+  - [[#peroba][Peroba]]
+  - [[#seringueira][Seringueira]]
+  - [[#umbu][Umbu]]
+  - [[#canabis][Canabis]]
+
+* Workstations
+:PROPERTIES:
+:header-args+: :padline no :tangle workstations.yml
+:END:
+#+begin_src yaml
+---
+domain: "{{ lbic_domain }}"
+workstations:
+#+end_src
+** Andirá
+#+begin_src yaml
+  - hostname: "andira"
+    users_allowed: []
+    admin: []
+#+end_src
+** Aroeira
+#+begin_src yaml
+  - hostname: "aroeira"
+    users_allowed: []
+    admin: []
+#+end_src
+** Baobá
+#+begin_src yaml
+  - hostname: "baoba"
+    users_allowed: []
+    admin: []
+#+end_src
+** Baraúna
+#+begin_src yaml
+  - hostname: "barauna"
+    users_allowed: []
+    admin: []
+#+end_src
+** Cajazeira
+#+begin_src yaml
+  - hostname: "cajazeira"
+    users_allowed: []
+    admin: []
+#+end_src
+** Cambuci
+#+begin_src yaml
+  - hostname: "cambuci"
+    users_allowed: []
+    admin: []
+#+end_src
+** Castanheiro
+#+begin_src yaml
+  - hostname: "castanheiro"
+    users_allowed: []
+    admin: []
+#+end_src
+** Catuaba
+#+begin_src yaml
+  - hostname: "catuaba"
+    users_allowed: []
+    admin: []
+#+end_src
+** Cedro
+#+begin_src yaml
+  - hostname: "cedro"
+    users_allowed: []
+    admin: []
+#+end_src
+** Embira
+#+begin_src yaml
+  - hostname: "embira"
+    users_allowed: []
+    admin: []
+#+end_src
+** Gameleira
+#+begin_src yaml
+  - hostname: "gameleira"
+    users_allowed: []
+    admin: []
+#+end_src
+** Imburana
+#+begin_src yaml
+  - hostname: "imburana"
+    users_allowed: []
+    admin: []
+#+end_src
+** Ipê
+#+begin_src yaml
+  - hostname: "ipe"
+    users_allowed: []
+    admin: []
+#+end_src
+** Jacarandá
+#+begin_src yaml
+  - hostname: "jacaranda"
+    users_allowed: []
+    admin: []
+#+end_src
+** Jatobá
+#+begin_src yaml
+  - hostname: "jatoba"
+    users_allowed: []
+    admin: []
+#+end_src
+** Jequitibá
+#+begin_src yaml
+  - hostname: "jequitiba"
+    users_allowed: []
+    admin: []
+#+end_src
+** Mogno
+#+begin_src yaml
+  - hostname: "mogno"
+    users_allowed: []
+    admin: []
+#+end_src
+** Pau-Brasil
+#+begin_src yaml
+  - hostname: "paubrasil"
+    users_allowed: []
+    admin: []
+#+end_src
+** Peroba
+#+begin_src yaml
+  - hostname: "peroba"
+    users_allowed: []
+    admin: []
+#+end_src
+** Seringueira
+#+begin_src yaml
+  - hostname: "seringueira"
+    users_allowed: []
+    admin: []
+#+end_src
+** Umbu
+#+begin_src yaml
+  - hostname: "umbu"
+    users_allowed: []
+    admin: []
+#+end_src
+** Canabis
+#+begin_src yaml
+  - hostname: "canabis"
+    users_allowed: []
+    admin: []
+#+end_src
