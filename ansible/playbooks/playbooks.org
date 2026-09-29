@@ -233,6 +233,18 @@
   changed_when: false
   failed_when: false
 #+end_src
+*** Grant POSIX For Workstation Groups
+#+begin_src yaml
+- name: ops | workstations | enable POSIX on workstation users group
+  ansible.builtin.command: kanidm group posix set {{ item.hostname }}_users --name idm_admin
+  loop: "{{ workstations }}"
+  loop_control:
+    index_var: ws_index
+  when:
+    - ws_users_posix_get.results[ws_index].rc != 0 or 'gidnumber' not in ws_users_posix_get.results[ws_index].stdout | lower
+  register: kanidm_ws_users_posix
+  changed_when: kanidm_ws_users_posix.rc == 0
+#+end_src
 * Offboarding User
 ** Playbook
 #+begin_src yaml :tangle offboarding_user.yml
