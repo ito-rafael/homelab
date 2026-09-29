@@ -6,6 +6,7 @@
 
 * Table of Contents :toc_1:
 - [[#onboarding-user][Onboarding User]]
+- [[#offboarding-user][Offboarding User]]
 
 * Onboarding User
 ** Playbook
@@ -163,4 +164,34 @@
     - "'memberof: headscale_users@' not in kanidm_person_state.results[kanidm_user_index].stdout"
   register: kanidm_group_add
   changed_when: kanidm_group_add.rc == 0
+#+end_src
+* Offboarding User
+** Playbook
+#+begin_src yaml :tangle offboarding_user.yml
+---
+- name: Offboard and Remove LBiC Students
+  hosts: kanidm
+  vars_files:
+    - "../group_vars/all/main.yml"
+    - "../group_vars/all/users.yml"
+    - "../group_vars/all/ip.yml"
+    - "../group_vars/all/workstations.yml"
+    - "../group_vars/all/vault.yml"
+  tasks:
+    - name: Import user offboarding tasks
+      ansible.builtin.import_tasks: tasks/offboarding_user_tasks.yml
+#+end_src
+** Tasks
+:PROPERTIES:
+:header-args+: :tangle tasks/offboarding_user_tasks.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Kanidm CLI Authentication
+#+begin_src yaml :padline no
+- name: ops | offboard | authenticate CLI as idm_admin
+  ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm login --name idm_admin"
+  changed_when: false
+  no_log: true
 #+end_src
