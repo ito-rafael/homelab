@@ -69,3 +69,9 @@
   loop: "{{ workstations }}"
   when: item.users_allowed is defined and item.users_allowed | length > 0
   changed_when: true
+
+- name: ops | workstations | set exact members for workstation admins
+  ansible.builtin.command: "kanidm group set-members {{ item.hostname }}_admins {{ item.admin | join(' ') }} --name idm_admin"
+  loop: "{{ workstations }}"
+  when: item.admin is defined and item.admin | length > 0
+  changed_when: true
