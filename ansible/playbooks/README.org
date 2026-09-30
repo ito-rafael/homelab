@@ -118,6 +118,9 @@ Runs against the LXC container to install and configure the VPN controller.
         name: headscale
 #+end_src
 * User Onboard :noexport_1:
+:PROPERTIES:
+:header-args+: :tangle tasks/user_onboard.yml
+:END:
 #+begin_src yaml :tangle ops_user_onboard.yml
 ---
 - name: Onboard and Manage LBiC Students
@@ -129,23 +132,17 @@ Runs against the LXC container to install and configure the VPN controller.
     - "../group_vars/all/vault.yml"
   tasks:
     - name: Import user onboarding tasks
-      ansible.builtin.import_tasks: tasks/onboarding_user.yml
+      ansible.builtin.import_tasks: tasks/user_onboard.yml
 #+end_src
-** Tasks
-:PROPERTIES:
-:header-args+: :tangle tasks/onboarding_user.yml
-:END:
+** Kanidm CLI Authentication
 #+begin_src yaml
 ---
-#+end_src
-*** Kanidm CLI Authentication
-#+begin_src yaml :padline no
 - name: ops | kanidm users | authenticate CLI as idm_admin
   ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm login --name idm_admin"
   changed_when: false
   no_log: true
 #+end_src
-*** Create User Accounts
+** Create User Accounts
 #+begin_src yaml
 - name: ops | users | create user accounts
   ansible.builtin.command: kanidm person create {{ item.username }} "{{ item.name }}" --name idm_admin
@@ -161,7 +158,7 @@ Runs against the LXC container to install and configure the VPN controller.
     - "'Entry already exists' not in kanidm_user_create.stderr"
     - "'409 Conflict' not in kanidm_user_create.stderr"
 #+end_src
-*** Generate Token For New Users
+** Generate Token For New Users
 #+begin_src yaml
 - name: ops | users | generate setup token for new users
   ansible.builtin.command: kanidm person credential create-reset-token {{ item.item.username }} --name idm_admin
@@ -170,7 +167,7 @@ Runs against the LXC container to install and configure the VPN controller.
   register: kanidm_setup_tokens
   changed_when: true
 #+end_src
-*** Download Cheatsheet
+** Download Cheatsheet
 #+begin_src yaml
 - name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
   ansible.builtin.get_url:
@@ -178,7 +175,7 @@ Runs against the LXC container to install and configure the VPN controller.
     dest: "/tmp/cheatsheet.pdf"
     mode: '0644'
 #+end_src
-*** Send Email With Instructions
+** Send Email With Instructions
 #+begin_src yaml
 - name: ops | users | send email instructions to new users
   community.general.mail:
@@ -231,7 +228,7 @@ Runs against the LXC container to install and configure the VPN controller.
   # report "changed" when the email is actually dispatched
   changed_when: true
 #+end_src
-*** Check POSIX Attributes For Users
+** Check POSIX Attributes For Users
 #+begin_src yaml
 - name: ops | users | inspect POSIX attributes for users
   ansible.builtin.command: kanidm person posix show --name idm_admin {{ item.username }}
@@ -240,7 +237,7 @@ Runs against the LXC container to install and configure the VPN controller.
   changed_when: false
   failed_when: false
 #+end_src
-*** Give POSIX Attributes Users
+** Give POSIX Attributes Users
 #+begin_src yaml
 - name: ops | users | give the student POSIX attributes (bash shell)
   ansible.builtin.command: kanidm person posix set {{ item.username }} --shell /bin/bash --name idm_admin
@@ -253,7 +250,7 @@ Runs against the LXC container to install and configure the VPN controller.
   register: kanidm_posix
   changed_when: kanidm_posix.rc == 0
 #+end_src
-*** Check Users Membership in Headscale Group
+** Check Users Membership in Headscale Group
 #+begin_src yaml
 - name: ops | users | inspect Headscale VPN group membership
   ansible.builtin.command: kanidm person get {{ item.username }} --name idm_admin
@@ -261,7 +258,7 @@ Runs against the LXC container to install and configure the VPN controller.
   register: kanidm_person_state
   changed_when: false
 #+end_src
-*** Add Users to Headscale Group
+** Add Users to Headscale Group
 #+begin_src yaml
 - name: ops | users | add users to Headscale VPN group
   ansible.builtin.command: kanidm group add-members headscale_users {{ item.username }} --name idm_admin
@@ -273,9 +270,11 @@ Runs against the LXC container to install and configure the VPN controller.
   register: kanidm_group_add
   changed_when: kanidm_group_add.rc == 0
 #+end_src
-* Onboarding Workstation
-** Playbook
-#+begin_src yaml :tangle onboarding_workstation.yml
+* Workstation Onboard :noexport_1:
+:PROPERTIES:
+:header-args+: :tangle tasks/rbac_sync.yml
+:END:
+#+begin_src yaml :tangle ops_rbac_sync.yml
 ---
 - name: Onboard and Manage Workstation RBAC
   hosts: kanidm
@@ -286,23 +285,17 @@ Runs against the LXC container to install and configure the VPN controller.
     - "../group_vars/all/vault.yml"
   tasks:
     - name: Import workstation onboarding tasks
-      ansible.builtin.import_tasks: tasks/onboarding_workstation.yml
+      ansible.builtin.import_tasks: tasks/rbac_sync.yml
 #+end_src
-** Tasks
-:PROPERTIES:
-:header-args+: :tangle tasks/onboarding_workstation.yml
-:END:
+** Kanidm CLI Authentication
 #+begin_src yaml
 ---
-#+end_src
-*** Kanidm CLI Authentication
-#+begin_src yaml :padline no
 - name: ops | workstations | authenticate CLI as idm_admin
   ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm login --name idm_admin"
   changed_when: false
   no_log: true
 #+end_src
-*** Create Workstation Users Groups
+** Create Workstation Users Groups
 #+begin_src yaml
 - name: ops | workstations | create workstation users group
   ansible.builtin.command: kanidm group create {{ item.hostname }}_users --name idm_admin
@@ -317,7 +310,7 @@ Runs against the LXC container to install and configure the VPN controller.
     - "'already exists' not in kanidm_ws_users_create.stderr | lower"
     - "'409' not in kanidm_ws_users_create.stderr"
 #+end_src
-*** Create Workstation Admins Groups
+** Create Workstation Admins Groups
 #+begin_src yaml
 - name: ops | workstations | create workstation admins group
   ansible.builtin.command: kanidm group create {{ item.hostname }}_admins --name idm_admin
@@ -332,7 +325,7 @@ Runs against the LXC container to install and configure the VPN controller.
     - "'already exists' not in kanidm_ws_admins_create.stderr | lower"
     - "'409' not in kanidm_ws_admins_create.stderr"
 #+end_src
-*** Check POSIX For Workstation Groups
+** Check POSIX For Workstation Groups
 #+begin_src yaml
 - name: ops | workstations | check if workstation users group has POSIX enabled
   ansible.builtin.command: kanidm group posix get {{ item.hostname }}_users --name idm_admin
@@ -348,7 +341,7 @@ Runs against the LXC container to install and configure the VPN controller.
   changed_when: false
   failed_when: false
 #+end_src
-*** Grant POSIX For Workstation Groups
+** Grant POSIX For Workstation Groups
 #+begin_src yaml
 - name: ops | workstations | enable POSIX on workstation users group
   ansible.builtin.command: kanidm group posix set {{ item.hostname }}_users --name idm_admin
@@ -370,7 +363,7 @@ Runs against the LXC container to install and configure the VPN controller.
   register: kanidm_ws_admins_posix
   changed_when: kanidm_ws_admins_posix.rc == 0
 #+end_src
-*** Enforce Group Memberships (RBAC)
+** Enforce Group Memberships (RBAC)
 #+begin_src yaml
 - name: ops | workstations | set exact members for workstation users
   ansible.builtin.command: "kanidm group set-members {{ item.hostname }}_users {{ item.users_allowed | join(' ') }} --name idm_admin"
@@ -384,9 +377,11 @@ Runs against the LXC container to install and configure the VPN controller.
   when: item.admin is defined and item.admin | length > 0
   changed_when: true
 #+end_src
-* Offboarding User
-** Playbook
-#+begin_src yaml :tangle offboarding_user.yml
+* Offboarding User :noexport_1:
+:PROPERTIES:
+:header-args+: :tangle tasks/user_offboard.yml
+:END:
+#+begin_src yaml :tangle ops_user_offboard.yml
 ---
 - name: Offboard and Remove LBiC Students
   hosts: kanidm
@@ -398,23 +393,17 @@ Runs against the LXC container to install and configure the VPN controller.
     - "../group_vars/all/vault.yml"
   tasks:
     - name: Import user offboarding tasks
-      ansible.builtin.import_tasks: tasks/offboarding_user.yml
+      ansible.builtin.import_tasks: tasks/user_offboard.yml
 #+end_src
-** Tasks
-:PROPERTIES:
-:header-args+: :tangle tasks/offboarding_user.yml
-:END:
+** Kanidm CLI Authentication
 #+begin_src yaml
 ---
-#+end_src
-*** Kanidm CLI Authentication
-#+begin_src yaml :padline no
 - name: ops | offboard | authenticate CLI as idm_admin
   ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm login --name idm_admin"
   changed_when: false
   no_log: true
 #+end_src
-*** Check if Users Exist in IAM
+** Check if Users Exist in IAM
 #+begin_src yaml
 - name: ops | offboard | check if user exists in Kanidm
   ansible.builtin.command: kanidm person get {{ item.username }} --name idm_admin
@@ -423,7 +412,7 @@ Runs against the LXC container to install and configure the VPN controller.
   changed_when: false
   failed_when: false
 #+end_src
-*** Delete User Accounts from IAM
+** Delete User Accounts from IAM
 #+begin_src yaml
 - name: ops | offboard | delete user accounts from Kanidm
   ansible.builtin.command: kanidm person delete {{ item.username }} --name idm_admin
@@ -437,7 +426,7 @@ Runs against the LXC container to install and configure the VPN controller.
   register: kanidm_user_delete
   changed_when: kanidm_user_delete.rc == 0
 #+end_src
-*** Fetch Users from Headscale
+** Fetch Users from Headscale
 #+begin_src yaml
 - name: ops | offboard | fetch registered Headscale users
   ansible.builtin.command: headscale users list --output json
@@ -445,7 +434,7 @@ Runs against the LXC container to install and configure the VPN controller.
   register: headscale_users_raw
   changed_when: false
 #+end_src
-*** Delete Users from Headscale
+** Delete Users from Headscale
 #+begin_src yaml
 - name: ops | offboard | delete user namespace from Headscale
   ansible.builtin.command: "headscale users destroy --name {{ item.username }}"
@@ -456,7 +445,7 @@ Runs against the LXC container to install and configure the VPN controller.
   register: headscale_delete
   changed_when: true
 #+end_src
-*** Delete Home Directories from Workstations
+** Delete Home Directories from Workstations
 #+begin_src yaml
 - name: ops | offboard | delete user home directories on workstations
   ansible.builtin.file:
