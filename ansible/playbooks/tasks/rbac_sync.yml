@@ -17,30 +17,10 @@
     - "'already exists' not in kanidm_ws_users_create.stderr | lower"
     - "'409' not in kanidm_ws_users_create.stderr"
 
-- name: ops | workstations | create workstation admins group
-  ansible.builtin.command: kanidm group create {{ item.hostname }}_admins --name idm_admin
-  loop: "{{ workstations }}"
-  register: kanidm_ws_admins_create
-  changed_when:
-    - kanidm_ws_admins_create.rc == 0
-    - "'already' not in kanidm_ws_admins_create.stdout | lower"
-    - "'already' not in kanidm_ws_admins_create.stderr | lower"
-  failed_when:
-    - kanidm_ws_admins_create.rc != 0
-    - "'already exists' not in kanidm_ws_admins_create.stderr | lower"
-    - "'409' not in kanidm_ws_admins_create.stderr"
-
 - name: ops | workstations | check if workstation users group has POSIX enabled
   ansible.builtin.command: kanidm group posix get {{ item.hostname }}_users --name idm_admin
   loop: "{{ workstations }}"
   register: ws_users_posix_get
-  changed_when: false
-  failed_when: false
-
-- name: ops | workstations | check if workstation admins group has POSIX enabled
-  ansible.builtin.command: kanidm group posix get {{ item.hostname }}_admins --name idm_admin
-  loop: "{{ workstations }}"
-  register: ws_admins_posix_get
   changed_when: false
   failed_when: false
 
@@ -54,6 +34,32 @@
   register: kanidm_ws_users_posix
   changed_when: kanidm_ws_users_posix.rc == 0
 
+- name: ops | workstations | set exact members for workstation users
+  ansible.builtin.command: "kanidm group set-members {{ item.hostname }}_users {{ item.users_allowed | join(' ') }} --name idm_admin"
+  loop: "{{ workstations }}"
+  when: item.users_allowed is defined and item.users_allowed | length > 0
+  changed_when: true
+
+- name: ops | workstations | create workstation admins group
+  ansible.builtin.command: kanidm group create {{ item.hostname }}_admins --name idm_admin
+  loop: "{{ workstations }}"
+  register: kanidm_ws_admins_create
+  changed_when:
+    - kanidm_ws_admins_create.rc == 0
+    - "'already' not in kanidm_ws_admins_create.stdout | lower"
+    - "'already' not in kanidm_ws_admins_create.stderr | lower"
+  failed_when:
+    - kanidm_ws_admins_create.rc != 0
+    - "'already exists' not in kanidm_ws_admins_create.stderr | lower"
+    - "'409' not in kanidm_ws_admins_create.stderr"
+
+- name: ops | workstations | check if workstation admins group has POSIX enabled
+  ansible.builtin.command: kanidm group posix get {{ item.hostname }}_admins --name idm_admin
+  loop: "{{ workstations }}"
+  register: ws_admins_posix_get
+  changed_when: false
+  failed_when: false
+
 - name: ops | workstations | enable POSIX on workstation admins group
   ansible.builtin.command: kanidm group posix set {{ item.hostname }}_admins --name idm_admin
   loop: "{{ workstations }}"
@@ -63,12 +69,6 @@
     - ws_admins_posix_get.results[ws_index].rc != 0 or 'gidnumber' not in ws_admins_posix_get.results[ws_index].stdout | lower
   register: kanidm_ws_admins_posix
   changed_when: kanidm_ws_admins_posix.rc == 0
-
-- name: ops | workstations | set exact members for workstation users
-  ansible.builtin.command: "kanidm group set-members {{ item.hostname }}_users {{ item.users_allowed | join(' ') }} --name idm_admin"
-  loop: "{{ workstations }}"
-  when: item.users_allowed is defined and item.users_allowed | length > 0
-  changed_when: true
 
 - name: ops | workstations | set exact members for workstation admins
   ansible.builtin.command: "kanidm group set-members {{ item.hostname }}_admins {{ item.admin | join(' ') }} --name idm_admin"
