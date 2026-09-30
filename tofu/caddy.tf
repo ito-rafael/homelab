@@ -7,7 +7,7 @@ resource "proxmox_virtual_environment_container" "caddy" {
   description = "Caddy Reverse Proxy & Let's Encrypt TLS"
   tags        = ["network", "proxy", "caddy"]
   node_name   = "andira"
-  vm_id       = 206
+  vm_id       = 204
 
   # ensure unprivileged mode
   unprivileged = true

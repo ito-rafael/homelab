@@ -7,8 +7,8 @@ resource "proxmox_virtual_environment_container" "dns" {
   count = 2
 
   node_name = "andira"
-  vm_id        = 203 + count.index
-  # dns-1 will be vm_id 203, dns-2 will be vm_id 204
+  vm_id        = 202 + count.index
+  # dns-1 will be vm_id 202, dns-2 will be vm_id 203
 
   unprivileged = true
   start_on_boot = true
