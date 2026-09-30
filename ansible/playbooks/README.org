@@ -14,6 +14,7 @@
   - [[#kanidm-iam][Kanidm IAM]]
   - [[#headscale-vpn][Headscale VPN]]
 - [[#experiments-server][Experiments Server]]
+- [[#workstations][Workstations]]
 - [[#user-onboard][User Onboard]]
 - [[#workstation-onboard][Workstation Onboard]]
 - [[#offboarding-user][Offboarding User]]
@@ -135,6 +136,24 @@ Runs against physical shared lab servers used for computational experiments in C
     - name: experiments | configure experiments server
       ansible.builtin.import_role:
         name: lab_experiments
+#+end_src
+* Workstations :noexport_1:
+:PROPERTIES:
+:header-args:yaml+: :tangle deploy_workstations.yml
+:END:
+Runs against physical lab workstations to install packages, hook PAM/NSS into Kanidm central identity, and enable SSH key distribution.
+#+begin_src yaml
+---
+#+end_src
+** Configure Workstations
+#+begin_src yaml :padline no
+- name: Configure Workstations
+  hosts: lbic_workstations
+  become: yes
+  tasks:
+    - name: workstation | configure regular workstations
+      ansible.builtin.import_role:
+        name: lab_workstation
 #+end_src
 * User Onboard :noexport_1:
 :PROPERTIES:

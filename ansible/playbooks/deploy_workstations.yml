@@ -1,0 +1,8 @@
+---
+- name: Configure Workstations
+  hosts: lbic_workstations
+  become: yes
+  tasks:
+    - name: workstation | configure regular workstations
+      ansible.builtin.import_role:
+        name: lab_workstation
