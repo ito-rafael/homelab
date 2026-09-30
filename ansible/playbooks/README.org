@@ -13,6 +13,7 @@
   - [[#caddy-reverse-proxy][Caddy Reverse Proxy]]
   - [[#kanidm-iam][Kanidm IAM]]
   - [[#headscale-vpn][Headscale VPN]]
+- [[#experiments-server][Experiments Server]]
 - [[#user-onboard][User Onboard]]
 - [[#workstation-onboard][Workstation Onboard]]
 - [[#offboarding-user][Offboarding User]]
@@ -116,6 +117,24 @@ Runs against the LXC container to install and configure the VPN controller.
     - name: core | headscale | deploy VPN controller and subnet router
       ansible.builtin.import_role:
         name: headscale
+#+end_src
+* Experiments Server :noexport_1:
+:PROPERTIES:
+:header-args:yaml+: :tangle deploy_experiments.yml
+:END:
+Runs against physical shared lab servers used for computational experiments in CPU/GPU with Podman containers and Python in Mamba environments.
+#+begin_src yaml
+---
+#+end_src
+** Configure Experiments Server
+#+begin_src yaml :padline no
+- name: Configure Experiments Server
+  hosts: lbic_experiments
+  become: yes
+  tasks:
+    - name: experiments | configure experiments server
+      ansible.builtin.import_role:
+        name: lab_experiments
 #+end_src
 * User Onboard :noexport_1:
 :PROPERTIES:

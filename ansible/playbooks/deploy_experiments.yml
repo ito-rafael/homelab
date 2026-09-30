@@ -1,0 +1,8 @@
+---
+- name: Configure Experiments Server
+  hosts: lbic_experiments
+  become: yes
+  tasks:
+    - name: experiments | configure experiments server
+      ansible.builtin.import_role:
+        name: lab_experiments
