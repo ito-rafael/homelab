@@ -232,6 +232,13 @@
   register: ws_users_posix_get
   changed_when: false
   failed_when: false
+
+- name: ops | workstations | check if workstation admins group has POSIX enabled
+  ansible.builtin.command: kanidm group posix get {{ item.hostname }}_admins --name idm_admin
+  loop: "{{ workstations }}"
+  register: ws_admins_posix_get
+  changed_when: false
+  failed_when: false
 #+end_src
 *** Grant POSIX For Workstation Groups
 #+begin_src yaml
