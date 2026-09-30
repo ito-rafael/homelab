@@ -1,0 +1,240 @@
+#+TITLE: Ansible Role for Lab Workstations
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc_3:
+- [[#tasks][Tasks]]
+  - [[#software][Software]]
+    - [[#packages][Packages]]
+  - [[#system][System]]
+    - [[#ssh][SSH]]
+  - [[#users][Users]]
+    - [[#ansible][Ansible]]
+    - [[#lbic-user][lbic-user]]
+- [[#handlers][Handlers]]
+  - [[#system-1][System]]
+- [[#vars][Vars]]
+  - [[#archlinux][Archlinux]]
+  - [[#debian][Debian]]
+  - [[#fedora][Fedora]]
+  - [[#ubuntu][Ubuntu]]
+- [[#files][Files]]
+  - [[#ssh-keys][SSH Keys]]
+  - [[#sudoers_ansible][sudoers_ansible]]
+
+* Tasks
+#+begin_src yaml :tangle tasks/main.yml
+---
+# load distro-specific variables
+- name: load distro-specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_facts['distribution'] }}.yml"
+    - "{{ ansible_facts['os_family'] }}.yml"
+    - "default.yml"
+    # prevents crashing if absolutely no matching files exist
+    skip: true
+  tags: always
+
+- ansible.builtin.import_tasks: software/packages.yml
+- ansible.builtin.import_tasks: system/ssh.yml
+- ansible.builtin.import_tasks: users/ansible.yml
+- ansible.builtin.import_tasks: users/lbic-user.yml
+#+end_src
+** Software
+*** Packages
+:PROPERTIES:
+:header-args+: :tangle tasks/software/packages.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Install Packages
+#+begin_src yaml :padline no
+- name: software | packages | install general packages
+  tags: software,packages
+  package:
+    name:
+      - vim
+#+end_src
+** System
+:PROPERTIES:
+:header-args+: :tangle tasks/system/ssh.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** SSH
+**** Install OpenSSH
+#+begin_src yaml :padline no
+- name: system | ssh | install OpenSSH packages
+  tags: ssh
+  package:
+    name: "{{ ssh_packages }}"
+    state: present
+#+end_src
+**** Start & enable systemd service
+#+begin_src yaml
+- name: system | ssh | start and enable daemon
+  tags: ssh
+  systemd:
+    name: "{{ ssh_service }}"
+    state: started
+    enabled: yes
+#+end_src
+** Users
+*** Ansible
+:PROPERTIES:
+:header-args+: :tangle tasks/users/ansible.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Create group
+#+begin_src yaml :padline no
+- name: users | ansible | create group
+  tags: ansible,groups,users
+  group:
+    name: ansible
+    state: present
+#+end_src
+**** Create user
+#+begin_src yaml
+- name: users | ansible | create user
+  tags: ansible,users
+  user:
+    name: ansible
+    group: ansible
+    groups: "{{ sudo_group }}"
+    append: yes
+    createhome: yes
+    state: present
+    comment: "Ansible"
+    system: yes
+    shell: /bin/bash
+#+end_src
+**** Add sudoers file
+#+begin_src yaml
+- name: users | ansible | add sudoers file
+  tags: ansible,users,sudo
+  copy:
+    src: files/users/sudoers_ansible
+    dest: /etc/sudoers.d/ansible
+    owner: root
+    group: root
+    mode: 0440
+    validate: "/usr/bin/visudo -cf %s"
+#+end_src
+*** lbic-user
+:PROPERTIES:
+:header-args+: :tangle tasks/users/lbic-user.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Create group
+#+begin_src yaml :padline no
+- name: users | lbic-user | create group
+  tags: users
+  group:
+    name: lbic-user
+    state: present
+#+end_src
+* Handlers :noexport_2:
+#+begin_src yaml :tangle handlers/main.yml
+---
+- import_tasks: system.yml
+#+end_src
+** System
+:PROPERTIES:
+:header-args+: :tangle handlers/system.yml
+:END:
+#+begin_src yaml :tangle handlers/system.yml
+---
+#+end_src
+*** Reload systemd
+#+begin_src yaml :padline no
+- name: system | kanidm | reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+#+end_src
+*** Restart kanidm-unixd service
+#+begin_src yaml
+- name: system | kanidm | restart kanidm-unixd
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  loop:
+    - kanidm-unixd
+    - kanidm-unixd-tasks
+#+end_src
+*** Restart sshd service
+#+begin_src yaml
+- name: system | kanidm | restart sshd
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+#+end_src
+*** Reload NetworkManager
+#+begin_src yaml
+- name: system | networking | reload NetworkManager connection
+  ansible.builtin.command: nmcli connection up "{{ nm_active_conn.stdout }}"
+#+end_src
+* Vars
+** Archlinux
+#+begin_src yaml :tangle vars/Archlinux.yml
+---
+sudo_group: wheel
+ssh_packages:
+  - openssh
+ssh_service: sshd
+#+end_src
+** Debian
+#+begin_src yaml :tangle vars/Debian.yml
+---
+sudo_group: sudo
+ssh_packages:
+  - openssh-server
+  - openssh-client
+ssh_service: ssh
+#+end_src
+** Fedora
+#+begin_src yaml :tangle vars/Fedora.yml
+---
+sudo_group: wheel
+ssh_packages:
+  - openssh-server
+  - openssh-clients
+ssh_service: sshd
+#+end_src
+** Ubuntu
+#+begin_src yaml :tangle vars/Ubuntu.yml
+---
+sudo_group: sudo
+ssh_packages:
+  - openssh-server
+  - openssh-client
+ssh_service: ssh
+#+end_src
+* Files :noexport_2:
+** SSH Keys
+*** catuaba.pub
+#+begin_src conf :tangle files/ssh-keys/catuaba.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIItfRKWN4ntXXGKRJHkpz5Zy9N19uI3qNkaxWFyqgWpS catuaba
+#+end_src
+*** ansible-catuaba.pub
+#+begin_src yaml :tangle files/ssh-keys/ansible-catuaba.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBGJIXFQcJvhTrpBG8nk+qSjEaEPzSpV4qkOiU9NJlY5 ansible-catuaba
+#+end_src
+*** ipf-archlinux.pub
+#+begin_src yaml :tangle files/ssh-keys/ipf-archlinux.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAmHzeVa/W/GT9UPinI5SJYGpVDQlxB6wcmIj0Ya7keh ipf-archlinux
+#+end_src
+** sudoers_ansible
+#+begin_src conf :tangle files/users/sudoers_ansible
+ansible ALL=(ALL) NOPASSWD: ALL
+#+end_src

@@ -1,0 +1,22 @@
+---
+- name: system | kanidm | reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: system | kanidm | restart kanidm-unixd
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  loop:
+    - kanidm-unixd
+    - kanidm-unixd-tasks
+
+- name: system | kanidm | restart sshd
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+
+- name: system | networking | reload NetworkManager connection
+  ansible.builtin.command: nmcli connection up "{{ nm_active_conn.stdout }}"

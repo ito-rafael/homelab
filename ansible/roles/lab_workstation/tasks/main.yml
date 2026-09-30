@@ -1,3 +1,4 @@
+---
 # load distro-specific variables
 - name: load distro-specific variables
   include_vars: "{{ item }}"
@@ -5,14 +6,11 @@
     - "{{ ansible_facts['distribution'] }}.yml"
     - "{{ ansible_facts['os_family'] }}.yml"
     - "default.yml"
-    skip: true  # prevents crashing if absolutely no matching files exist
+    # prevents crashing if absolutely no matching files exist
+    skip: true
   tags: always
 
-- block:
-    # software
-    - import_tasks: software/packages.yml    # install Vim
-    # users & groups
-    - import_tasks: users/ansible.yml        # set system user to run ansible automations
-    - import_tasks: users/lbic-user.yml      # generic universal LBiC user
-    # system
-    - import_tasks: system/ssh.yml           # OpenSSH
+- ansible.builtin.import_tasks: software/packages.yml
+- ansible.builtin.import_tasks: system/ssh.yml
+- ansible.builtin.import_tasks: users/ansible.yml
+- ansible.builtin.import_tasks: users/lbic-user.yml
