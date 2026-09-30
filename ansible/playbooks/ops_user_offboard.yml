@@ -1,11 +1,12 @@
 ---
-- name: Onboard and Manage Workstation RBAC
+- name: Offboard and Remove LBiC Students
   hosts: kanidm
   vars_files:
     - "../group_vars/all/main.yml"
+    - "../group_vars/all/users.yml"
     - "../group_vars/all/ip.yml"
     - "../group_vars/all/workstations.yml"
     - "../group_vars/all/vault.yml"
   tasks:
-    - name: Import workstation onboarding tasks
-      ansible.builtin.import_tasks: tasks/onboarding_workstation.yml
+    - name: Import user offboarding tasks
+      ansible.builtin.import_tasks: tasks/user_offboard.yml

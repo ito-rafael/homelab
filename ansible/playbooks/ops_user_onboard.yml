@@ -8,4 +8,4 @@
     - "../group_vars/all/vault.yml"
   tasks:
     - name: Import user onboarding tasks
-      ansible.builtin.import_tasks: tasks/onboarding_user.yml
+      ansible.builtin.import_tasks: tasks/user_onboard.yml
