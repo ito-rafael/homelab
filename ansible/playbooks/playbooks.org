@@ -329,19 +329,24 @@
   register: kanidm_user_delete
   changed_when: kanidm_user_delete.rc == 0
 #+end_src
+*** Fetch Users from Headscale
+#+begin_src yaml
+- name: ops | offboard | fetch registered Headscale users
+  ansible.builtin.command: headscale users list --output json
+  delegate_to: headscale
+  register: headscale_users_raw
+  changed_when: false
 #+end_src
 *** Delete Users from Headscale
 #+begin_src yaml
 - name: ops | offboard | delete user namespace from Headscale
-  ansible.builtin.command: headscale users delete {{ item.username }}
+  ansible.builtin.command: "headscale users destroy --name {{ item.username }}"
   loop: "{{ users_offboard | default([]) }}"
   delegate_to: headscale
+  # idempotency: parse JSON and runs only if user exists
+  when: (headscale_users_raw.stdout | default('[]', true) | from_json | selectattr('name', 'equalto', item.username) | list | length) > 0
   register: headscale_delete
-  failed_when:
-    - headscale_delete.rc != 0
-    - "'not found' not in headscale_delete.stderr | lower"
-    - "'does not exist' not in headscale_delete.stderr | lower"
-  changed_when: headscale_delete.rc == 0
+  changed_when: true
 #+end_src
 *** Delete Home Directories from Workstations
 #+begin_src yaml
