@@ -24,6 +24,8 @@
 - [[#files][Files]]
   - [[#ssh-keys][SSH Keys]]
   - [[#sudoers_ansible][sudoers_ansible]]
+- [[#templates][Templates]]
+  - [[#kanidm-config][Kanidm config]]
 
 * Tasks
 #+begin_src yaml :tangle tasks/main.yml
@@ -243,4 +245,11 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAmHzeVa/W/GT9UPinI5SJYGpVDQlxB6wcmIj0Ya7keh
 ** sudoers_ansible
 #+begin_src conf :tangle files/users/sudoers_ansible
 ansible ALL=(ALL) NOPASSWD: ALL
+#+end_src
+* Templates
+** Kanidm config
+#+begin_src conf :tangle templates/config.j2
+uri = "https://{{ ip_kanidm_iam }}"
+verify_hostnames = true
+verify_ca = true
 #+end_src
