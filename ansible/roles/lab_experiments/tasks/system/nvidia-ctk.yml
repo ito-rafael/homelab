@@ -1,0 +1,45 @@
+# https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+
+- name: system | nvidia-ctk | install prerequisites
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg2
+    update_cache: yes
+
+- name: system | nvidia-ctk | download GPG key
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.get_url:
+    url: https://nvidia.github.io/libnvidia-container/gpgkey
+    dest: /tmp/nvidia-container-toolkit.asc
+    mode: '0644'
+
+- name: system | nvidia-ctk | dearmor GPG key
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.command: >
+    gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg /tmp/nvidia-container-toolkit.asc
+  args:
+    creates: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+
+- name: system | nvidia-ctk | download APT sources list
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.get_url:
+    url: https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list
+    dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    mode: '0644'
+
+- name: system | nvidia-ctk | configure signed-by tag in APT sources list
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.replace:
+    path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    regexp: 'deb https://'
+    replace: 'deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://'
+
+- name: system | nvidia-ctk | install NVIDIA Container Toolkit
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.apt:
+    name: nvidia-container-toolkit
+    update_cache: yes
+  register: nvidia_ctk_install

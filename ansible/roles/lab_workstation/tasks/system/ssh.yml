@@ -1,0 +1,13 @@
+---
+- name: system | ssh | install OpenSSH packages
+  tags: ssh
+  package:
+    name: "{{ ssh_packages }}"
+    state: present
+
+- name: system | ssh | start and enable daemon
+  tags: ssh
+  systemd:
+    name: "{{ ssh_service }}"
+    state: started
+    enabled: yes

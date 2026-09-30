@@ -1,0 +1,29 @@
+- name: system | disk-protection | get root mount information
+  tags: system,disk
+  ansible.builtin.set_fact:
+    root_mount: "{{ ansible_facts['mounts'] | selectattr('mount', 'equalto', '/') | first }}"
+
+# create a reserved block of 1% (~10 GB) to avoid disk filled
+# we set "changed_when" to false, since tune2fs does not have a built-in idempotency check
+- name: system | disk-protection | create reserved disk space block (ext4)
+  tags: system,disk
+  ansible.builtin.command: "tune2fs -m 1 {{ root_mount.device }}"
+  when: root_mount.fstype == 'ext4'
+  changed_when: false
+
+- name: system | disk-protection | create reserved disk space block (BTRFS)
+  tags: system,disk
+  ansible.builtin.command: fallocate -l 10G /root/emergency-space.img
+  when: root_mount.fstype == 'btrfs'
+  args:
+    creates: /root/emergency-space.img
+
+- name: system | disk-protection | protect the BTRFS emergency file from accidental deletion
+  tags: system,disk
+  ansible.builtin.file:
+    path: /root/emergency-space.img
+    state: file
+    mode: '0000'
+  when: root_mount.fstype == 'btrfs'
+
+# if/when needed: ssh into the machine, then "sudo rm /root/emergency-space.img"

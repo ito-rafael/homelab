@@ -1,0 +1,53 @@
+#+TITLE: Ansible Users Configuration for Lab Workstations
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args:yaml
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#users-tasks][Users tasks]]
+  - [[#ansible][ansible]]
+
+* Users tasks
+** ansible
+:PROPERTIES:
+:header-args+: :tangle ansible.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Create group
+#+begin_src yaml :padline no
+- name: users | ansible | create group
+  tags: ansible,groups,users
+  group:
+    name: ansible
+    state: present
+#+end_src
+*** Create user
+#+begin_src yaml
+- name: users | ansible | create user
+  tags: ansible,users
+  user:
+    name: ansible
+    group: ansible
+    groups: "{{ sudo_group }}"
+    append: yes
+    createhome: yes
+    state: present
+    comment: "Ansible"
+    system: yes
+    shell: /bin/bash
+#+end_src
+*** Add sudoers file
+#+begin_src yaml
+- name: users | ansible | add sudoers file
+  tags: ansible,users,sudo
+  copy:
+    src: files/users/sudoers_ansible
+    dest: /etc/sudoers.d/ansible
+    owner: root
+    group: root
+    mode: 0440
+    validate: "/usr/bin/visudo -cf %s"
+#+end_src

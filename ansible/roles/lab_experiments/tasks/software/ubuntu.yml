@@ -1,0 +1,13 @@
+- name: software | ubuntu | unminimize Ubuntu non-interactively
+  tags: software,ubuntu
+  ansible.builtin.shell: yes | unminimize
+  args:
+    creates: /var/log/unminimize_ansible.done
+  register: unminimize_result
+
+- name: software | ubuntu | create file for unminimize idempotency
+  tags: software,ubuntu
+  ansible.builtin.file:
+    path: /var/log/unminimize_ansible.done
+    state: touch
+  when: unminimize_result.changed

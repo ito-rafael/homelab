@@ -1,0 +1,21 @@
+- name: software | packages | install general packages
+  tags: software,packages
+  package:
+    name:
+      - git            # version control
+      - htop           # process viewer
+      - lshw           # show hw info
+      - man-db         # tools for reading manual pages
+      - python3        # Python programming language
+      - tmux           # terminal multiplexer
+      - unrar          # RAR uncompression
+      - unzip          # zip archives extraction
+      - vim            # terminal text editor
+      - zip            # zip archives compressor
+
+- name: software | packages | install monitoring packages
+  tags: software,packages
+  package:
+    name:
+      - iputils-ping   # network ping
+      - speedtest-cli  # Internet bandwidth test with speedtest.net

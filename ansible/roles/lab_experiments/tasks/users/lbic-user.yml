@@ -1,0 +1,57 @@
+- name: users | lbic-user | add to lbic group
+  tags: users
+  user:
+    name: lbic-user
+    group: lbic-user
+    groups: lbic,{{ sudo_group }}
+    append: true
+    comment: "lbic-user"
+    password: "{{ lbic_passwd }}"
+    update_password: on_create
+    createhome: yes
+    state: present
+    system: false
+    shell: /bin/bash
+
+- name: users | lbic-user | create ssh keys dir
+  tags: ssh,ssh-keys
+  file:
+    path: /home/lbic-user/.ssh
+    state: directory
+    owner: lbic-user
+    group: lbic-user
+    mode: 0700
+
+#- name: users | lbic-user | generate ssh keys
+#  tags: ssh,ssh-keys
+#  openssh_keypair:
+#    path: /home/lbic-user/.ssh/id_ed25519
+#    type: ed25519
+#    state: present
+#    owner: lbic-user
+#    group: lbic-user
+#    comment: "{{ ansible_facts['hostname'] }}"
+
+- name: users | lbic-user | create known_hosts & authorized_keys files
+  tags: ssh,ssh-keys
+  copy:
+    content: ""
+    dest: "{{ item }}"
+    force: no
+    owner: lbic-user
+    group: lbic-user
+    mode: 0600
+  with_items:
+    - /home/lbic-user/.ssh/known_hosts
+    - /home/lbic-user/.ssh/authorized_keys
+
+- name: users | lbic-user | copy ssh keys
+  tags: ssh,ssh-keys
+  ansible.posix.authorized_key:
+    user: lbic-user
+    state: present
+    manage_dir: true
+    key: "{{ lookup('file', item.path) }}"
+    comment: "{{ item.comment }}"
+  with_items:
+    - { path: "{{ role_path }}/files/ssh-keys/catuaba.pub", comment: "catuaba" }

@@ -1,0 +1,16 @@
+- name: users | dataset | create lbic group
+  tags: groups,users
+  group:
+    name: lbic
+    state: present
+    gid_min: 2000
+
+# the mode 1777 ensure all users can write to this directory, but only owners can delete
+- name: users | dataset | ensure dataset dir exist
+  tags: groups,users
+  file:
+    path: /dataset
+    state: directory
+    owner: root
+    group: lbic
+    mode: '1777'

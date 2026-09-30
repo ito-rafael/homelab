@@ -1,0 +1,13 @@
+- name: system | ssh | install OpenSSH server
+  tags: ssh
+  package:
+    name:
+      - openssh-server
+
+- name: system | ssh | start daemon [Debian/Ubuntu]
+  tags: ssh
+  systemd:
+    name: ssh
+    state: started
+    enabled: yes
+  when: ansible_facts['distribution'] in ["Debian", "Ubuntu"]

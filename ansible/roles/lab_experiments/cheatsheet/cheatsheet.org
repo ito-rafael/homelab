@@ -1,0 +1,370 @@
+#+TITLE: LBiC Computing Resources: Quick Start Guide
+# +LATEX: \vspace{-2.0cm}
+#+OPTIONS: num:nil date:nil author:nil toc:nil
+#+BIND: org-latex-title-command ""
+#+BIND: org-latex-src-block-backend listings
+
+# LaTeX class/options
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [a4paper, landscape]
+
+# set version
+#+LATEX_HEADER: \newcommand{\docversion}{v1.3}
+
+# # manually place the title
+# #+LATEX: \begin{center}
+# #+LATEX: \vspace*{0cm}
+# #+LATEX: {\LARGE \bfseries LBiC servers Quick Start Guide}
+# #+LATEX: \end{center}
+# #+LATEX: \vspace{0cm}
+
+# manually place the title
+#+LATEX: \begin{center}
+#+LATEX: \begin{tikzpicture}[remember picture, overlay]
+#+LATEX:   % left icon (LBiC)
+#+LATEX:   \node[anchor=north west, xshift=1.0cm, yshift=-0.25cm] at (current page.north west)
+#+LATEX:        {\includegraphics[height=4.0em]{figure/lbic.png}};
+#+LATEX:   % right icon (FEEC/Unicamp)
+#+LATEX:   \node[anchor=north east, xshift=-2.5cm, yshift=-0.75cm] at (current page.north east)
+#+LATEX:        {\includegraphics[height=2.5em]{figure/feec.png}};
+#+LATEX:   \node[anchor=north east, xshift=-0.75cm, yshift=-0.50cm] at (current page.north east)
+#+LATEX:        {\includegraphics[height=4.0em]{figure/unicamp.png}};
+#+LATEX: \end{tikzpicture}
+#+LATEX: \vspace*{0.2cm}
+#+LATEX: {\LARGE \bfseries LBiC Computing Resources: Quick Start Guide}
+#+LATEX: \end{center}
+#+LATEX: \vspace{0cm}
+
+# import packages
+#+LATEX_HEADER: \usepackage[margin=1.25cm, top=1.0cm]{geometry}
+#+LATEX_HEADER: \usepackage{multicol}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{textcomp}
+#+LATEX_HEADER: \usepackage{inconsolata}
+# +LATEX_HEADER: \usepackage[normalem]{ulem}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \usepackage{menukeys}
+
+# add line + spacer between columns
+#+LATEX_HEADER: \setlength{\columnsep}{1.0cm}
+#+LATEX_HEADER: \setlength{\columnseprule}{0.5pt}
+
+# adjust subsection gaps
+#+LATEX_HEADER: \usepackage{titlesec}
+#+LATEX_HEADER: \titlespacing*{\subsection}{0pt}{0.5ex}{0ex}
+#+LATEX_HEADER: \titleformat*{\subsection}{\normalsize\bfseries}
+
+# paint the pages:
+#   - 1st page: red
+#   - 2nd page: green (left half) / blue (right half)
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usetikzlibrary{calc}
+#+LATEX_HEADER: \usepackage{eso-pic}
+#+LATEX_HEADER: \usepackage{ifthen}
+#+LATEX_HEADER: \definecolor{pastelred}{HTML}{FFEBEE}
+#+LATEX_HEADER: \definecolor{pastelgreen}{HTML}{E8F5E9}
+#+LATEX_HEADER: \definecolor{pastelblue}{HTML}{E3F2FD}
+#+LATEX_HEADER: \definecolor{pastelyellow}{HTML}{FFFDE7} % A light pastel yellow
+#+LATEX_HEADER: \AddToShipoutPictureBG{%
+#+LATEX_HEADER:   \begin{tikzpicture}[remember picture, overlay]
+#+LATEX_HEADER:     % global background (white)
+#+LATEX_HEADER:     \fill[white] (current page.south west) rectangle (current page.north east);
+#+LATEX_HEADER:
+#+LATEX_HEADER:     % page-specific overlays
+#+LATEX_HEADER:     \ifthenelse{\value{page}=1}{%
+#+LATEX_HEADER:       % page 1: yellow (left) / red (right)
+#+LATEX_HEADER:       \fill[pastelyellow] ($(current page.south west) + (0.75cm, 0.75cm)$) rectangle ($(current page.north) + (0cm, -2.25cm)$);
+#+LATEX_HEADER:       \fill[pastelred] ($(current page.south) + (0cm, 0.75cm)$) rectangle ($(current page.north east) - (0.75cm, 2.25cm)$);
+#+LATEX_HEADER:     }{%
+#+LATEX_HEADER:       % page 2: green (left) / blue (right)
+#+LATEX_HEADER:       \fill[pastelgreen] ($(current page.south west) + (0.75cm, 0.75cm)$) rectangle ($(current page.north) - (0cm, 0.75cm)$);
+#+LATEX_HEADER:       \fill[pastelblue] ($(current page.south) + (0cm, 0.75cm)$) rectangle ($(current page.north east) - (0.75cm, 0.75cm)$);
+#+LATEX_HEADER:     }%
+#+LATEX_HEADER:
+#+LATEX_HEADER:     % vertion & date (bottom right)
+#+LATEX_HEADER:     \node [anchor=south east, xshift=-1cm, yshift=0.75cm, text=gray!70] at (current page.south east) {\scriptsize \docversion\ | \today};
+#+LATEX_HEADER:   \end{tikzpicture}
+#+LATEX_HEADER: }
+
+# configure source code blocks
+# adjust text for better copy-paste
+# configure source code blocks
+#+LATEX_HEADER: \lstset{basicstyle=\ttfamily\small, backgroundcolor=\color{gray!10}, frame=single, rulecolor=\color{gray!40}, framesep=5pt, frameround=tttt, breaklines=true, columns=flexible, keepspaces=true, keywordstyle=\normalfont\ttfamily, commentstyle=\normalfont\ttfamily, stringstyle=\normalfont\ttfamily, literate={-}{{-}}1}
+
+# adjust hyperlink style
+#+LATEX_HEADER: \hypersetup{
+#+LATEX_HEADER:     hidelinks,         % remove colored boxes and borders
+#+LATEX_HEADER:     colorlinks=false,  % ensures hyperref doesn't try to color the text itself
+#+LATEX_HEADER:     pdfnewwindow=true
+#+LATEX_HEADER: }
+
+# split page in 2 columns
+#+LATEX: \begin{multicols}{2}
+#+LATEX: \raggedcolumns
+
+* Table of Contents :toc:noexport:
+- [[#accessing-the-lab][Accessing the lab]]
+- [[#accessing-the-computers][Accessing the computers]]
+- [[#hosts][Hosts]]
+- [[#general-commands-latexhfillraisebox-02heightincludegraphicsheight125emfigureshellpng][General commands @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1.25em]{figure/shell.png}}@@]]
+  - [[#change-password][Change Password]]
+  - [[#monitoring-cpu-and-gpu-processes][Monitoring CPU and GPU processes]]
+  - [[#help][Help]]
+- [[#terminal-multiplexer-tmux-latexhfillraisebox-02heightincludegraphicsheight1emfiguretmuxpng][Terminal multiplexer (tmux) @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1em]{figure/tmux.png}}@@]]
+  - [[#start-a-new-session][Start a new session]]
+  - [[#detach-leave-it-running][Detach (leave it running)]]
+  - [[#reattach-later][Reattach later]]
+  - [[#split-screen][Split screen]]
+  - [[#list-active-sessions][List active sessions]]
+  - [[#kill-a-session][Kill a session]]
+  - [[#zoom-pane-toggle-fullscreen][Zoom pane (toggle fullscreen)]]
+  - [[#scroll-terminal-history][Scroll terminal history]]
+- [[#mamba-python-environments-latexhfillraisebox-02heightincludegraphicsheight15emfigurepythonpnghspace025cmraisebox-02heightincludegraphicsheight15emfiguremambapnghspace025cmraisebox-02heightincludegraphicsheight15emfigureanacondapng][Mamba (Python environments) @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/python.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/mamba.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/anaconda.png}}@@]]
+  - [[#create-a-new-environment][Create a new environment]]
+  - [[#list-all-environments][List all environments]]
+  - [[#activate-the-environment][Activate the environment]]
+  - [[#install-additional-packages][Install additional packages]]
+  - [[#deactivate-the-environment][Deactivate the environment]]
+  - [[#delete-an-environment][Delete an environment]]
+  - [[#example-train-an-ai-model-on-mnist-dataset][Example: train an AI model on MNIST dataset]]
+- [[#podman-containers-latexhfillraisebox-02heightincludegraphicsheight15emfigurepodmanpnghspace025cmraisebox-02heightincludegraphicsheight15emfiguredockerpng][Podman (containers) @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/podman.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/docker.png}}@@]]
+  - [[#run-a-container-interactively][Run a container interactively]]
+  - [[#list-running-containers-and-downloaded-images][List running containers and downloaded images]]
+  - [[#enter-inside-a-running-container][Enter inside a running container]]
+  - [[#stop-a-container][Stop a container]]
+  - [[#remove-a-stopped-container][Remove a stopped container]]
+  - [[#example-run-a-jupyter-notebook-with-gpu][Example: run a Jupyter Notebook (with GPU)]]
+
+* Accessing the lab
+# * Accessing the lab @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1em]{figure/student-id.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1em]{figure/key.png}}@@
+#+LATEX: \vspace{-2mm}
+- *Building*: Access to the G2 block (LBiC's location) requires student ID ("RA"). If your ID fails, please contact prof. Von Zuben\textsuperscript{*} for authorization (@@latex:\href{https://site.fee.unicamp.br/ctic/faq\detokenize{#}acesso_laboratorio}{\textcolor{blue}{\uline{CTIC}}}@@).
+- *LBiC*: The lab access control is done through a regular key. If you plan to use the physical space, kindly ask Prof. Von Zuben for a copy of the lab key.
+# +LATEX: \vspace{-1em}\noindent\rule{\linewidth}{0.4pt}\vspace{-1em}
+#+LATEX: \vspace{-1em}\noindent\rule{\linewidth}{0.4pt}\vspace{-1.25em}
+* Accessing the computers
+# * Accessing the computers @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1.25em]{figure/openvpn.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.25em]{figure/openssh.png}}@@
+#+LATEX: \vspace{-2mm}
+If you don't have your credentials yet, send an email\textsuperscript{\dag}  requesting it. To access hosts remotely, connect via VPN then SSH into the host, or use the FEEC server alternative. If you are locally connected to the lab's network, simply skip to the final SSH.
+- *VPN*: Download and install @@latex:\href{https://tailscale.com/download}{\textcolor{blue}{\uline{Tailscale}}}@@. Then, run this to join the lab's Tailnet:
+  #+ATTR_LATEX: :options basicstyle=\fontsize{7pt}{8.5pt}\ttfamily
+  #+begin_src sh
+sudo tailscale up --login-server https://andira.lbic.fee.unicamp.br --accept-routes --authkey <KEY>
+  #+end_src
+  \vspace{-1mm}
+- *SSH:* After establishing the VPN connection, log in to the PC and/or server:
+  #+begin_src sh
+ssh username@ip_address
+  #+end_src
+  \vspace{-1mm}
+- *FEEC server* (alternative): FEEC hosts an SSH server node. This method does not require a VPN. One can find more information on this CTIC @@latex:\href{https://site.fee.unicamp.br/ctic/configuracao-de-sshfeeunicampbr-como-jump-host}{\textcolor{blue}{\uline{page}}}@@.
+  #+begin_src sh
+ssh -J email@dac.unicamp.br@ssh.fee.unicamp.br username@ip_address
+  #+end_src
+#+LATEX: \vspace{-0.75em}\noindent\rule{\linewidth}{0.4pt}\vspace{-1.25em}
+* Hosts
+# * Hosts @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1em]{figure/server.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1em]{figure/computer.png}}@@
+#+LATEX: \vspace{-2mm}
+- *Workstations*: There are a few dedicated PCs available for local or remote research. Please contact us\textsuperscript{\dag} to request a machine for your project's duration.
+- *Servers*: Experiments are currently hosted on a shared primary server. Please schedule your sessions in advance via the resource reservation @@latex:\href{https://docs.google.com/spreadsheets/d/1Lhi5pEze4d4Z4oHMksUpD3k6n5Hp26gXtOMGz6sXr9A/edit?usp=sharing}{\textcolor{blue}{\uline{spreadsheet}}}@@.
+
+|----------+-------------------------------|
+| hostname | paubrasil.lbic.fee.unicamp.br |
+| IP       | 143.106.45.179                |
+| CPU      | AMD Ryzen 9 9950X (16 cores)  |
+| GPU      | NVIDIA RTX 5070 Ti (16 GiB)   |
+| RAM      | 128 GiB DDR5 @ 4400 MT/s      |
+|----------+-------------------------------|
+
+On workstations, =root= privileges are granted (and recommended), and users are responsible for system maintenance. On servers, =root= access is restricted; please contact us\textsuperscript{\dag} for any required system-wide package installations.
+
+#+LATEX: \vfill
+#+LATEX: \noindent \fontsize{7}{7.2}\selectfont \textsuperscript{*} vonzuben[at]unicamp[dot]br
+#+LATEX: \hfill
+#+LATEX: \noindent \fontsize{7}{7.2}\selectfont \textsuperscript{\dag} vonzuben[at]unicamp[dot]br, with copy to itorafael[at]gmail[dot]com
+#+LATEX: \normalsize
+#+LATEX: \columnbreak
+** Future server :noexport:
+#+LATEX: \noindent\begin{minipage}{0.48\linewidth}
+*** paubrasil
+#+attr_latex: :font \footnotesize :align c l
+|----------+-------------------------------|
+| hostname | paubrasil.lbic.fee.unicamp.br |
+| IP       | 143.106.45.179                |
+| CPU      | AMD Ryzen 9 9950X (16 cores)  |
+| GPU      | NVIDIA RTX 5070 Ti (16 GiB)   |
+| RAM      | 128 GiB DDR5 @ 4400 MT/s      |
+|----------+-------------------------------|
+#+LATEX: \end{minipage}\hfill
+#+LATEX: \begin{minipage}{0.48\linewidth}
+*** peroba (example)
+#+attr_latex: :font \footnotesize :align c l
+|----------+------------------------------|
+| hostname | peroba.lbic.fee.unicamp.br   |
+| IP       | 143.106.45.180               |
+| CPU      | AMD Ryzen 9 9950X (16 cores) |
+| GPU      | NVIDIA RTX 5070 Ti (16 GiB)  |
+| RAM      | 128 GiB DDR5 @ 4400 MT/s     |
+|----------+------------------------------|
+#+LATEX: \end{minipage}
+* General commands @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1.25em]{figure/shell.png}}@@
+** Change Password
+Please change your password after your first login.
+#+begin_src sh
+passwd
+#+end_src
+** Monitoring CPU and GPU processes
+#+begin_src sh
+htop                  # for memory usage and CPU cores utilization
+nvtop                 # for GPU proccesses and VRAM memory utilization
+#+end_src
+** Help
+#+begin_src sh
+man <command>         # example: "man podman"
+<command> --help      # example: "mamba --help"
+#+end_src
+#+LATEX: \vspace{0.25em}\noindent\rule{\linewidth}{0.4pt}\vspace{-0.5em}
+* Terminal multiplexer (tmux) @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1em]{figure/tmux.png}}@@
+Prevent script termination on SSH disconnect by running =tmux= in the background.
+#+LATEX: \newline\newline
+#+LATEX: \noindent\begin{minipage}[t]{0.47\linewidth}
+** Start a new session
+#+begin_src sh
+tmux new -s my_experiment
+#+end_src
+** Detach (leave it running)
+#+ATTR_LATEX: :options escapeinside={(*}{*)}
+#+begin_src sh
+(*Press \keys{\ctrl + b} $\longrightarrow$ \keys{d}*)
+#+end_src
+** Reattach later
+#+begin_src sh
+tmux attach -t my_experiment
+#+end_src
+** Split screen
+#+ATTR_LATEX: :options escapeinside={(*}{*)}, lineskip=2pt, basicstyle=\ttfamily\footnotesize
+#+begin_src sh
+Vertical:     (*\keys{\ctrl + b} $\longrightarrow$ \keys{\%}*)
+Horizontal:   (*\keys{\ctrl + b} $\longrightarrow$ \keys{"}*)
+Switch panes: (*\keys{\ctrl + b} $\longrightarrow$ \keys{$\leftarrow$}\keys{$\uparrow$}\keys{$\downarrow$}\keys{$\rightarrow$}*)
+#+end_src
+#+LATEX: \end{minipage}\hfill
+#+LATEX: \begin{minipage}[t]{0.47\linewidth}
+** List active sessions
+#+begin_src sh
+tmux ls
+#+end_src
+** Kill a session
+#+begin_src sh
+tmux kill-session -t my_experiment
+#+end_src
+** Zoom pane (toggle fullscreen)
+#+ATTR_LATEX: :options escapeinside={(*}{*)}
+#+begin_src sh
+(*Press \keys{\ctrl + b} $\longrightarrow$ \keys{z}*)
+#+end_src
+** Scroll terminal history
+#+ATTR_LATEX: :options escapeinside={(*}{*)}
+#+begin_src sh
+(*Press \keys{\ctrl + b} $\longrightarrow$ \keys{[}*)
+#+end_src
+#+LATEX: \noindent \scriptsize Use arrows/PgUp to scroll. Press \keys{q} to exit.
+#+LATEX: \end{minipage}
+#+LATEX: \newpage
+* Mamba (Python environments) @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/python.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/mamba.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/anaconda.png}}@@
+*What is it?* Mamba is a package manager. It is a drop-in replacement for Conda, but rewritten in C++ to be drastically faster. It isolates your Python versions and libraries so different projects don't conflict.
+#+LATEX: \vspace{1em}\noindent\rule{\linewidth}{0.4pt}\vspace{-1em}
+** Create a new environment
+Specify the Python version and any starting packages.
+#+begin_src sh
+mamba create -n <environment_name> python=3.10 pytorch -c pytorch
+#+end_src
+** List all environments
+See all available environments on the server.
+#+begin_src sh
+mamba env list
+#+end_src
+** Activate the environment
+Activate the environment every time you log in before running your code.
+#+begin_src sh
+mamba activate <environment_name>
+#+end_src
+** Install additional packages
+Package installation can be done with =mamba= or =pip= (after environment activation).
+#+begin_src sh
+mamba install pandas  # mixing mamba and pip can create dependencies issues
+pip install scipy     # if you need to use both, prioritize for mamba over pip
+#+end_src
+** Deactivate the environment
+Return to the default system environment.
+#+begin_src sh
+mamba deactivate
+#+end_src
+** Delete an environment
+Clean up when your experiment is finished.
+#+begin_src sh
+mamba env remove -n <environment_name>
+#+end_src
+#+LATEX: \vspace{0em}\noindent\rule{\linewidth}{0.4pt}\vspace{0.25em}
+** Example: train an AI model on MNIST dataset
+#+ATTR_LATEX: :options basicstyle=\fontsize{8pt}{8.5pt}\ttfamily
+#+begin_src sh
+mamba create -n mnist_env python=3.10 -y
+mamba activate mnist_env
+pip install torch torchvision --upgrade --index-url https://download.pytorch.org/whl/cu128
+wget -P ~/mnist_test https://raw.githubusercontent.com/pytorch/examples/main/mnist/main.py
+cd mnist_test
+python main.py --epochs 1
+#+end_src
+#+LATEX: \columnbreak
+* Podman (containers) @@latex:\hfill\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/podman.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/docker.png}}@@
+# * Podman (containers) :ignore:
+# +LATEX: \section*{Podman (containers) \hfill\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/podman.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/docker.png}}}
+
+*What is it?* Podman is a container engine. It is functionally identical to Docker (you can even use the alias "docker" to run the commands), but it is "daemonless" and runs securely without needing root privileges.
+#+LATEX: \vspace{0em}\noindent\rule{\linewidth}{0.4pt}\vspace{0em}
+** Run a container interactively
+Download an image, mount volumes, and run a command inside the container.
+#+begin_src sh
+podman run --rm -it --device nvidia.com/gpu=all \
+       --volume /dataset/mnist:/dataset         \
+       --volume $(pwd):/workspace               \
+       pytorch/pytorch:latest                   \
+       bash
+#+end_src
+** List running containers and downloaded images
+#+begin_src sh
+podman ps             # check what is currently running and get the container IDs
+podman image ls       # check what container images are currently stored locally
+#+end_src
+** Enter inside a running container
+#+begin_src sh
+podman exec -it <container_id> bash
+#+end_src
+** Stop a container
+#+begin_src sh
+podman stop <container_id>
+#+end_src
+** Remove a stopped container
+#+begin_src sh
+podman rm <container_id>
+#+end_src
+#+LATEX: \vspace{0em}\noindent\rule{\linewidth}{0.4pt}\vspace{0.25em}
+** Example: run a Jupyter Notebook (with GPU)
+#+LATEX: \vspace{0.5em}
+Run a Jupyter container, map port =<xxxx>=, and keep it running in the background.
+#+LATEX: \newline
+If it asks for a token, run =podman logs <container_id>= to find the login URL.
+#+begin_src sh
+podman run -d --device nvidia.com/gpu=all -p <xxxx>:8888 jupyter/scipy-notebook
+#+end_src
+Run this on your local machine to map the server's Jupyter port to your own computer.
+#+begin_src sh
+ssh -L <xxxx>:localhost:<xxxx> -Nf username@server_ip
+#+end_src
+Then access =https://localhost:<xxxx>= on a web browser.
+#+LATEX: \end{multicols}

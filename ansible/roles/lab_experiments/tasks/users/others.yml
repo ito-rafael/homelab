@@ -1,0 +1,26 @@
+- name: users | others | load user variables
+  tags: groups,users
+  include_vars: users.yml
+
+- name: users | others | create groups
+  tags: groups,users
+  group:
+    name: "{{ item.name }}"
+    state: present
+    gid_min: 1000
+    gid_max: 1999
+  loop: "{{ users }}"
+
+- name: users | others | create accounts
+  tags: users
+  user:
+    name: "{{ item.name }}"
+    group: "{{ item.name }}"
+    groups: lbic
+    append: true
+    comment: "{{ item.comment }}"
+    createhome: yes
+    state: present
+    system: no
+    shell: /bin/bash
+  loop: "{{ users }}"

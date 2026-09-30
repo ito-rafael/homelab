@@ -1,0 +1,26 @@
+#+TITLE: Ansible Software Configuration for Lab Workstations
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args:yaml
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#software-tasks][Software tasks]]
+  - [[#packages-installation][Packages Installation]]
+
+* Software tasks
+** Packages Installation
+:PROPERTIES:
+:header-args+: :tangle packages.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Install Packages
+#+begin_src yaml :padline no
+- name: software | packages | install general packages
+  tags: software,packages
+  package:
+    name:
+      - vim
+#+end_src

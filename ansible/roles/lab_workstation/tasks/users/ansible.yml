@@ -1,0 +1,29 @@
+---
+- name: users | ansible | create group
+  tags: ansible,groups,users
+  group:
+    name: ansible
+    state: present
+
+- name: users | ansible | create user
+  tags: ansible,users
+  user:
+    name: ansible
+    group: ansible
+    groups: "{{ sudo_group }}"
+    append: yes
+    createhome: yes
+    state: present
+    comment: "Ansible"
+    system: yes
+    shell: /bin/bash
+
+- name: users | ansible | add sudoers file
+  tags: ansible,users,sudo
+  copy:
+    src: files/users/sudoers_ansible
+    dest: /etc/sudoers.d/ansible
+    owner: root
+    group: root
+    mode: 0440
+    validate: "/usr/bin/visudo -cf %s"

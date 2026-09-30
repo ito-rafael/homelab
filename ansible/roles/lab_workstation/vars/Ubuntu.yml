@@ -1,0 +1,5 @@
+sudo_group: sudo
+ssh_packages:
+  - openssh-server
+  - openssh-client
+ssh_service: ssh

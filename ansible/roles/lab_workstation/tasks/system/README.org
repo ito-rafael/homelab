@@ -1,0 +1,35 @@
+#+TITLE: Ansible System Configuration for Lab Workstations
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args:yaml
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc:
+- [[#system-tasks][System tasks]]
+  - [[#openssh-configuration][OpenSSH configuration]]
+
+* System tasks
+** OpenSSH configuration
+:PROPERTIES:
+:header-args+: :tangle ssh.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Install OpenSSH
+#+begin_src yaml :padline no
+- name: system | ssh | install OpenSSH packages
+  tags: ssh
+  package:
+    name: "{{ ssh_packages }}"
+    state: present
+#+end_src
+*** Start & enable systemd service
+#+begin_src yaml
+- name: system | ssh | start and enable daemon
+  tags: ssh
+  systemd:
+    name: "{{ ssh_service }}"
+    state: started
+    enabled: yes
+#+end_src

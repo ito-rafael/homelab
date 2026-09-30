@@ -1,0 +1,80 @@
+- name: users | ansible | create group
+  tags: ansible,groups,users
+  group:
+    name: ansible
+    state: present
+
+- name: users | ansible | create user
+  tags: ansible,users
+  user:
+    name: ansible
+    group: ansible
+    groups: "{{ sudo_group }}"
+    append: yes
+    createhome: yes
+    state: present
+    comment: "Ansible"
+    system: yes
+    shell: /bin/bash
+
+- name: users | ansible | ensure home dir ownership
+  tags: ansible,users
+  file:
+    path: /home/ansible
+    owner: ansible
+    group: ansible
+    mode: 0700
+    state: directory
+
+- name: users | ansible | add sudoers file
+  tags: ansible,users,sudo
+  copy:
+    src: files/users/sudoers_ansible
+    dest: /etc/sudoers.d/ansible
+    owner: root
+    group: root
+    mode: 0440
+    validate: "/usr/bin/visudo -cf %s"
+
+- name: users | ansible | create ssh keys dir
+  tags: ssh,ssh-keys
+  file:
+    path: /home/ansible/.ssh
+    state: directory
+    owner: ansible
+    group: ansible
+    mode: 0700
+
+#- name: users | ansible | generate ssh keys
+#  tags: ssh,ssh-keys
+#  openssh_keypair:
+#    path: /home/ansible/.ssh/id_ed25519
+#    type: ed25519
+#    state: present
+#    owner: ansible
+#    group: ansible
+#    comment: "{{ ansible_facts['hostname'] }}"
+
+- name: users | ansible | create known_hosts & authorized_keys files
+  tags: ssh,ssh-keys
+  copy:
+    content: ""
+    dest: "{{ item }}"
+    force: no
+    owner: ansible
+    group: ansible
+    mode: 0600
+  with_items:
+    - /home/ansible/.ssh/known_hosts
+    - /home/ansible/.ssh/authorized_keys
+
+- name: users | ansible | copy ssh keys
+  tags: ssh,ssh-keys
+  ansible.posix.authorized_key:
+    user: ansible
+    state: present
+    manage_dir: true
+    key: "{{ lookup('file', item.path) }}"
+    comment: "{{ item.comment }}"
+  with_items:
+    - { path: "{{ role_path }}/files/ssh-keys/ansible-catuaba.pub", comment: "ansible-catuaba" }

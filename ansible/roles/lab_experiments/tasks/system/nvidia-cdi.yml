@@ -1,0 +1,52 @@
+#https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/cdi-support.html
+
+#----------------------------------------
+# Automatic CDI specification generation
+#----------------------------------------
+
+# as of nvidia-cdi v1.18.0, the specification is generated/updated by the =nvidia-cdi-refresh= systemd service (not working)
+#- name: system | nvidia-cdi | generate CDI specification
+#  tags: system,nvidia,nvidia-cdi
+#  systemd:
+#    name: nvidia-cdi-refresh
+#    enabled: true
+#    daemon_reload: true
+#    state: restarted
+#  when: nvidia_ctk_install.changed
+
+#----------------------------------------
+# Manual CDI specification generation
+#----------------------------------------
+
+- name: system | nvidia-cdi | ensure CDI dir exists
+  tags: system,nvidia,nvidia-cdi
+  ansible.builtin.file:
+    path: /etc/cdi
+    state: directory
+    mode: '0755'
+
+- name: system | nvidia-cdi | generate NVIDIA CDI specification
+  tags: system,nvidia,nvidia-cdi
+  ansible.builtin.command: nvidia-cdi cdi generate --output=/etc/cdi/nvidia.yaml
+  args:
+    creates: /etc/cdi/nvidia.yaml
+
+- name: system | nvidia-cdi | [debug] verify CDI devices are detectable
+  tags: system,nvidia,nvidia-cdi
+  ansible.builtin.command: nvidia-ctk cdi list
+  register: cdi_list
+  changed_when: false
+
+- name: system | nvidia-cdi | [debug] display detected CDI devices
+  tags: system,nvidia,nvidia-cdi
+  ansible.builtin.debug:
+    var: cdi_list.stdout_lines
+
+# the next task is only needed in a SELinux system (eg: Fedora/RHEL)
+#- name: system | nvidia-cdi | allow Podman to use GPU devices (SELinux)
+#  tags: system,nvidia,nvidia-cdi
+#  ansible.posix.seboolean:
+#    name: container_use_devices
+#    state: true
+#    persistent: true
+#  when: ansible_selinux.status == "enabled"

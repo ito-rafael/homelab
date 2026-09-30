@@ -1,0 +1,20 @@
+# load distro-specific variables
+- include_vars: "{{ ansible_facts['distribution'] }}.yml"
+  tags: always
+- block:
+  # software
+  - import_tasks: software/ubuntu.yml      # unminimize Ubuntu packages
+  - import_tasks: software/packages.yml    # install Vim, networking tools, etc
+  # users & groups
+  - import_tasks: users/ansible.yml        # set system user to run ansible automations
+  - import_tasks: users/dataset.yml        # lbic group + dataset dir
+  - import_tasks: users/lbic-user.yml      # generic universal LBiC user
+  - import_tasks: users/others.yml         # real LBiC users
+  # system
+  - import_tasks: system/disk.yml          # preserve disk space
+  - import_tasks: system/ssh.yml           # OpenSSH
+  - import_tasks: system/nvidia-gpu.yml    # NVIDIA driver & tools
+  - import_tasks: system/nvidia-ctk.yml    # NVIDIA Container Toolkit
+  - import_tasks: system/nvidia-cdi.yml    # NVIDIA Container Device Interface
+  - import_tasks: system/podman.yml        # Podman containers
+  - import_tasks: system/mamba.yml         # Mamba Python env

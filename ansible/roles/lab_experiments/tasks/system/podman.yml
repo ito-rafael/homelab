@@ -1,0 +1,57 @@
+- name: system | podman | prevent packages conflict
+  tags: system,podman
+  package:
+    name: docker
+    state: absent
+
+- name: system | podman | install Podman
+  tags: system,podman
+  package:
+    name:
+      - podman          # tool and library to run OCI-based containers in pods
+      - podman-compose  # script to run docker-compose.yml
+      - podman-docker   # aliases to emulate Docker CLI
+
+#- name: system | podman | enable user podman socket
+#  tags: system,podman
+#  ansible.builtin.systemd_service:
+#    name: podman.socket
+#    scope: user
+#    enabled: true
+#    state: started
+
+#- name: system | podman | export DOCKER_HOST in shell profile
+#  tags: system,podman
+#  ansible.builtin.lineinfile:
+#    path: /etc/profile.d/podman-docker-host.sh
+#    line: 'export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/podman/podman.sock"'
+#    create: true
+#    mode: '0644'
+
+- name: system | podman | [debug] test GPU support Podman containers
+  tags: system,podman
+  ansible.builtin.command: podman run --rm --device nvidia.com/gpu=all ubuntu nvidia-smi
+  #ansible.builtin.command: podman run --rm --device nvidia.com/gpu=all ubuntu nvidia-smi -L
+  register: podman_gpu_test
+  changed_when: false
+
+- name: system | podman | [debug] display the output of nvidia-smi inside container
+  tags: system,podman
+  ansible.builtin.debug:
+    var: podman_gpu_test.stdout_lines
+
+- name: system | podman | configure unqualified-search-registries
+  tags: system,podman
+  ansible.builtin.lineinfile:
+    path: /etc/containers/registries.conf
+    regexp: 'unqualified-search-registries ='
+    line: 'unqualified-search-registries = ["docker.io", "quay.io"]'
+    state: present
+
+- name: system | podman | configure short-name-mode
+  tags: system,podman
+  ansible.builtin.lineinfile:
+    path: /etc/containers/registries.conf
+    regexp: 'short-name-mode ='
+    line: 'short-name-mode = "disabled"'
+    state: present

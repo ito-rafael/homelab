@@ -1,0 +1,7 @@
+users:
+  - name: "alice"
+    comment: "Alice Cooper"
+  - name: "bob"
+    comment: "Bob Marley"
+  - name: "charlie"
+    comment: "Charlie Brown Jr."

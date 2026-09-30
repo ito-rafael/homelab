@@ -1,0 +1,83 @@
+# Code names
+# https://nouveau.freedesktop.org/CodeNames.html
+#
+# Kepler       (NVE0 family / GKXXX code name)
+# Maxwell      (NV110 family / GMXXX code name)
+# Pascal       (NV130 family / GPXXX code name)
+# Volta        (NV140 family / GVXXX code name)
+# Turing       (NV160 family / TUXXX code name)
+# Ampere       (NV170 family / GA10X code name)
+# Ada Lovelace (NV190 family / ADXXX code name)
+#----------------------------------------------
+# TBD:
+# Blackwell    (NV200? family / GBXXX code name)
+# Rubin        (TBD family / TBD code name)
+
+# NVIDIA GPU architecture identification
+- name: system | nvidia | check if architecture is Kepler
+  tags: system,gpu,nvidia,nvidia-gpu
+  shell: lspci -k -d ::03xx | grep -E 'GK[12][01][0-9A][B]?'
+  changed_when: false
+  failed_when: false
+  register: kepler
+
+- name: system | nvidia | check if architecture is Maxwell, Pascal, or Volta
+  tags: system,gpu,nvidia,nvidia-gpu
+  shell: lspci -k -d ::03xx | grep -E 'GM[12]0[04678B]|GP10[24678]|GV100'
+  changed_when: false
+  failed_when: false
+  register: maxwell_pascal_volta
+
+- name: system | nvidia | check if architecture is Turing, Ampere, or Ada Lovelace
+  tags: system,gpu,nvidia,nvidia-gpu
+  shell: lspci -k -d ::03xx | grep -E 'TU1[01][2467]|GA10[2467]AD10[23467]'
+  changed_when: false
+  failed_when: false
+  register: turing_ampere_adalovelace
+
+- name: system | nvidia | check if architecture is Blackwell
+  tags: system,gpu,nvidia,nvidia-gpu
+  shell: lspci -k -d ::03xx | grep -E 'GB[12][0-9]{2}'
+  changed_when: false
+  failed_when: false
+  register: blackwell
+
+# Kepler
+#- name: system | nvidia | install driver for Kepler architecture
+#  tags: system,gpu,nvidia,nvidia-gpu
+#  package:
+#    name:
+#      - nvidia-470xx-dkms
+#      - nvidia-470xx-utils
+#      - lib32-nvidia-470xx-utils
+#  when:
+#    - kepler.stdout != ""
+
+# Maxwell, Pascal, and Volta
+#- name: system | nvidia | install driver for Maxwell, Pascal and Volta architectures (linux kernel)
+#  tags: system,gpu,nvidia,nvidia-gpu
+#  package:
+#    name:
+#      - nvidia              # NVIDIA kernel modules
+#      - nvidia-utils        # drivers utilities (provides nvidia-smi, vulkan-driver)
+#      - lib32-nvidia-utils  # provides lib32-vulkan-driver
+#  when:
+#    - maxwell_pascal_volta.stdout != ""
+
+# Turing, Ampere, and Ada Lovelace
+- name: system | nvidia | install driver for Turing, Ampere, Ada Lovelace, and Blackwell architectures
+  tags: system,gpu,nvidia,nvidia-gpu
+  package:
+    name:
+      - nvidia-driver-590-open  # NVIDIA open kernel modules
+      - nvidia-utils-590        # driver utilities (provides nvidia-smi)
+  when: >
+    turing_ampere_adalovelace.stdout != "" or
+    blackwell.stdout != ""
+
+- name: system | nvidia | install GPU tools
+  tags: system,gpu,nvidia,nvidia-gpu
+  package:
+    name:
+      - nvtop                 # GPU process monitoring
+      #- nvidia-cuda-toolkit  # NVIDIA's GPU programming toolkit

@@ -1,0 +1,86 @@
+- name: system | mamba | download Miniforge installer
+  tags: system,mamba
+  ansible.builtin.get_url:
+    url: "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
+    dest: "/tmp/Miniforge3.sh"
+    mode: '0755'
+
+# flags:
+#   -b: batch mode (run silently)
+#   -u: update
+#   -p: prefix/path (set to /opt/mamba)
+- name: system | mamba | run Miniforge installer
+  tags: system,mamba
+  ansible.builtin.command: "/tmp/Miniforge3.sh -b -u -p /opt/mamba"
+  args:
+    creates: /opt/mamba
+
+- name: system | mamba | make mamba available to users upon login
+  tags: system,mamba
+  ansible.builtin.copy:
+    dest: /etc/profile.d/mamba.sh
+    content: |
+      export MAMBA_ROOT_PREFIX=/opt/mamba
+      . /opt/mamba/etc/profile.d/conda.sh
+      . /opt/mamba/etc/profile.d/mamba.sh
+
+      # force Mamba to use the user's home for packages and environments
+      export CONDA_ENVS_PATH="$HOME/.conda/envs"
+      export CONDA_PKGS_DIRS="$HOME/.conda/pkgs:/opt/mamba/pkgs"
+
+      # ensure the user's local package cache exists
+      mkdir -p "$HOME/.conda/pkgs"
+
+      # disable system-level updates for users
+      export CONDA_AUTO_UPDATE_CONDA=false
+      # prevent "short-name" interactive prompts
+      export CONDA_SHORT_NAME_MODE=disabled
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: system | mamba | config global condarc for user envs
+  tags: system,mamba
+  ansible.builtin.copy:
+    dest: /opt/mamba/.condarc
+    content: |
+      # set default channels
+      channels:
+        - conda-forge
+
+      # route new envs and cached packages to the user's home dir
+      envs_dirs:
+        - ~/.conda/envs
+        - /opt/mamba/envs
+      pkgs_dirs:
+        - ~/.conda/pkgs
+        - /opt/mamba/pkgs
+
+      short-name-mode: disabled
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: system | mamba | create shared lockfile
+  tags: system,mamba
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: touch
+    mode: '0666'
+    modification_time: preserve
+    access_time: preserve
+  loop:
+    - /opt/mamba/pkgs/pkgs.lock
+    - /opt/mamba/pkgs/urls.txt
+
+#- name: system | mamba | initialize mamba for bash
+#  tags: system,mamba
+#  ansible.builtin.command: /opt/mamba/bin/mamba init bash"
+#  register: mamba_init
+#  changed_when: "'no change' not in mamba_init.stdout"
+
+#- name: system | mamba | clean up the installer script
+#  tags: system,mamba
+#  ansible.builtin.file:
+#    path: "/tmp/Miniforge3.sh"
+#    state: absent

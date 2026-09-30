@@ -1,0 +1,331 @@
+% Created 2026-09-22 Tue 15:21
+% Intended LaTeX compiler: pdflatex
+\documentclass[a4paper, landscape]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\newcommand{\docversion}{v1.3}
+\usepackage[margin=1.25cm, top=1.0cm]{geometry}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{inconsolata}
+\usepackage{hyperref}
+\usepackage{menukeys}
+\setlength{\columnsep}{1.0cm}
+\setlength{\columnseprule}{0.5pt}
+\usepackage{titlesec}
+\titlespacing*{\subsection}{0pt}{0.5ex}{0ex}
+\titleformat*{\subsection}{\normalsize\bfseries}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{eso-pic}
+\usepackage{ifthen}
+\definecolor{pastelred}{HTML}{FFEBEE}
+\definecolor{pastelgreen}{HTML}{E8F5E9}
+\definecolor{pastelblue}{HTML}{E3F2FD}
+\definecolor{pastelyellow}{HTML}{FFFDE7} % A light pastel yellow
+\AddToShipoutPictureBG{%
+\begin{tikzpicture}[remember picture, overlay]
+% global background (white)
+\fill[white] (current page.south west) rectangle (current page.north east);
+
+% page-specific overlays
+\ifthenelse{\value{page}=1}{%
+% page 1: yellow (left) / red (right)
+\fill[pastelyellow] ($(current page.south west) + (0.75cm, 0.75cm)$) rectangle ($(current page.north) + (0cm, -2.25cm)$);
+\fill[pastelred] ($(current page.south) + (0cm, 0.75cm)$) rectangle ($(current page.north east) - (0.75cm, 2.25cm)$);
+}{%
+% page 2: green (left) / blue (right)
+\fill[pastelgreen] ($(current page.south west) + (0.75cm, 0.75cm)$) rectangle ($(current page.north) - (0cm, 0.75cm)$);
+\fill[pastelblue] ($(current page.south) + (0cm, 0.75cm)$) rectangle ($(current page.north east) - (0.75cm, 0.75cm)$);
+}%
+
+% vertion & date (bottom right)
+\node [anchor=south east, xshift=-1cm, yshift=0.75cm, text=gray!70] at (current page.south east) {\scriptsize \docversion\ | \today};
+\end{tikzpicture}
+}
+\lstset{basicstyle=\ttfamily\small, backgroundcolor=\color{gray!10}, frame=single, rulecolor=\color{gray!40}, framesep=5pt, frameround=tttt, breaklines=true, columns=flexible, keepspaces=true, keywordstyle=\normalfont\ttfamily, commentstyle=\normalfont\ttfamily, stringstyle=\normalfont\ttfamily, literate={-}{{-}}1}
+\hypersetup{
+hidelinks,         % remove colored boxes and borders
+colorlinks=false,  % ensures hyperref doesn't try to color the text itself
+pdfnewwindow=true
+}
+\date{}
+\title{LBiC Computing Resources: Quick Start Guide}
+\hypersetup{
+ pdfauthor={},
+ pdftitle={LBiC Computing Resources: Quick Start Guide},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={},
+ pdflang={English}}
+\begin{document}
+
+\begin{center}
+\begin{tikzpicture}[remember picture, overlay]
+% left icon (LBiC)
+\node[anchor=north west, xshift=1.0cm, yshift=-0.25cm] at (current page.north west)
+{\includegraphics[height=4.0em]{figure/lbic.png}};
+% right icon (FEEC/Unicamp)
+\node[anchor=north east, xshift=-2.5cm, yshift=-0.75cm] at (current page.north east)
+{\includegraphics[height=2.5em]{figure/feec.png}};
+\node[anchor=north east, xshift=-0.75cm, yshift=-0.50cm] at (current page.north east)
+{\includegraphics[height=4.0em]{figure/unicamp.png}};
+\end{tikzpicture}
+\vspace*{0.2cm}
+{\LARGE \bfseries LBiC Computing Resources: Quick Start Guide}
+\end{center}
+\vspace{0cm}
+
+\begin{multicols}{2}
+\raggedcolumns
+\section*{Accessing the lab}
+\label{sec:org7ca4c03}
+\vspace{-2mm}
+\begin{itemize}
+\item \textbf{Building}: Access to the G2 block (LBiC's location) requires student ID ("RA"). If your ID fails, please contact prof. Von Zuben\textsuperscript{*} for authorization (\href{https://site.fee.unicamp.br/ctic/faq\detokenize{#}acesso_laboratorio}{\textcolor{blue}{\uline{CTIC}}}).
+\item \textbf{LBiC}: The lab access control is done through a regular key. If you plan to use the physical space, kindly ask Prof. Von Zuben for a copy of the lab key.
+\end{itemize}
+
+\vspace{-1em}\noindent\rule{\linewidth}{0.4pt}\vspace{-1.25em}
+\section*{Accessing the computers}
+\label{sec:org9dee7b6}
+\vspace{-2mm}
+If you don't have your credentials yet, send an email\textsuperscript{\dag}  requesting it. To access hosts remotely, connect via VPN then SSH into the host, or use the FEEC server alternative. If you are locally connected to the lab's network, simply skip to the final SSH.
+\begin{itemize}
+\item \textbf{VPN}: Download and install \href{https://tailscale.com/download}{\textcolor{blue}{\uline{Tailscale}}}. Then, run this to join the lab's Tailnet:
+\begin{lstlisting}[language=sh,numbers=none,basicstyle=\fontsize{7pt}{8.5pt}\ttfamily]
+sudo tailscale up --login-server https://andira.lbic.fee.unicamp.br --accept-routes --authkey <KEY>
+\end{lstlisting}
+\vspace{-1mm}
+\item \textbf{SSH:} After establishing the VPN connection, log in to the PC and/or server:
+\begin{lstlisting}[language=sh,numbers=none]
+ssh username@ip_address
+\end{lstlisting}
+\vspace{-1mm}
+\item \textbf{FEEC server} (alternative): FEEC hosts an SSH server node. This method does not require a VPN. One can find more information on this CTIC \href{https://site.fee.unicamp.br/ctic/configuracao-de-sshfeeunicampbr-como-jump-host}{\textcolor{blue}{\uline{page}}}.
+\begin{lstlisting}[language=sh,numbers=none]
+ssh -J email@dac.unicamp.br@ssh.fee.unicamp.br username@ip_address
+\end{lstlisting}
+\end{itemize}
+\vspace{-0.75em}\noindent\rule{\linewidth}{0.4pt}\vspace{-1.25em}
+\section*{Hosts}
+\label{sec:orge4bf5e2}
+\vspace{-2mm}
+\begin{itemize}
+\item \textbf{Workstations}: There are a few dedicated PCs available for local or remote research. Please contact us\textsuperscript{\dag} to request a machine for your project's duration.
+\item \textbf{Servers}: Experiments are currently hosted on a shared primary server. Please schedule your sessions in advance via the resource reservation \href{https://docs.google.com/spreadsheets/d/1Lhi5pEze4d4Z4oHMksUpD3k6n5Hp26gXtOMGz6sXr9A/edit?usp=sharing}{\textcolor{blue}{\uline{spreadsheet}}}.
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{ll}
+\hline
+hostname & paubrasil.lbic.fee.unicamp.br\\
+IP & 143.106.45.179\\
+CPU & AMD Ryzen 9 9950X (16 cores)\\
+GPU & NVIDIA RTX 5070 Ti (16 GiB)\\
+RAM & 128 GiB DDR5 @ 4400 MT/s\\
+\hline
+\end{tabular}
+\end{center}
+
+On workstations, \texttt{root} privileges are granted (and recommended), and users are responsible for system maintenance. On servers, \texttt{root} access is restricted; please contact us\textsuperscript{\dag} for any required system-wide package installations.
+
+\vfill
+\noindent \fontsize{7}{7.2}\selectfont \textsuperscript{*} vonzuben[at]unicamp[dot]br
+\hfill
+\noindent \fontsize{7}{7.2}\selectfont \textsuperscript{\dag} vonzuben[at]unicamp[dot]br, with copy to itorafael[at]gmail[dot]com
+\normalsize
+\columnbreak
+\section*{General commands \hfill\raisebox{-0.2\height}{\includegraphics[height=1.25em]{figure/shell.png}}}
+\label{sec:orgd2628e7}
+\subsection*{Change Password}
+\label{sec:orgeacdb8e}
+Please change your password after your first login.
+\begin{lstlisting}[language=sh,numbers=none]
+passwd
+\end{lstlisting}
+\subsection*{Monitoring CPU and GPU processes}
+\label{sec:org2cb00fe}
+\begin{lstlisting}[language=sh,numbers=none]
+htop                  # for memory usage and CPU cores utilization
+nvtop                 # for GPU proccesses and VRAM memory utilization
+\end{lstlisting}
+\subsection*{Help}
+\label{sec:org226da9e}
+\begin{lstlisting}[language=sh,numbers=none]
+man <command>         # example: "man podman"
+<command> --help      # example: "mamba --help"
+\end{lstlisting}
+\vspace{0.25em}\noindent\rule{\linewidth}{0.4pt}\vspace{-0.5em}
+\section*{Terminal multiplexer (tmux) \hfill\raisebox{-0.2\height}{\includegraphics[height=1em]{figure/tmux.png}}}
+\label{sec:org260ccb1}
+Prevent script termination on SSH disconnect by running \texttt{tmux} in the background.
+\newline\newline
+\noindent\begin{minipage}[t]{0.47\linewidth}
+\subsection*{Start a new session}
+\label{sec:org6bfaf6f}
+\begin{lstlisting}[language=sh,numbers=none]
+tmux new -s my_experiment
+\end{lstlisting}
+\subsection*{Detach (leave it running)}
+\label{sec:org31e9ff1}
+\begin{lstlisting}[language=sh,numbers=none,escapeinside={(*}{*)}]
+(*Press \keys{\ctrl + b} $\longrightarrow$ \keys{d}*)
+\end{lstlisting}
+\subsection*{Reattach later}
+\label{sec:org1e67ad6}
+\begin{lstlisting}[language=sh,numbers=none]
+tmux attach -t my_experiment
+\end{lstlisting}
+\subsection*{Split screen}
+\label{sec:orge5b4e5c}
+\begin{lstlisting}[language=sh,numbers=none,escapeinside={(*}{*)}, lineskip=2pt, basicstyle=\ttfamily\footnotesize]
+Vertical:     (*\keys{\ctrl + b} $\longrightarrow$ \keys{\%}*)
+Horizontal:   (*\keys{\ctrl + b} $\longrightarrow$ \keys{"}*)
+Switch panes: (*\keys{\ctrl + b} $\longrightarrow$ \keys{$\leftarrow$}\keys{$\uparrow$}\keys{$\downarrow$}\keys{$\rightarrow$}*)
+\end{lstlisting}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\subsection*{List active sessions}
+\label{sec:orgeb54727}
+\begin{lstlisting}[language=sh,numbers=none]
+tmux ls
+\end{lstlisting}
+\subsection*{Kill a session}
+\label{sec:org1309125}
+\begin{lstlisting}[language=sh,numbers=none]
+tmux kill-session -t my_experiment
+\end{lstlisting}
+\subsection*{Zoom pane (toggle fullscreen)}
+\label{sec:org6a9d021}
+\begin{lstlisting}[language=sh,numbers=none,escapeinside={(*}{*)}]
+(*Press \keys{\ctrl + b} $\longrightarrow$ \keys{z}*)
+\end{lstlisting}
+\subsection*{Scroll terminal history}
+\label{sec:org3ded65c}
+\begin{lstlisting}[language=sh,numbers=none,escapeinside={(*}{*)}]
+(*Press \keys{\ctrl + b} $\longrightarrow$ \keys{[}*)
+\end{lstlisting}
+\noindent \scriptsize Use arrows/PgUp to scroll. Press \keys{q} to exit.
+\end{minipage}
+\newpage
+\section*{Mamba (Python environments) \hfill\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/python.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/mamba.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/anaconda.png}}}
+\label{sec:orga0b10a4}
+\textbf{What is it?} Mamba is a package manager. It is a drop-in replacement for Conda, but rewritten in C++ to be drastically faster. It isolates your Python versions and libraries so different projects don't conflict.
+\vspace{1em}\noindent\rule{\linewidth}{0.4pt}\vspace{-1em}
+\subsection*{Create a new environment}
+\label{sec:orga8c48f4}
+Specify the Python version and any starting packages.
+\begin{lstlisting}[language=sh,numbers=none]
+mamba create -n <environment_name> python=3.10 pytorch -c pytorch
+\end{lstlisting}
+\subsection*{List all environments}
+\label{sec:orgc73e64c}
+See all available environments on the server.
+\begin{lstlisting}[language=sh,numbers=none]
+mamba env list
+\end{lstlisting}
+\subsection*{Activate the environment}
+\label{sec:org8290285}
+Activate the environment every time you log in before running your code.
+\begin{lstlisting}[language=sh,numbers=none]
+mamba activate <environment_name>
+\end{lstlisting}
+\subsection*{Install additional packages}
+\label{sec:org8034bd9}
+Package installation can be done with \texttt{mamba} or \texttt{pip} (after environment activation).
+\begin{lstlisting}[language=sh,numbers=none]
+mamba install pandas  # mixing mamba and pip can create dependencies issues
+pip install scipy     # if you need to use both, prioritize for mamba over pip
+\end{lstlisting}
+\subsection*{Deactivate the environment}
+\label{sec:org0cb9d1e}
+Return to the default system environment.
+\begin{lstlisting}[language=sh,numbers=none]
+mamba deactivate
+\end{lstlisting}
+\subsection*{Delete an environment}
+\label{sec:orgcc5ca62}
+Clean up when your experiment is finished.
+\begin{lstlisting}[language=sh,numbers=none]
+mamba env remove -n <environment_name>
+\end{lstlisting}
+\vspace{0em}\noindent\rule{\linewidth}{0.4pt}\vspace{0.25em}
+\subsection*{Example: train an AI model on MNIST dataset}
+\label{sec:org3dafa01}
+\begin{lstlisting}[language=sh,numbers=none,basicstyle=\fontsize{8pt}{8.5pt}\ttfamily]
+mamba create -n mnist_env python=3.10 -y
+mamba activate mnist_env
+pip install torch torchvision --upgrade --index-url https://download.pytorch.org/whl/cu128
+wget -P ~/mnist_test https://raw.githubusercontent.com/pytorch/examples/main/mnist/main.py
+cd mnist_test
+python main.py --epochs 1
+\end{lstlisting}
+\columnbreak
+\section*{Podman (containers) \hfill\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/podman.png}}\hspace{0.25cm}\raisebox{-0.2\height}{\includegraphics[height=1.5em]{figure/docker.png}}}
+\label{sec:orgaa9f1a6}
+\textbf{What is it?} Podman is a container engine. It is functionally identical to Docker (you can even use the alias "docker" to run the commands), but it is "daemonless" and runs securely without needing root privileges.
+\vspace{0em}\noindent\rule{\linewidth}{0.4pt}\vspace{0em}
+\subsection*{Run a container interactively}
+\label{sec:orgc8f97a3}
+Download an image, mount volumes, and run a command inside the container.
+\begin{lstlisting}[language=sh,numbers=none]
+podman run --rm -it --device nvidia.com/gpu=all \
+       --volume /dataset/mnist:/dataset         \
+       --volume $(pwd):/workspace               \
+       pytorch/pytorch:latest                   \
+       bash
+\end{lstlisting}
+\subsection*{List running containers and downloaded images}
+\label{sec:org38e229c}
+\begin{lstlisting}[language=sh,numbers=none]
+podman ps             # check what is currently running and get the container IDs
+podman image ls       # check what container images are currently stored locally
+\end{lstlisting}
+\subsection*{Enter inside a running container}
+\label{sec:org7a9194d}
+\begin{lstlisting}[language=sh,numbers=none]
+podman exec -it <container_id> bash
+\end{lstlisting}
+\subsection*{Stop a container}
+\label{sec:org4507f21}
+\begin{lstlisting}[language=sh,numbers=none]
+podman stop <container_id>
+\end{lstlisting}
+\subsection*{Remove a stopped container}
+\label{sec:org4d7e769}
+\begin{lstlisting}[language=sh,numbers=none]
+podman rm <container_id>
+\end{lstlisting}
+\vspace{0em}\noindent\rule{\linewidth}{0.4pt}\vspace{0.25em}
+\subsection*{Example: run a Jupyter Notebook (with GPU)}
+\label{sec:org035314f}
+\vspace{0.5em}
+Run a Jupyter container, map port \texttt{<xxxx>}, and keep it running in the background.
+\newline
+If it asks for a token, run \texttt{podman logs <container\_id>} to find the login URL.
+\begin{lstlisting}[language=sh,numbers=none]
+podman run -d --device nvidia.com/gpu=all -p <xxxx>:8888 jupyter/scipy-notebook
+\end{lstlisting}
+Run this on your local machine to map the server's Jupyter port to your own computer.
+\begin{lstlisting}[language=sh,numbers=none]
+ssh -L <xxxx>:localhost:<xxxx> -Nf username@server_ip
+\end{lstlisting}
+Then access \texttt{https://localhost:<xxxx>} on a web browser.
+\end{multicols}
+\end{document}
