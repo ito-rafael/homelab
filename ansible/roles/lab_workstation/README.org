@@ -16,6 +16,7 @@
 - [[#handlers][Handlers]]
   - [[#system-1][System]]
 - [[#vars][Vars]]
+  - [[#main][Main]]
   - [[#archlinux][Archlinux]]
   - [[#debian][Debian]]
   - [[#fedora][Fedora]]
@@ -185,6 +186,11 @@
   ansible.builtin.command: nmcli connection up "{{ nm_active_conn.stdout }}"
 #+end_src
 * Vars
+** Main
+#+begin_src yaml :tangle vars/main.yml
+---
+kanidm_origin: https://andira.lbic.fee.unicamp.br
+#+end_src
 ** Archlinux
 #+begin_src yaml :tangle vars/Archlinux.yml
 ---
