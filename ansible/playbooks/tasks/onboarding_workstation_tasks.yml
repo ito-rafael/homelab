@@ -63,3 +63,9 @@
     - ws_admins_posix_get.results[ws_index].rc != 0 or 'gidnumber' not in ws_admins_posix_get.results[ws_index].stdout | lower
   register: kanidm_ws_admins_posix
   changed_when: kanidm_ws_admins_posix.rc == 0
+
+- name: ops | workstations | set exact members for workstation users
+  ansible.builtin.command: "kanidm group set-members {{ item.hostname }}_users {{ item.users_allowed | join(' ') }} --name idm_admin"
+  loop: "{{ workstations }}"
+  when: item.users_allowed is defined and item.users_allowed | length > 0
+  changed_when: true
