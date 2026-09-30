@@ -26,7 +26,7 @@
 #+end_src
 ** Tasks
 :PROPERTIES:
-:header-args+: :tangle tasks/onboarding_user_tasks.yml
+:header-args+: :tangle tasks/onboarding_user.yml
 :END:
 #+begin_src yaml
 ---
@@ -174,6 +174,7 @@
   hosts: kanidm
   vars_files:
     - "../group_vars/all/main.yml"
+    - "../group_vars/all/ip.yml"
     - "../group_vars/all/workstations.yml"
     - "../group_vars/all/vault.yml"
   tasks:
@@ -182,7 +183,7 @@
 #+end_src
 ** Tasks
 :PROPERTIES:
-:header-args+: :tangle tasks/onboarding_workstation_tasks.yml
+:header-args+: :tangle tasks/onboarding_workstation.yml
 :END:
 #+begin_src yaml
 ---
@@ -290,11 +291,11 @@
     - "../group_vars/all/vault.yml"
   tasks:
     - name: Import user offboarding tasks
-      ansible.builtin.import_tasks: tasks/offboarding_user_tasks.yml
+      ansible.builtin.import_tasks: tasks/offboarding_user.yml
 #+end_src
 ** Tasks
 :PROPERTIES:
-:header-args+: :tangle tasks/offboarding_user_tasks.yml
+:header-args+: :tangle tasks/offboarding_user.yml
 :END:
 #+begin_src yaml
 ---
@@ -354,7 +355,7 @@
   ansible.builtin.file:
     path: "/home/{{ item.0.username }}"
     state: absent
-  # The 'product' filter creates a nested loop pairing every user with every workstation
+  # the "product" filter creates a nested loop pairing every user with every workstation
   loop: "{{ (users_offboard | default([])) | product(workstations | default([])) | list }}"
   delegate_to: "{{ item.1.hostname }}"
 #+end_src

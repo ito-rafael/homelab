@@ -42,6 +42,6 @@
   ansible.builtin.file:
     path: "/home/{{ item.0.username }}"
     state: absent
-  # The 'product' filter creates a nested loop pairing every user with every workstation
+  # the "product" filter creates a nested loop pairing every user with every workstation
   loop: "{{ (users_offboard | default([])) | product(workstations | default([])) | list }}"
   delegate_to: "{{ item.1.hostname }}"

@@ -3,6 +3,7 @@
   hosts: kanidm
   vars_files:
     - "../group_vars/all/main.yml"
+    - "../group_vars/all/ip.yml"
     - "../group_vars/all/workstations.yml"
     - "../group_vars/all/vault.yml"
   tasks:

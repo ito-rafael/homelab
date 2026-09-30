@@ -9,4 +9,4 @@
     - "../group_vars/all/vault.yml"
   tasks:
     - name: Import user offboarding tasks
-      ansible.builtin.import_tasks: tasks/offboarding_user_tasks.yml
+      ansible.builtin.import_tasks: tasks/offboarding_user.yml
