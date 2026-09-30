@@ -26,6 +26,7 @@
   - [[#sudoers_ansible][sudoers_ansible]]
 - [[#templates][Templates]]
   - [[#kanidm-config][Kanidm config]]
+  - [[#kanidm-unixd-config][Kanidm unixd config]]
 
 * Tasks
 #+begin_src yaml :tangle tasks/main.yml
@@ -252,4 +253,14 @@ ansible ALL=(ALL) NOPASSWD: ALL
 uri = "https://{{ ip_kanidm_iam }}"
 verify_hostnames = true
 verify_ca = true
+#+end_src
+** Kanidm unixd config
+#+begin_src conf :tangle templates/unixd.j2
+version = "2"
+uri = "https://{{ ip_kanidm_iam }}"
+verify_hostnames = true
+verify_ca = true
+
+[kanidm]
+pam_allowed_login_groups = ["headscale_users"]
 #+end_src

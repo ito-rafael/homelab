@@ -1,0 +1,7 @@
+version = "2"
+uri = "https://{{ ip_kanidm_iam }}"
+verify_hostnames = true
+verify_ca = true
+
+[kanidm]
+pam_allowed_login_groups = ["headscale_users"]
