@@ -1,0 +1,912 @@
+#+TITLE: Ansible Role for Lab Experiments
+#+AUTHOR: Rafael Ito
+#+PROPERTY: header-args
+#+STARTUP: showeverything
+#+auto_tangle: t
+
+* Table of Contents :toc_3:
+- [[#tasks][Tasks]]
+  - [[#main][Main]]
+  - [[#software][Software]]
+    - [[#packages][Packages]]
+    - [[#ubuntu][Ubuntu]]
+  - [[#users][Users]]
+    - [[#ansible][Ansible]]
+    - [[#dataset][Dataset]]
+    - [[#lbic-user][lbic-user]]
+    - [[#others][Others]]
+  - [[#system][System]]
+    - [[#disk][Disk]]
+    - [[#mamba][Mamba]]
+    - [[#nvidia-gpu][NVIDIA GPU]]
+    - [[#nvidia-ctk][NVIDIA CTK]]
+    - [[#nvidia-cdi][NVIDIA CDI]]
+    - [[#podman][Podman]]
+    - [[#ssh][SSH]]
+- [[#vars][Vars]]
+  - [[#main-1][Main]]
+  - [[#ubuntu-1][Ubuntu]]
+  - [[#users-1][Users]]
+- [[#files][Files]]
+  - [[#ssh-keys][SSH Keys]]
+  - [[#users-2][Users]]
+
+* Tasks
+** Main
+#+begin_src yaml :tangle tasks/main.yml
+---
+# load distro-specific variables
+- include_vars: "{{ ansible_facts['distribution'] }}.yml"
+  tags: always
+- block:
+  # software
+  - import_tasks: software/ubuntu.yml      # unminimize Ubuntu packages
+  - import_tasks: software/packages.yml    # install Vim, networking tools, etc
+  # users & groups
+  - import_tasks: users/ansible.yml        # set system user to run ansible automations
+  - import_tasks: users/dataset.yml        # lbic group + dataset dir
+  - import_tasks: users/lbic-user.yml      # generic universal LBiC user
+  - import_tasks: users/others.yml         # real LBiC users
+  # system
+  - import_tasks: system/disk.yml          # preserve disk space
+  - import_tasks: system/ssh.yml           # OpenSSH
+  - import_tasks: system/nvidia-gpu.yml    # NVIDIA driver & tools
+  - import_tasks: system/nvidia-ctk.yml    # NVIDIA Container Toolkit
+  - import_tasks: system/nvidia-cdi.yml    # NVIDIA Container Device Interface
+  - import_tasks: system/podman.yml        # Podman containers
+  - import_tasks: system/mamba.yml         # Mamba Python env
+#+end_src
+** Software
+*** Packages
+:PROPERTIES:
+:header-args+: :tangle tasks/software/packages.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Install General Packages
+#+begin_src yaml :padline no
+- name: software | packages | install general packages
+  tags: software,packages
+  package:
+    name:
+      - git            # version control
+      - htop           # process viewer
+      - lshw           # show hw info
+      - man-db         # tools for reading manual pages
+      - python3        # Python programming language
+      - tmux           # terminal multiplexer
+      - unrar          # RAR uncompression
+      - unzip          # zip archives extraction
+      - vim            # terminal text editor
+      - zip            # zip archives compressor
+#+end_src
+**** Install Monitoring Packages
+#+begin_src yaml
+- name: software | packages | install monitoring packages
+  tags: software,packages
+  package:
+    name:
+      - iputils-ping   # network ping
+      - speedtest-cli  # Internet bandwidth test with speedtest.net
+#+end_src
+*** Ubuntu
+:PROPERTIES:
+:header-args+: :tangle tasks/software/ubuntu.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Unminimize Ubuntu
+#+begin_src yaml :padline no
+- name: software | ubuntu | unminimize Ubuntu non-interactively
+  tags: software,ubuntu
+  ansible.builtin.shell: yes | unminimize
+  args:
+    creates: /var/log/unminimize_ansible.done
+  register: unminimize_result
+#+end_src
+**** Idempotency Check
+#+begin_src yaml
+- name: software | ubuntu | create file for unminimize idempotency
+  tags: software,ubuntu
+  ansible.builtin.file:
+    path: /var/log/unminimize_ansible.done
+    state: touch
+  when: unminimize_result.changed
+#+end_src
+** Users
+*** Ansible
+:PROPERTIES:
+:header-args+: :tangle tasks/users/ansible.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Create Group
+#+begin_src yaml :padline no
+- name: users | ansible | create group
+  tags: ansible,groups,users
+  group:
+    name: ansible
+    state: present
+#+end_src
+**** Create User
+#+begin_src yaml
+- name: users | ansible | create user
+  tags: ansible,users
+  user:
+    name: ansible
+    group: ansible
+    groups: "{{ sudo_group }}"
+    append: yes
+    createhome: yes
+    state: present
+    comment: "Ansible"
+    system: yes
+    shell: /bin/bash
+#+end_src
+**** Ensure Home Dir Ownership
+#+begin_src yaml
+- name: users | ansible | ensure home dir ownership
+  tags: ansible,users
+  file:
+    path: /home/ansible
+    owner: ansible
+    group: ansible
+    mode: 0700
+    state: directory
+#+end_src
+**** Add Sudoers File
+#+begin_src yaml
+- name: users | ansible | add sudoers file
+  tags: ansible,users,sudo
+  copy:
+    src: files/users/sudoers_ansible
+    dest: /etc/sudoers.d/ansible
+    owner: root
+    group: root
+    mode: 0440
+    validate: "/usr/bin/visudo -cf %s"
+#+end_src
+**** Create SSH Keys Dir
+#+begin_src yaml
+- name: users | ansible | create ssh keys dir
+  tags: ssh,ssh-keys
+  file:
+    path: /home/ansible/.ssh
+    state: directory
+    owner: ansible
+    group: ansible
+    mode: 0700
+#+end_src
+**** Generate SSH Keys
+#+begin_src yaml :tangle no
+- name: users | ansible | generate ssh keys
+  tags: ssh,ssh-keys
+  openssh_keypair:
+    path: /home/ansible/.ssh/id_ed25519
+    type: ed25519
+    state: present
+    owner: ansible
+    group: ansible
+    comment: "{{ ansible_facts['hostname'] }}"
+#+end_src
+**** Create Known Hosts and Authorized Keys Files
+#+begin_src yaml
+- name: users | ansible | create known_hosts & authorized_keys files
+  tags: ssh,ssh-keys
+  copy:
+    content: ""
+    dest: "{{ item }}"
+    force: no
+    owner: ansible
+    group: ansible
+    mode: 0600
+  with_items:
+    - /home/ansible/.ssh/known_hosts
+    - /home/ansible/.ssh/authorized_keys
+#+end_src
+**** Copy SSH Keys
+#+begin_src yaml
+- name: users | ansible | copy ssh keys
+  tags: ssh,ssh-keys
+  ansible.posix.authorized_key:
+    user: ansible
+    state: present
+    manage_dir: true
+    key: "{{ lookup('file', item.path) }}"
+    comment: "{{ item.comment }}"
+  with_items:
+    - { path: "{{ role_path }}/files/ssh-keys/ansible-catuaba.pub", comment: "ansible-catuaba" }
+#+end_src
+*** Dataset
+:PROPERTIES:
+:header-args+: :tangle tasks/users/dataset.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Create LBiC Group
+#+begin_src yaml :padline no
+- name: users | dataset | create lbic group
+  tags: groups,users
+  group:
+    name: lbic
+    state: present
+    gid_min: 2000
+#+end_src
+**** Ensure Dataset Dir Exists
+#+begin_src yaml
+# the mode 1777 ensure all users can write to this directory, but only owners can delete
+- name: users | dataset | ensure dataset dir exist
+  tags: groups,users
+  file:
+    path: /dataset
+    state: directory
+    owner: root
+    group: lbic
+    mode: '1777'
+#+end_src
+*** lbic-user
+:PROPERTIES:
+:header-args+: :tangle tasks/users/lbic-user.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Add to LBiC Group
+#+begin_src yaml :padline no
+- name: users | lbic-user | add to lbic group
+  tags: users
+  user:
+    name: lbic-user
+    group: lbic-user
+    groups: lbic,{{ sudo_group }}
+    append: true
+    comment: "lbic-user"
+    password: "{{ lbic_passwd }}"
+    update_password: on_create
+    createhome: yes
+    state: present
+    system: false
+    shell: /bin/bash
+#+end_src
+**** Create SSH Keys Dir
+#+begin_src yaml
+- name: users | lbic-user | create ssh keys dir
+  tags: ssh,ssh-keys
+  file:
+    path: /home/lbic-user/.ssh
+    state: directory
+    owner: lbic-user
+    group: lbic-user
+    mode: 0700
+#+end_src
+**** Generate SSH Keys
+#+begin_src yaml :tangle no
+- name: users | lbic-user | generate ssh keys
+  tags: ssh,ssh-keys
+  openssh_keypair:
+    path: /home/lbic-user/.ssh/id_ed25519
+    type: ed25519
+    state: present
+    owner: lbic-user
+    group: lbic-user
+    comment: "{{ ansible_facts['hostname'] }}"
+#+end_src
+**** Create Known Hosts and Authorized Keys Files
+#+begin_src yaml
+- name: users | lbic-user | create known_hosts & authorized_keys files
+  tags: ssh,ssh-keys
+  copy:
+    content: ""
+    dest: "{{ item }}"
+    force: no
+    owner: lbic-user
+    group: lbic-user
+    mode: 0600
+  with_items:
+    - /home/lbic-user/.ssh/known_hosts
+    - /home/lbic-user/.ssh/authorized_keys
+#+end_src
+**** Copy SSH Keys
+#+begin_src yaml
+- name: users | lbic-user | copy ssh keys
+  tags: ssh,ssh-keys
+  ansible.posix.authorized_key:
+    user: lbic-user
+    state: present
+    manage_dir: true
+    key: "{{ lookup('file', item.path) }}"
+    comment: "{{ item.comment }}"
+  with_items:
+    - { path: "{{ role_path }}/files/ssh-keys/catuaba.pub", comment: "catuaba" }
+#+end_src
+*** Others
+:PROPERTIES:
+:header-args+: :tangle tasks/users/others.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Load User Variables
+#+begin_src yaml :padline no
+- name: users | others | load user variables
+  tags: groups,users
+  include_vars: users.yml
+#+end_src
+**** Create Groups
+#+begin_src yaml
+- name: users | others | create groups
+  tags: groups,users
+  group:
+    name: "{{ item.name }}"
+    state: present
+    gid_min: 1000
+    gid_max: 1999
+  loop: "{{ users }}"
+#+end_src
+**** Create Accounts
+#+begin_src yaml
+- name: users | others | create accounts
+  tags: users
+  user:
+    name: "{{ item.name }}"
+    group: "{{ item.name }}"
+    groups: lbic
+    append: true
+    comment: "{{ item.comment }}"
+    createhome: yes
+    state: present
+    system: no
+    shell: /bin/bash
+  loop: "{{ users }}"
+#+end_src
+** System
+*** Disk
+:PROPERTIES:
+:header-args+: :tangle tasks/system/disk.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Get Mount Information
+#+begin_src yaml :padline no
+- name: system | disk-protection | get root mount information
+  tags: system,disk
+  ansible.builtin.set_fact:
+    root_mount: "{{ ansible_facts['mounts'] | selectattr('mount', 'equalto', '/') | first }}"
+#+end_src
+**** Reserve Space (ext4)
+#+begin_src yaml
+# create a reserved block of 1% (~10 GB) to avoid disk filled
+# we set "changed_when" to false, since tune2fs does not have a built-in idempotency check
+- name: system | disk-protection | create reserved disk space block (ext4)
+  tags: system,disk
+  ansible.builtin.command: "tune2fs -m 1 {{ root_mount.device }}"
+  when: root_mount.fstype == 'ext4'
+  changed_when: false
+#+end_src
+**** Reserve Space (BTRFS)
+***** Create Reserved Space
+#+begin_src yaml
+- name: system | disk-protection | create reserved disk space block (BTRFS)
+  tags: system,disk
+  ansible.builtin.command: fallocate -l 10G /root/emergency-space.img
+  when: root_mount.fstype == 'btrfs'
+  args:
+    creates: /root/emergency-space.img
+#+end_src
+***** Protect Reserved Space
+#+begin_src yaml
+- name: system | disk-protection | protect the BTRFS emergency file from accidental deletion
+  tags: system,disk
+  ansible.builtin.file:
+    path: /root/emergency-space.img
+    state: file
+    mode: '0000'
+  when: root_mount.fstype == 'btrfs'
+
+# if/when needed: ssh into the machine, then "sudo rm /root/emergency-space.img"
+#+end_src
+*** Mamba
+:PROPERTIES:
+:header-args+: :tangle tasks/system/mamba.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Download Miniforge Installer
+#+begin_src yaml :padline no
+- name: system | mamba | download Miniforge installer
+  tags: system,mamba
+  ansible.builtin.get_url:
+    url: "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh"
+    dest: "/tmp/Miniforge3.sh"
+    mode: '0755'
+#+end_src
+**** Install Miniforge
+Flags:
+  -b: batch mode (run silently)
+  -u: update
+  -p: prefix/path (set to /opt/mamba)
+#+begin_src yaml
+- name: system | mamba | run Miniforge installer
+  tags: system,mamba
+  ansible.builtin.command: "/tmp/Miniforge3.sh -b -u -p /opt/mamba"
+  args:
+    creates: /opt/mamba
+#+end_src
+**** Make Mamba Available on Login
+#+begin_src yaml
+- name: system | mamba | make mamba available to users upon login
+  tags: system,mamba
+  ansible.builtin.copy:
+    dest: /etc/profile.d/mamba.sh
+    content: |
+      export MAMBA_ROOT_PREFIX=/opt/mamba
+      . /opt/mamba/etc/profile.d/conda.sh
+      . /opt/mamba/etc/profile.d/mamba.sh
+
+      # force Mamba to use the user's home for packages and environments
+      export CONDA_ENVS_PATH="$HOME/.conda/envs"
+      export CONDA_PKGS_DIRS="$HOME/.conda/pkgs:/opt/mamba/pkgs"
+
+      # ensure the user's local package cache exists
+      mkdir -p "$HOME/.conda/pkgs"
+
+      # disable system-level updates for users
+      export CONDA_AUTO_UPDATE_CONDA=false
+      # prevent "short-name" interactive prompts
+      export CONDA_SHORT_NAME_MODE=disabled
+    owner: root
+    group: root
+    mode: '0644'
+#+end_src
+**** Configure Global condarc
+#+begin_src yaml
+- name: system | mamba | config global condarc for user envs
+  tags: system,mamba
+  ansible.builtin.copy:
+    dest: /opt/mamba/.condarc
+    content: |
+      # set default channels
+      channels:
+        - conda-forge
+
+      # route new envs and cached packages to the user's home dir
+      envs_dirs:
+        - ~/.conda/envs
+        - /opt/mamba/envs
+      pkgs_dirs:
+        - ~/.conda/pkgs
+        - /opt/mamba/pkgs
+
+      short-name-mode: disabled
+    owner: root
+    group: root
+    mode: '0644'
+#+end_src
+**** Configure Lockfiles
+#+begin_src yaml
+- name: system | mamba | create shared lockfile
+  tags: system,mamba
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: touch
+    mode: '0666'
+    modification_time: preserve
+    access_time: preserve
+  loop:
+    - /opt/mamba/pkgs/pkgs.lock
+    - /opt/mamba/pkgs/urls.txt
+#+end_src
+**** Initialize Mamba for Bash
+#+begin_src yaml :tangle no
+- name: system | mamba | initialize mamba for bash
+  tags: system,mamba
+  ansible.builtin.command: /opt/mamba/bin/mamba init bash"
+  register: mamba_init
+  changed_when: "'no change' not in mamba_init.stdout"
+#+end_src
+**** Clean Up Installer Script
+#+begin_src yaml :tangle no
+- name: system | mamba | clean up the installer script
+  tags: system,mamba
+  ansible.builtin.file:
+    path: "/tmp/Miniforge3.sh"
+    state: absent
+#+end_src
+*** NVIDIA GPU
+:PROPERTIES:
+:header-args+: :tangle tasks/system/nvidia-gpu.yml
+:END:
+#+begin_src yaml
+---
+# Code names
+# https://nouveau.freedesktop.org/CodeNames.html
+#
+# Kepler       (NVE0 family / GKXXX code name)
+# Maxwell      (NV110 family / GMXXX code name)
+# Pascal       (NV130 family / GPXXX code name)
+# Volta        (NV140 family / GVXXX code name)
+# Turing       (NV160 family / TUXXX code name)
+# Ampere       (NV170 family / GA10X code name)
+# Ada Lovelace (NV190 family / ADXXX code name)
+#----------------------------------------------
+# TBD:
+# Blackwell    (NV200? family / GBXXX code name)
+# Rubin        (TBD family / TBD code name)
+#+end_src
+**** Check Architecture
+#+begin_src yaml :padline no
+# NVIDIA GPU architecture identification
+#+end_src
+***** Kepler
+#+begin_src yaml
+- name: system | nvidia | check if architecture is Kepler
+  tags: system,gpu,nvidia,nvidia-gpu
+  shell: lspci -k -d ::03xx | grep -E 'GK[12][01][0-9A][B]?'
+  changed_when: false
+  failed_when: false
+  register: kepler
+#+end_src
+***** Maxwell, Pascall, Volta
+#+begin_src yaml
+- name: system | nvidia | check if architecture is Maxwell, Pascal, or Volta
+  tags: system,gpu,nvidia,nvidia-gpu
+  shell: lspci -k -d ::03xx | grep -E 'GM[12]0[04678B]|GP10[24678]|GV100'
+  changed_when: false
+  failed_when: false
+  register: maxwell_pascal_volta
+#+end_src
+***** Turing, Ampere, Ada Lovelace
+#+begin_src yaml
+- name: system | nvidia | check if architecture is Turing, Ampere, or Ada Lovelace
+  tags: system,gpu,nvidia,nvidia-gpu
+  shell: lspci -k -d ::03xx | grep -E 'TU1[01][2467]|GA10[2467]AD10[23467]'
+  changed_when: false
+  failed_when: false
+  register: turing_ampere_adalovelace
+#+end_src
+***** Blackwell
+#+begin_src yaml
+- name: system | nvidia | check if architecture is Blackwell
+  tags: system,gpu,nvidia,nvidia-gpu
+  shell: lspci -k -d ::03xx | grep -E 'GB[12][0-9]{2}'
+  changed_when: false
+  failed_when: false
+  register: blackwell
+#+end_src
+**** Install Drivers
+***** Kepler
+#+begin_src yaml :tangle no
+- name: system | nvidia | install driver for Kepler architecture
+  tags: system,gpu,nvidia,nvidia-gpu
+  package:
+    name:
+      - nvidia-470xx-dkms
+      - nvidia-470xx-utils
+      - lib32-nvidia-470xx-utils
+  when:
+    - kepler.stdout != ""
+#+end_src
+***** Maxwell, Pascall, Volta
+#+begin_src yaml :tangle no
+- name: system | nvidia | install driver for Maxwell, Pascal and Volta architectures (linux kernel)
+  tags: system,gpu,nvidia,nvidia-gpu
+  package:
+    name:
+      - nvidia              # NVIDIA kernel modules
+      - nvidia-utils        # drivers utilities (provides nvidia-smi, vulkan-driver)
+      - lib32-nvidia-utils  # provides lib32-vulkan-driver
+  when:
+    - maxwell_pascal_volta.stdout != ""
+#+end_src
+***** Turing, Ampere, Ada Lovelace
+#+begin_src yaml
+- name: system | nvidia | install driver for Turing, Ampere, Ada Lovelace, and Blackwell architectures
+  tags: system,gpu,nvidia,nvidia-gpu
+  package:
+    name:
+      - nvidia-driver-590-open  # NVIDIA open kernel modules
+      - nvidia-utils-590        # driver utilities (provides nvidia-smi)
+  when: >
+    turing_ampere_adalovelace.stdout != "" or
+    blackwell.stdout != ""
+#+end_src
+**** Install Tools
+#+begin_src yaml
+- name: system | nvidia | install GPU tools
+  tags: system,gpu,nvidia,nvidia-gpu
+  package:
+    name:
+      - nvtop                 # GPU process monitoring
+      #- nvidia-cuda-toolkit  # NVIDIA's GPU programming toolkit
+#+end_src
+*** NVIDIA CTK
+:PROPERTIES:
+:header-args+: :tangle tasks/system/nvidia-ctk.yml
+:END:
+#+begin_src yaml
+---
+# https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+#+end_src
+**** Dependencies
+***** Install prerequisites
+#+begin_src yaml :padline no
+- name: system | nvidia-ctk | install prerequisites
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg2
+    update_cache: yes
+#+end_src
+***** Download GPG Key
+#+begin_src yaml
+- name: system | nvidia-ctk | download GPG key
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.get_url:
+    url: https://nvidia.github.io/libnvidia-container/gpgkey
+    dest: /tmp/nvidia-container-toolkit.asc
+    mode: '0644'
+#+end_src
+***** Dearmor GPG Key
+#+begin_src yaml
+- name: system | nvidia-ctk | dearmor GPG key
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.command: >
+    gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg /tmp/nvidia-container-toolkit.asc
+  args:
+    creates: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+#+end_src
+**** Configure Repository
+***** Download APT Sources List
+#+begin_src yaml
+- name: system | nvidia-ctk | download APT sources list
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.get_url:
+    url: https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list
+    dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    mode: '0644'
+#+end_src
+***** Configure signed-by Tag
+#+begin_src yaml
+- name: system | nvidia-ctk | configure signed-by tag in APT sources list
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.replace:
+    path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    regexp: 'deb https://'
+    replace: 'deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://'
+#+end_src
+**** Install Toolkit
+#+begin_src yaml
+- name: system | nvidia-ctk | install NVIDIA Container Toolkit
+  tags: system,nvidia,nvidia-ctk
+  ansible.builtin.apt:
+    name: nvidia-container-toolkit
+    update_cache: yes
+  register: nvidia_ctk_install
+#+end_src
+*** NVIDIA CDI
+:PROPERTIES:
+:header-args+: :tangle tasks/system/nvidia-cdi.yml
+:END:
+#+begin_src yaml
+---
+#https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/cdi-support.html
+
+#----------------------------------------
+# Automatic CDI specification generation
+#----------------------------------------
+
+# as of nvidia-cdi v1.18.0, the specification is generated/updated by the =nvidia-cdi-refresh= systemd service (not working)
+#- name: system | nvidia-cdi | generate CDI specification
+#  tags: system,nvidia,nvidia-cdi
+#  systemd:
+#    name: nvidia-cdi-refresh
+#    enabled: true
+#    daemon_reload: true
+#    state: restarted
+#  when: nvidia_ctk_install.changed
+
+#----------------------------------------
+# Manual CDI specification generation
+#----------------------------------------
+#+end_src
+**** Generate Specification
+***** Create Directory
+#+begin_src yaml
+- name: system | nvidia-cdi | ensure CDI dir exists
+  tags: system,nvidia,nvidia-cdi
+  ansible.builtin.file:
+    path: /etc/cdi
+    state: directory
+    mode: '0755'
+#+end_src
+***** Generate NVIDIA CDI Specification
+#+begin_src yaml
+- name: system | nvidia-cdi | generate NVIDIA CDI specification
+  tags: system,nvidia,nvidia-cdi
+  ansible.builtin.command: nvidia-cdi cdi generate --output=/etc/cdi/nvidia.yaml
+  args:
+    creates: /etc/cdi/nvidia.yaml
+#+end_src
+**** Verification
+***** Verify CDI Devices Are Detectable
+#+begin_src yaml
+- name: system | nvidia-cdi | [debug] verify CDI devices are detectable
+  tags: system,nvidia,nvidia-cdi
+  ansible.builtin.command: nvidia-ctk cdi list
+  register: cdi_list
+  changed_when: false
+#+end_src
+***** Display Detected CDI Devices
+#+begin_src yaml
+- name: system | nvidia-cdi | [debug] display detected CDI devices
+  tags: system,nvidia,nvidia-cdi
+  ansible.builtin.debug:
+    var: cdi_list.stdout_lines
+#+end_src
+***** Fix SELinux for Podman
+This task is only needed in a SELinux system (eg: Fedora/RHEL)
+#+begin_src yaml :tangle no
+- name: system | nvidia-cdi | allow Podman to use GPU devices (SELinux)
+  tags: system,nvidia,nvidia-cdi
+  ansible.posix.seboolean:
+    name: container_use_devices
+    state: true
+    persistent: true
+  when: ansible_selinux.status == "enabled"
+#+end_src
+*** Podman
+:PROPERTIES:
+:header-args+: :tangle tasks/system/podman.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Uninstall Docker
+#+begin_src yaml :padline no
+- name: system | podman | prevent packages conflict
+  tags: system,podman
+  package:
+    name: docker
+    state: absent
+#+end_src
+**** Install Podman
+#+begin_src yaml
+- name: system | podman | install Podman
+  tags: system,podman
+  package:
+    name:
+      - podman          # tool and library to run OCI-based containers in pods
+      - podman-compose  # script to run docker-compose.yml
+      - podman-docker   # aliases to emulate Docker CLI
+
+#+end_src
+**** Enable User Podman Socket
+#+begin_src yaml :tangle no
+- name: system | podman | enable user podman socket
+  tags: system,podman
+  ansible.builtin.systemd_service:
+    name: podman.socket
+    scope: user
+    enabled: true
+    state: started
+#+end_src
+**** Export DOCKER_HOST
+#+begin_src yaml :tangle no
+- name: system | podman | export DOCKER_HOST in shell profile
+  tags: system,podman
+  ansible.builtin.lineinfile:
+    path: /etc/profile.d/podman-docker-host.sh
+    line: 'export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/podman/podman.sock"'
+    create: true
+    mode: '0644'
+#+end_src
+**** Test GPU Support
+#+begin_src yaml
+- name: system | podman | [debug] test GPU support Podman containers
+  tags: system,podman
+  ansible.builtin.command: podman run --rm --device nvidia.com/gpu=all ubuntu nvidia-smi
+  #ansible.builtin.command: podman run --rm --device nvidia.com/gpu=all ubuntu nvidia-smi -L
+  register: podman_gpu_test
+  changed_when: false
+#+end_src
+**** Display nvidia-smi Command Output
+#+begin_src yaml
+- name: system | podman | [debug] display the output of nvidia-smi inside container
+  tags: system,podman
+  ansible.builtin.debug:
+    var: podman_gpu_test.stdout_lines
+#+end_src
+**** Configure Registries
+#+begin_src yaml
+- name: system | podman | configure unqualified-search-registries
+  tags: system,podman
+  ansible.builtin.lineinfile:
+    path: /etc/containers/registries.conf
+    regexp: 'unqualified-search-registries ='
+    line: 'unqualified-search-registries = ["docker.io", "quay.io"]'
+    state: present
+#+end_src
+**** Configure short-name-mode
+#+begin_src yaml
+- name: system | podman | configure short-name-mode
+  tags: system,podman
+  ansible.builtin.lineinfile:
+    path: /etc/containers/registries.conf
+    regexp: 'short-name-mode ='
+    line: 'short-name-mode = "disabled"'
+    state: present
+#+end_src
+*** SSH
+:PROPERTIES:
+:header-args+: :tangle tasks/system/ssh.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Install OpenSSH
+#+begin_src yaml :padline no
+- name: system | ssh | install OpenSSH server
+  tags: ssh
+  package:
+    name:
+      - openssh-server
+#+end_src
+**** Start Daemon
+#+begin_src yaml
+- name: system | ssh | start daemon [Debian/Ubuntu]
+  tags: ssh
+  systemd:
+    name: ssh
+    state: started
+    enabled: yes
+  when: ansible_facts['distribution'] in ["Debian", "Ubuntu"]
+#+end_src
+* Vars
+** Main
+#+begin_src yaml :tangle vars/main.yml
+---
+lbic_passwd: $y$j9T$bwL9FC5A3zUheSbjl7OzW.$R/PDhi7QQB.HChWFoVMEzJQoInWFCt0H1ykiU4Yi/H7
+#+end_src
+** Ubuntu
+#+begin_src yaml :tangle vars/Ubuntu.yml
+---
+sudo_group: sudo
+#+end_src
+** Users
+#+begin_src yaml :tangle vars/users.yml
+---
+users:
+  - name: "alice"
+    comment: "Alice Cooper"
+  - name: "bob"
+    comment: "Bob Marley"
+  - name: "charlie"
+    comment: "Charlie Brown Jr."
+#+end_src
+* Files :noexport_2:
+** SSH Keys
+*** catuaba.pub
+#+begin_src conf :tangle files/ssh-keys/catuaba.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIItfRKWN4ntXXGKRJHkpz5Zy9N19uI3qNkaxWFyqgWpS catuaba
+#+end_src
+*** ansible-catuaba.pub
+#+begin_src yaml :tangle files/ssh-keys/ansible-catuaba.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBGJIXFQcJvhTrpBG8nk+qSjEaEPzSpV4qkOiU9NJlY5 ansible-catuaba
+#+end_src
+*** ipf-archlinux.pub
+#+begin_src yaml :tangle files/ssh-keys/ansible-catuaba.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAmHzeVa/W/GT9UPinI5SJYGpVDQlxB6wcmIj0Ya7keh ipf-archlinux
+#+end_src
+** Users
+*** sudoers_ansible
+#+begin_src conf :tangle files/users/sudoers_ansible
+ansible ALL=(ALL) NOPASSWD: ALL
+#+end_src

@@ -1,3 +1,4 @@
+---
 - name: system | disk-protection | get root mount information
   tags: system,disk
   ansible.builtin.set_fact:

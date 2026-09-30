@@ -1,3 +1,4 @@
+---
 - name: software | ubuntu | unminimize Ubuntu non-interactively
   tags: software,ubuntu
   ansible.builtin.shell: yes | unminimize

@@ -1,3 +1,4 @@
+---
 - name: system | podman | prevent packages conflict
   tags: system,podman
   package:
@@ -11,22 +12,6 @@
       - podman          # tool and library to run OCI-based containers in pods
       - podman-compose  # script to run docker-compose.yml
       - podman-docker   # aliases to emulate Docker CLI
-
-#- name: system | podman | enable user podman socket
-#  tags: system,podman
-#  ansible.builtin.systemd_service:
-#    name: podman.socket
-#    scope: user
-#    enabled: true
-#    state: started
-
-#- name: system | podman | export DOCKER_HOST in shell profile
-#  tags: system,podman
-#  ansible.builtin.lineinfile:
-#    path: /etc/profile.d/podman-docker-host.sh
-#    line: 'export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/podman/podman.sock"'
-#    create: true
-#    mode: '0644'
 
 - name: system | podman | [debug] test GPU support Podman containers
   tags: system,podman

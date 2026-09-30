@@ -1,3 +1,4 @@
+---
 #https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/cdi-support.html
 
 #----------------------------------------
@@ -41,12 +42,3 @@
   tags: system,nvidia,nvidia-cdi
   ansible.builtin.debug:
     var: cdi_list.stdout_lines
-
-# the next task is only needed in a SELinux system (eg: Fedora/RHEL)
-#- name: system | nvidia-cdi | allow Podman to use GPU devices (SELinux)
-#  tags: system,nvidia,nvidia-cdi
-#  ansible.posix.seboolean:
-#    name: container_use_devices
-#    state: true
-#    persistent: true
-#  when: ansible_selinux.status == "enabled"

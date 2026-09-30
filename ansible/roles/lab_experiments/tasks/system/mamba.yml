@@ -1,3 +1,4 @@
+---
 - name: system | mamba | download Miniforge installer
   tags: system,mamba
   ansible.builtin.get_url:
@@ -5,10 +6,6 @@
     dest: "/tmp/Miniforge3.sh"
     mode: '0755'
 
-# flags:
-#   -b: batch mode (run silently)
-#   -u: update
-#   -p: prefix/path (set to /opt/mamba)
 - name: system | mamba | run Miniforge installer
   tags: system,mamba
   ansible.builtin.command: "/tmp/Miniforge3.sh -b -u -p /opt/mamba"
@@ -72,15 +69,3 @@
   loop:
     - /opt/mamba/pkgs/pkgs.lock
     - /opt/mamba/pkgs/urls.txt
-
-#- name: system | mamba | initialize mamba for bash
-#  tags: system,mamba
-#  ansible.builtin.command: /opt/mamba/bin/mamba init bash"
-#  register: mamba_init
-#  changed_when: "'no change' not in mamba_init.stdout"
-
-#- name: system | mamba | clean up the installer script
-#  tags: system,mamba
-#  ansible.builtin.file:
-#    path: "/tmp/Miniforge3.sh"
-#    state: absent

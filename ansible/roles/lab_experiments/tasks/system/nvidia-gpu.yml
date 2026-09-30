@@ -1,3 +1,4 @@
+---
 # Code names
 # https://nouveau.freedesktop.org/CodeNames.html
 #
@@ -12,8 +13,8 @@
 # TBD:
 # Blackwell    (NV200? family / GBXXX code name)
 # Rubin        (TBD family / TBD code name)
-
 # NVIDIA GPU architecture identification
+
 - name: system | nvidia | check if architecture is Kepler
   tags: system,gpu,nvidia,nvidia-gpu
   shell: lspci -k -d ::03xx | grep -E 'GK[12][01][0-9A][B]?'
@@ -42,29 +43,6 @@
   failed_when: false
   register: blackwell
 
-# Kepler
-#- name: system | nvidia | install driver for Kepler architecture
-#  tags: system,gpu,nvidia,nvidia-gpu
-#  package:
-#    name:
-#      - nvidia-470xx-dkms
-#      - nvidia-470xx-utils
-#      - lib32-nvidia-470xx-utils
-#  when:
-#    - kepler.stdout != ""
-
-# Maxwell, Pascal, and Volta
-#- name: system | nvidia | install driver for Maxwell, Pascal and Volta architectures (linux kernel)
-#  tags: system,gpu,nvidia,nvidia-gpu
-#  package:
-#    name:
-#      - nvidia              # NVIDIA kernel modules
-#      - nvidia-utils        # drivers utilities (provides nvidia-smi, vulkan-driver)
-#      - lib32-nvidia-utils  # provides lib32-vulkan-driver
-#  when:
-#    - maxwell_pascal_volta.stdout != ""
-
-# Turing, Ampere, and Ada Lovelace
 - name: system | nvidia | install driver for Turing, Ampere, Ada Lovelace, and Blackwell architectures
   tags: system,gpu,nvidia,nvidia-gpu
   package:

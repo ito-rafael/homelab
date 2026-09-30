@@ -1,3 +1,4 @@
+---
 - name: users | ansible | create group
   tags: ansible,groups,users
   group:
@@ -44,16 +45,6 @@
     owner: ansible
     group: ansible
     mode: 0700
-
-#- name: users | ansible | generate ssh keys
-#  tags: ssh,ssh-keys
-#  openssh_keypair:
-#    path: /home/ansible/.ssh/id_ed25519
-#    type: ed25519
-#    state: present
-#    owner: ansible
-#    group: ansible
-#    comment: "{{ ansible_facts['hostname'] }}"
 
 - name: users | ansible | create known_hosts & authorized_keys files
   tags: ssh,ssh-keys

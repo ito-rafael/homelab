@@ -1,3 +1,4 @@
+---
 - name: users | lbic-user | add to lbic group
   tags: users
   user:
@@ -21,16 +22,6 @@
     owner: lbic-user
     group: lbic-user
     mode: 0700
-
-#- name: users | lbic-user | generate ssh keys
-#  tags: ssh,ssh-keys
-#  openssh_keypair:
-#    path: /home/lbic-user/.ssh/id_ed25519
-#    type: ed25519
-#    state: present
-#    owner: lbic-user
-#    group: lbic-user
-#    comment: "{{ ansible_facts['hostname'] }}"
 
 - name: users | lbic-user | create known_hosts & authorized_keys files
   tags: ssh,ssh-keys

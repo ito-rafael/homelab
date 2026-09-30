@@ -1,3 +1,4 @@
+---
 - name: users | others | load user variables
   tags: groups,users
   include_vars: users.yml
