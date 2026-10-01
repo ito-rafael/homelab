@@ -148,7 +148,7 @@ caddy_headscale_ip: "{{ ip_headscale_vpn }}"
 # port multiplexing: Headscale and Kanidm shares port 443
 {{ caddy_domain }} {
   # route Kanidm IAM Traffic
-  @kanidm path /ui* /oauth2* /v1* /status* /pkg* /icons* /favicon.ico
+  @kanidm path /ui* /oauth2* /v1* /rs* /status* /pkg* /icons* /favicon.ico
     handle @kanidm {
       # Kanidm uses HTTPS strictly. We tell Caddy to connect via HTTPS
       # but ignore the backend's self-signed certificate.
