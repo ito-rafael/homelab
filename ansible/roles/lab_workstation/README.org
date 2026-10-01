@@ -153,6 +153,18 @@
   register: remote_unixd_token
   no_log: true
 #+end_src
+**** Copy unixd Account Token
+#+begin_src yaml
+- name: system | kanidm | install unixd service account token
+  ansible.builtin.copy:
+    content: "{{ remote_unixd_token['content'] | b64decode }}"
+    dest: /etc/kanidm/unixd_token
+    owner: root
+    group: root
+    mode: '0640'
+  no_log: true
+  notify: system | kanidm | restart kanidm-unixd
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
