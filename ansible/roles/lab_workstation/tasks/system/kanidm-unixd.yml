@@ -57,3 +57,9 @@
     dest: /etc/kanidm/unixd
     mode: '0644'
   notify: system | kanidm | restart kanidm-unixd
+
+- name: system | kanidm | create systemd override directory for kanidm-unixd
+  ansible.builtin.file:
+    path: /etc/systemd/system/kanidm-unixd.service.d
+    state: directory
+    mode: '0755'
