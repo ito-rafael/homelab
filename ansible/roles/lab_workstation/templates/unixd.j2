@@ -4,4 +4,4 @@ verify_hostnames = true
 verify_ca = true
 
 [kanidm]
-pam_allowed_login_groups = ["headscale_users"]
+pam_allowed_login_groups = ["{{ inventory_hostname }}_users"]
