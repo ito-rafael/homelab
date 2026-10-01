@@ -213,6 +213,12 @@
   ansible.builtin.command: pam-auth-update --enable kanidm mkhomedir
   register: pam_update
   changed_when: false
+
+- name: system | kanidm | add kanidm to nsswitch.conf
+  ansible.builtin.replace:
+    path: /etc/nsswitch.conf
+    regexp: '^((passwd|group):\s+(?!.*kanidm).*)$'
+    replace: '\1 kanidm'
 #+end_src
 ** Users
 *** Ansible
