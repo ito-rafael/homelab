@@ -27,3 +27,9 @@
     name: kanidm-unixd
     state: present
     update_cache: yes
+
+- name: system | kanidm | configure Kanidm global client config
+  ansible.builtin.template:
+    src: config.j2
+    dest: /etc/kanidm/config
+    mode: '0644'

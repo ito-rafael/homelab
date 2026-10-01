@@ -136,6 +136,14 @@
     state: present
     update_cache: yes
 #+end_src
+**** Configure global client
+#+begin_src yaml
+- name: system | kanidm | configure Kanidm global client config
+  ansible.builtin.template:
+    src: config.j2
+    dest: /etc/kanidm/config
+    mode: '0644'
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
