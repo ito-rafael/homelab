@@ -144,6 +144,15 @@
     dest: /etc/kanidm/config
     mode: '0644'
 #+end_src
+**** Fetch unixd Account Token
+#+begin_src yaml
+- name: system | kanidm | fetch unixd token directly from Kanidm server
+  ansible.builtin.slurp:
+    src: /root/kanidm_unixd_token.txt
+  delegate_to: kanidm
+  register: remote_unixd_token
+  no_log: true
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
