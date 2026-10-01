@@ -220,6 +220,17 @@
     regexp: '^((passwd|group):\s+(?!.*kanidm).*)$'
     replace: '\1 kanidm'
 #+end_src
+**** Configure SSH Key Distribution
+#+begin_src yaml
+- name: system | kanidm | configure SSH to fetch Kanidm keys
+  ansible.builtin.blockinfile:
+    path: /etc/ssh/sshd_config
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - KANIDM SSH KEYS"
+    block: |
+      AuthorizedKeysCommand /usr/sbin/kanidm_ssh_authorizedkeys %u
+      AuthorizedKeysCommandUser nobody
+  notify: system | kanidm | restart sshd
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
