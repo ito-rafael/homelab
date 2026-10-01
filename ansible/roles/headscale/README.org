@@ -68,6 +68,15 @@
     mode: '0750'
   notify: core | headscale | restart systemd service
 #+end_src
+*** Fetch OIDC Client Secret
+#+begin_src yaml
+- name: core | headscale | fetch OIDC client secret from Kanidm
+  ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm system oauth2 show-basic-secret headscale --name idm_admin"
+  delegate_to: kanidm
+  register: headscale_oidc_secret_raw
+  changed_when: false
+  no_log: true
+#+end_src
 *** Configure
 #+begin_src yaml
 - name: core | headscale | deploy Headscale config.yaml
@@ -355,7 +364,7 @@ oidc:
   issuer: "https://andira.lbic.fee.unicamp.br/oauth2/openid/headscale"
 
   client_id: "headscale"
-  client_secret: "{{ vault_headscale_oidc_secret }}"
+  client_secret: "{{ headscale_oidc_secret_raw.stdout | trim }}"
 
   # enable PKCE for enhanced OAuth2 security
   pkce:

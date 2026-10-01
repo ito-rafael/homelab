@@ -25,6 +25,13 @@
     mode: '0750'
   notify: core | headscale | restart systemd service
 
+- name: core | headscale | fetch OIDC client secret from Kanidm
+  ansible.builtin.shell: "KANIDM_PASSWORD=$(cat /root/kanidm_idm_admin_password.txt) kanidm system oauth2 show-basic-secret headscale --name idm_admin"
+  delegate_to: kanidm
+  register: headscale_oidc_secret_raw
+  changed_when: false
+  no_log: true
+
 - name: core | headscale | deploy Headscale config.yaml
   ansible.builtin.template:
     dest: /etc/headscale/config.yaml

@@ -52,7 +52,7 @@ oidc:
   issuer: "https://andira.lbic.fee.unicamp.br/oauth2/openid/headscale"
 
   client_id: "headscale"
-  client_secret: "{{ vault_headscale_oidc_secret }}"
+  client_secret: "{{ headscale_oidc_secret_raw.stdout | trim }}"
 
   # enable PKCE for enhanced OAuth2 security
   pkce:
