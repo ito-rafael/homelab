@@ -165,6 +165,15 @@
   no_log: true
   notify: system | kanidm | restart kanidm-unixd
 #+end_src
+**** Configure unixd daemon
+#+begin_src yaml
+- name: system | kanidm | configure Kanidm unix daemon config
+  ansible.builtin.template:
+    src: unixd.j2
+    dest: /etc/kanidm/unixd
+    mode: '0644'
+  notify: system | kanidm | restart kanidm-unixd
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
