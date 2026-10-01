@@ -10,6 +10,7 @@
     - [[#packages][Packages]]
   - [[#system][System]]
     - [[#ssh][SSH]]
+    - [[#kanidm-authentication][Kanidm authentication]]
   - [[#users][Users]]
     - [[#ansible][Ansible]]
     - [[#lbic-user][lbic-user]]
@@ -45,6 +46,7 @@
 
 - ansible.builtin.import_tasks: software/packages.yml
 - ansible.builtin.import_tasks: system/ssh.yml
+- ansible.builtin.import_tasks: system/kanidm-unixd.yml
 - ansible.builtin.import_tasks: users/ansible.yml
 - ansible.builtin.import_tasks: users/lbic-user.yml
 #+end_src
@@ -88,6 +90,21 @@
     name: "{{ ssh_service }}"
     state: started
     enabled: yes
+#+end_src
+*** Kanidm authentication
+:PROPERTIES:
+:header-args+: :tangle tasks/system/kanidm-unixd.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Install APT Transport
+#+begin_src yaml :padline no
+- name: system | kanidm | install APT transport and dependencies
+  ansible.builtin.apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
 #+end_src
 ** Users
 *** Ansible

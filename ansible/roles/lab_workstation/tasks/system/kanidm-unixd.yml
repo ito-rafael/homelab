@@ -1,0 +1,6 @@
+---
+- name: system | kanidm | install APT transport and dependencies
+  ansible.builtin.apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes

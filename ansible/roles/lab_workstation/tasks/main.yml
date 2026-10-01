@@ -13,5 +13,6 @@
 
 - ansible.builtin.import_tasks: software/packages.yml
 - ansible.builtin.import_tasks: system/ssh.yml
+- ansible.builtin.import_tasks: system/kanidm-unixd.yml
 - ansible.builtin.import_tasks: users/ansible.yml
 - ansible.builtin.import_tasks: users/lbic-user.yml
