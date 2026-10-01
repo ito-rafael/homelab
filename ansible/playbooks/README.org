@@ -163,11 +163,6 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 ---
 - name: Onboard and Manage LBiC Students
   hosts: kanidm
-  vars_files:
-    - "../group_vars/all/main.yml"
-    - "../group_vars/all/users.yml"
-    - "../group_vars/all/ip.yml"
-    - "../group_vars/all/vault.yml"
   tasks:
     - name: Import user onboarding tasks
       ansible.builtin.import_tasks: tasks/user_onboard.yml
@@ -316,11 +311,6 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 ---
 - name: Onboard and Manage Workstation RBAC
   hosts: kanidm
-  vars_files:
-    - "../group_vars/all/main.yml"
-    - "../group_vars/all/ip.yml"
-    - "../group_vars/all/workstations.yml"
-    - "../group_vars/all/vault.yml"
   tasks:
     - name: Import workstation onboarding tasks
       ansible.builtin.import_tasks: tasks/rbac_sync.yml
@@ -431,12 +421,6 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 ---
 - name: Offboard and Remove LBiC Students
   hosts: kanidm
-  vars_files:
-    - "../group_vars/all/main.yml"
-    - "../group_vars/all/users.yml"
-    - "../group_vars/all/ip.yml"
-    - "../group_vars/all/workstations.yml"
-    - "../group_vars/all/vault.yml"
   tasks:
     - name: Import user offboarding tasks
       ansible.builtin.import_tasks: tasks/user_offboard.yml
