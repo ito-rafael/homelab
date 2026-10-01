@@ -75,3 +75,12 @@
   notify:
     - system | kanidm | reload systemd
     - system | kanidm | restart kanidm-unixd
+
+- name: system | kanidm | ensure daemons are started and enabled
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - kanidm-unixd
+    - kanidm-unixd-tasks

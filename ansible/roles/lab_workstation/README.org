@@ -196,6 +196,17 @@
     - system | kanidm | reload systemd
     - system | kanidm | restart kanidm-unixd
 #+end_src
+**** Start Services
+#+begin_src yaml
+- name: system | kanidm | ensure daemons are started and enabled
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - kanidm-unixd
+    - kanidm-unixd-tasks
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
