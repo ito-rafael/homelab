@@ -4,3 +4,9 @@
     name: apt-transport-https
     state: present
     update_cache: yes
+
+- name: system | kanidm | download Kanidm GPG key
+  ansible.builtin.get_url:
+    url: https://kanidm.github.io/kanidm_ppa/kanidm_ppa.asc
+    dest: /etc/apt/trusted.gpg.d/kanidm_ppa.asc
+    mode: '0644'
