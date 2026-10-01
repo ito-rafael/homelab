@@ -3,11 +3,12 @@
 - name: load distro-specific variables
   include_vars: "{{ item }}"
   with_first_found:
-    - "{{ ansible_facts['distribution'] }}.yml"
-    - "{{ ansible_facts['os_family'] }}.yml"
-    - "default.yml"
-    # prevents crashing if absolutely no matching files exist
-    skip: true
+    - files:
+        - "{{ ansible_facts['distribution'] }}.yml"
+        - "{{ ansible_facts['os_family'] }}.yml"
+        - "default.yml"
+      # prevents crashing if absolutely no matching files exist
+      skip: true
   tags: always
 
 - ansible.builtin.import_tasks: software/packages.yml
