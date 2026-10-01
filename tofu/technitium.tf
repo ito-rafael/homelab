@@ -13,6 +13,11 @@ resource "proxmox_virtual_environment_container" "dns" {
   unprivileged = true
   start_on_boot = true
 
+  # enable nesting
+  features {
+    nesting = true
+  }
+
   operating_system {
     template_file_id = "local:vztmpl/${local.technitium_lxc_template}"
     type             = "debian"

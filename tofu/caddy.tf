@@ -15,6 +15,11 @@ resource "proxmox_virtual_environment_container" "caddy" {
   # autostart
   start_on_boot = true
 
+  # enable nesting
+  features {
+    nesting = true
+  }
+
   # ensure the container starts after DNS but before IAM/VPN
   startup {
     order      = 12

@@ -307,6 +307,11 @@ resource "proxmox_virtual_environment_container" "dns" {
 
   unprivileged = true
   start_on_boot = true
+
+  # enable nesting
+  features {
+    nesting = true
+  }
 #+end_src
 **** OS
 #+begin_src tofu
@@ -401,6 +406,11 @@ resource "proxmox_virtual_environment_container" "caddy" {
 
   # autostart
   start_on_boot = true
+
+  # enable nesting
+  features {
+    nesting = true
+  }
 
   # ensure the container starts after DNS but before IAM/VPN
   startup {
@@ -617,8 +627,8 @@ This block provisions the Debian 13 (Trixie) container on the internal bridge (=
 resource "proxmox_virtual_environment_container" "headscale" {
   description = "Headscale VPN Controller"
   tags        = ["core", "vpn", "headscale"]
-  node_name = "andira"
-  vm_id     = 206
+  node_name   = "andira"
+  vm_id       = 206
 
   # ensure unprivileged mode
   unprivileged = true
