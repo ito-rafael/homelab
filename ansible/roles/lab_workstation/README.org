@@ -207,6 +207,13 @@
     - kanidm-unixd
     - kanidm-unixd-tasks
 #+end_src
+**** Enable PAM and NSS Hooks
+#+begin_src yaml
+- name: system | kanidm | hook Kanidm into PAM and NSS
+  ansible.builtin.command: pam-auth-update --enable kanidm mkhomedir
+  register: pam_update
+  changed_when: false
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:

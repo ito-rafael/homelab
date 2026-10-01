@@ -84,3 +84,8 @@
   loop:
     - kanidm-unixd
     - kanidm-unixd-tasks
+
+- name: system | kanidm | hook Kanidm into PAM and NSS
+  ansible.builtin.command: pam-auth-update --enable kanidm mkhomedir
+  register: pam_update
+  changed_when: false
