@@ -148,7 +148,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 ** Configure Workstations
 #+begin_src yaml :padline no
 - name: Configure Workstations
-  hosts: lbic_workstations
+  hosts: lbic_workstation
   become: yes
   tasks:
     - name: workstation | configure regular workstations

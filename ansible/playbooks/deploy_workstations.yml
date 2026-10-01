@@ -1,6 +1,6 @@
 ---
 - name: Configure Workstations
-  hosts: lbic_workstations
+  hosts: lbic_workstation
   become: yes
   tasks:
     - name: workstation | configure regular workstations
