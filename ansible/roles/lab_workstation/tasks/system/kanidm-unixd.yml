@@ -21,3 +21,9 @@
     components: stable
     signed_by: /etc/apt/trusted.gpg.d/kanidm_ppa.asc
     state: present
+
+- name: system | kanidm | install kanidm-unixd
+  ansible.builtin.apt:
+    name: kanidm-unixd
+    state: present
+    update_cache: yes
