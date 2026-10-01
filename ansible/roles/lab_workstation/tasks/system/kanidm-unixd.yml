@@ -63,3 +63,15 @@
     path: /etc/systemd/system/kanidm-unixd.service.d
     state: directory
     mode: '0755'
+
+- name: system | kanidm | configure systemd LoadCredential for unixd token
+  ansible.builtin.copy:
+    content: |
+      [Service]
+      LoadCredential=unixd_token:/etc/kanidm/unixd_token
+      Environment=KANIDM_SERVICE_ACCOUNT_TOKEN_PATH=%d/unixd_token
+    dest: /etc/systemd/system/kanidm-unixd.service.d/override.conf
+    mode: '0644'
+  notify:
+    - system | kanidm | reload systemd
+    - system | kanidm | restart kanidm-unixd
