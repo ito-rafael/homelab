@@ -10,6 +10,7 @@
     - [[#packages][Packages]]
   - [[#system][System]]
     - [[#ssh][SSH]]
+    - [[#firewall-configuration][Firewall configuration]]
     - [[#kanidm-authentication][Kanidm authentication]]
   - [[#users][Users]]
     - [[#ansible][Ansible]]
@@ -47,6 +48,7 @@
 - ansible.builtin.import_tasks: software/packages.yml
 - ansible.builtin.import_tasks: system/ssh.yml
 - ansible.builtin.import_tasks: system/kanidm-unixd.yml
+- ansible.builtin.import_tasks: system/firewall.yml
 - ansible.builtin.import_tasks: users/ansible.yml
 - ansible.builtin.import_tasks: users/lbic-user.yml
 #+end_src
@@ -90,6 +92,20 @@
     name: "{{ ssh_service }}"
     state: started
     enabled: yes
+#+end_src
+*** Firewall configuration
+:PROPERTIES:
+:header-args+: :tangle tasks/system/firewall.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Install UFW
+#+begin_src yaml :padline no
+- name: system | firewall | install UFW
+  ansible.builtin.apt:
+    name: ufw
+    state: present
 #+end_src
 *** Kanidm authentication
 :PROPERTIES:
