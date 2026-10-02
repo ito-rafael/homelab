@@ -126,6 +126,15 @@
     port: "22"
     proto: tcp
 #+end_src
+**** Allow SSH from FEEC SSH node
+#+begin_src yaml
+- name: system | firewall | allow SSH from FEEC emergency backdoor
+  community.general.ufw:
+    rule: allow
+    src: "ssh.fee.unicamp.br"
+    port: "22"
+    proto: tcp
+#+end_src
 *** Kanidm authentication
 :PROPERTIES:
 :header-args+: :tangle tasks/system/kanidm-unixd.yml

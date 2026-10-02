@@ -18,3 +18,10 @@
     src: "143.106.45.162"
     port: "22"
     proto: tcp
+
+- name: system | firewall | allow SSH from FEEC emergency backdoor
+  community.general.ufw:
+    rule: allow
+    src: "ssh.fee.unicamp.br"
+    port: "22"
+    proto: tcp
