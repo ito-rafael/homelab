@@ -3,3 +3,11 @@
   ansible.builtin.apt:
     name: ufw
     state: present
+
+- name: system | firewall | set default deny incoming, allow outgoing
+  community.general.ufw:
+    default: "{{ item.policy }}"
+    direction: "{{ item.dir }}"
+  loop:
+    - { dir: incoming, policy: deny }
+    - { dir: outgoing, policy: allow }
