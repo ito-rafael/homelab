@@ -117,6 +117,15 @@
     - { dir: incoming, policy: deny }
     - { dir: outgoing, policy: allow }
 #+end_src
+**** Allow SSH from VPN
+#+begin_src yaml
+- name: system | firewall | allow SSH from VPN (Proxmox NAT)
+  community.general.ufw:
+    rule: allow
+    src: "143.106.45.162"
+    port: "22"
+    proto: tcp
+#+end_src
 *** Kanidm authentication
 :PROPERTIES:
 :header-args+: :tangle tasks/system/kanidm-unixd.yml

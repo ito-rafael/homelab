@@ -11,3 +11,10 @@
   loop:
     - { dir: incoming, policy: deny }
     - { dir: outgoing, policy: allow }
+
+- name: system | firewall | allow SSH from VPN (Proxmox NAT)
+  community.general.ufw:
+    rule: allow
+    src: "143.106.45.162"
+    port: "22"
+    proto: tcp
