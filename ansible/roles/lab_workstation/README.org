@@ -135,6 +135,12 @@
     port: "22"
     proto: tcp
 #+end_src
+**** Enable UFW
+#+begin_src yaml
+- name: system | firewall | enable UFW and reload
+  community.general.ufw:
+    state: enabled
+#+end_src
 *** Kanidm authentication
 :PROPERTIES:
 :header-args+: :tangle tasks/system/kanidm-unixd.yml

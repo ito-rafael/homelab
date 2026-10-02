@@ -25,3 +25,7 @@
     src: "ssh.fee.unicamp.br"
     port: "22"
     proto: tcp
+
+- name: system | firewall | enable UFW and reload
+  community.general.ufw:
+    state: enabled
