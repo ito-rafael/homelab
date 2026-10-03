@@ -13,6 +13,7 @@
 
 - ansible.builtin.import_tasks: software/packages.yml
 - ansible.builtin.import_tasks: system/ssh.yml
+- ansible.builtin.import_tasks: system/networking.yml
 - ansible.builtin.import_tasks: system/kanidm-unixd.yml
 - ansible.builtin.import_tasks: system/firewall.yml
 - ansible.builtin.import_tasks: users/ansible.yml

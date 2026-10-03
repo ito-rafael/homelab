@@ -11,6 +11,7 @@
   - [[#system][System]]
     - [[#ssh][SSH]]
     - [[#firewall-configuration][Firewall configuration]]
+    - [[#networking-configuration][Networking configuration]]
     - [[#kanidm-authentication][Kanidm authentication]]
   - [[#users][Users]]
     - [[#ansible][Ansible]]
@@ -47,6 +48,7 @@
 
 - ansible.builtin.import_tasks: software/packages.yml
 - ansible.builtin.import_tasks: system/ssh.yml
+- ansible.builtin.import_tasks: system/networking.yml
 - ansible.builtin.import_tasks: system/kanidm-unixd.yml
 - ansible.builtin.import_tasks: system/firewall.yml
 - ansible.builtin.import_tasks: users/ansible.yml
@@ -140,6 +142,20 @@
 - name: system | firewall | enable UFW and reload
   community.general.ufw:
     state: enabled
+#+end_src
+*** Networking configuration
+:PROPERTIES:
+:header-args+: :tangle tasks/system/networking.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Get Active Connection
+#+begin_src yaml :padline no
+- name: system | networking | get active NetworkManager connection
+  ansible.builtin.shell: nmcli -t -f NAME connection show --active | head -n 1
+  register: nm_active_conn
+  changed_when: false
 #+end_src
 *** Kanidm authentication
 :PROPERTIES:

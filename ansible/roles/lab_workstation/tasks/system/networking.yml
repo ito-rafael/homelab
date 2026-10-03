@@ -1,0 +1,5 @@
+---
+- name: system | networking | get active NetworkManager connection
+  ansible.builtin.shell: nmcli -t -f NAME connection show --active | head -n 1
+  register: nm_active_conn
+  changed_when: false
