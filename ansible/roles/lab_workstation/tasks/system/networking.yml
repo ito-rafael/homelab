@@ -17,3 +17,11 @@
     state: present
   when: nm_active_conn.stdout != ""
   notify: system | networking | reload NetworkManager connection
+
+- name: system | networking | apply static route immediately to current session
+  ansible.builtin.command: ip route add 10.10.20.0/24 via 143.106.45.162
+  register: ip_route
+  changed_when: ip_route.rc == 0
+  failed_when:
+    - ip_route.rc != 0
+    - "'File exists' not in ip_route.stderr"
