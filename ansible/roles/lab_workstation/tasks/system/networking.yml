@@ -3,3 +3,17 @@
   ansible.builtin.shell: nmcli -t -f NAME connection show --active | head -n 1
   register: nm_active_conn
   changed_when: false
+
+- name: system | networking | configure persistent DNS and static route
+  community.general.nmcli:
+    conn_name: "{{ nm_active_conn.stdout }}"
+    type: ethernet
+    dns4:
+      - "{{ ip_technitium_dns1 }}"
+      - "{{ ip_technitium_dns2 }}"
+    dns4_ignore_auto: true
+    routes4:
+      - "10.10.20.0/24 143.106.45.162"
+    state: present
+  when: nm_active_conn.stdout != ""
+  notify: system | networking | reload NetworkManager connection

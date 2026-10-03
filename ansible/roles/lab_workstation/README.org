@@ -157,6 +157,22 @@
   register: nm_active_conn
   changed_when: false
 #+end_src
+**** Configure Persistent DNS and Routing
+#+begin_src yaml
+- name: system | networking | configure persistent DNS and static route
+  community.general.nmcli:
+    conn_name: "{{ nm_active_conn.stdout }}"
+    type: ethernet
+    dns4:
+      - "{{ ip_technitium_dns1 }}"
+      - "{{ ip_technitium_dns2 }}"
+    dns4_ignore_auto: true
+    routes4:
+      - "10.10.20.0/24 143.106.45.162"
+    state: present
+  when: nm_active_conn.stdout != ""
+  notify: system | networking | reload NetworkManager connection
+#+end_src
 *** Kanidm authentication
 :PROPERTIES:
 :header-args+: :tangle tasks/system/kanidm-unixd.yml
