@@ -25,3 +25,10 @@
   failed_when:
     - ip_route.rc != 0
     - "'File exists' not in ip_route.stderr"
+
+- name: system | ca | fetch Caddy internal root certificate
+  ansible.builtin.slurp:
+    src: /var/lib/caddy/.local/share/caddy/pki/authorities/local/root.crt
+  delegate_to: caddy
+  register: caddy_root_ca_raw
+  run_once: true
