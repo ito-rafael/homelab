@@ -214,6 +214,19 @@
     group: root
     mode: '0755'
 #+end_src
+***** Import Certificate on Brave Browser
+#+begin_src yaml
+- name: system | brave | force trust of system root CAs via policy
+  ansible.builtin.copy:
+    dest: /etc/brave/policies/managed/ca_trust.json
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      {
+        "ImportEnterpriseRoots": true
+      }
+#+end_src
 *** Kanidm authentication
 :PROPERTIES:
 :header-args+: :tangle tasks/system/kanidm-unixd.yml

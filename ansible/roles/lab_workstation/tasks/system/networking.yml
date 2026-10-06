@@ -49,3 +49,14 @@
     owner: root
     group: root
     mode: '0755'
+
+- name: system | brave | force trust of system root CAs via policy
+  ansible.builtin.copy:
+    dest: /etc/brave/policies/managed/ca_trust.json
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      {
+        "ImportEnterpriseRoots": true
+      }
