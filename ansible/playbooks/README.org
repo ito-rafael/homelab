@@ -324,20 +324,22 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
   no_log: true
 #+end_src
 ** Configure Regular User Accounts
+*** Check Workstation User Groups
+#+begin_src yaml
+- name: ops | workstations | check if workstation users group exists
+  ansible.builtin.command: "kanidm group get {{ item.hostname }}_users --name idm_admin"
+  loop: "{{ workstations }}"
+  changed_when: false
+  failed_when: false
+  register: group_check
+#+end_src
 *** Create Workstation Users Groups
 #+begin_src yaml
 - name: ops | workstations | create workstation users group
-  ansible.builtin.command: kanidm group create {{ item.hostname }}_users --name idm_admin
+  ansible.builtin.command: "kanidm group create {{ item.hostname }}_users --name idm_admin"
   loop: "{{ workstations }}"
-  register: kanidm_ws_users_create
-  changed_when:
-    - kanidm_ws_users_create.rc == 0
-    - "'already' not in kanidm_ws_users_create.stdout | lower"
-    - "'already' not in kanidm_ws_users_create.stderr | lower"
-  failed_when:
-    - kanidm_ws_users_create.rc != 0
-    - "'already exists' not in kanidm_ws_users_create.stderr | lower"
-    - "'409' not in kanidm_ws_users_create.stderr"
+  # only run the create command if the "get" command failed
+  when: group_check.rc != 0
 #+end_src
 *** Check POSIX For Workstation Groups
 #+begin_src yaml
