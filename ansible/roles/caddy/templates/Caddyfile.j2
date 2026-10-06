@@ -5,6 +5,7 @@
 
 # port multiplexing: Headscale and Kanidm shares port 443
 {{ caddy_domain }} {
+
   # route Kanidm IAM Traffic
   @kanidm path /ui* /oauth2* /v1* /rs* /status* /pkg* /icons* /favicon.ico
     handle @kanidm {
@@ -23,4 +24,13 @@
     reverse_proxy http://10.10.20.6:8080
   }
 
+}
+
+# Proxmox UI
+proxmox.internal, {{ caddy_domain }}:8006 {
+  reverse_proxy https://143.106.45.162:8006 {
+    transport http {
+      tls_insecure_skip_verify
+    }
+  }
 }

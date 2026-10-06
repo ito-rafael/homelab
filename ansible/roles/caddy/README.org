@@ -139,14 +139,23 @@ caddy_headscale_ip: "{{ ip_headscale_vpn }}"
 #+end_src
 * Templates
 ** Caddyfile.j2
-#+begin_src conf :tangle templates/Caddyfile.j2
+:PROPERTIES:
+:header-args:conf+: :tangle templates/Caddyfile.j2
+:END:
+*** Email
+#+begin_src conf
 # global options
 {
   email {{ vault_smtp_user }}
 }
-
+#+end_src
+*** Port multiplexing
+#+begin_src conf
 # port multiplexing: Headscale and Kanidm shares port 443
 {{ caddy_domain }} {
+#+end_src
+**** Kanidm
+#+begin_src conf
   # route Kanidm IAM Traffic
   @kanidm path /ui* /oauth2* /v1* /rs* /status* /pkg* /icons* /favicon.ico
     handle @kanidm {
@@ -158,12 +167,27 @@ caddy_headscale_ip: "{{ ip_headscale_vpn }}"
         }
       }
     }
-
+#+end_src
+**** Headscale
+#+begin_src conf
   # Headscale: default fallback
   handle {
     # Headscale listens locally on plain HTTP, Caddy wraps it in HTTPS
     reverse_proxy http://10.10.20.6:8080
   }
-
+#+end_src
+**** EoS
+#+begin_src conf
+}
+#+end_src
+*** Proxmox UI
+#+begin_src conf
+# Proxmox UI
+proxmox.internal, {{ caddy_domain }}:8006 {
+  reverse_proxy https://143.106.45.162:8006 {
+    transport http {
+      tls_insecure_skip_verify
+    }
+  }
 }
 #+end_src
