@@ -191,3 +191,17 @@ proxmox.internal, {{ caddy_domain }}:8006 {
   }
 }
 #+end_src
+*** Technitium DNS-1
+#+begin_src conf
+# primary Technitium DNS
+dns-1.internal, {{ caddy_domain }}:5380 {
+  reverse_proxy http://{{ ip_technitium_dns1 }}:5380
+}
+#+end_src
+*** Technitium DNS-2
+#+begin_src conf
+# secondary Technitium DNS
+dns-2.internal, {{ caddy_domain }}:5381 {
+  reverse_proxy http://{{ ip_technitium_dns2 }}:5380
+}
+#+end_src
