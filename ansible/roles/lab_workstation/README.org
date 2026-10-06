@@ -486,6 +486,8 @@ sudo_group: wheel
 ssh_packages:
   - openssh
 ssh_service: sshd
+ca_cert_dir: /etc/ca-certificates/trust-source/anchors
+update_ca_cmd: update-ca-trust
 #+end_src
 ** Debian
 #+begin_src yaml :tangle vars/Debian.yml
@@ -495,6 +497,8 @@ ssh_packages:
   - openssh-server
   - openssh-client
 ssh_service: ssh
+ca_cert_dir: /usr/local/share/ca-certificates
+update_ca_cmd: update-ca-certificates
 #+end_src
 ** Fedora
 #+begin_src yaml :tangle vars/Fedora.yml
@@ -504,6 +508,8 @@ ssh_packages:
   - openssh-server
   - openssh-clients
 ssh_service: sshd
+ca_cert_dir: /etc/pki/ca-trust/source/anchors
+update_ca_cmd: update-ca-trust
 #+end_src
 ** Ubuntu
 #+begin_src yaml :tangle vars/Ubuntu.yml
@@ -513,6 +519,8 @@ ssh_packages:
   - openssh-server
   - openssh-client
 ssh_service: ssh
+ca_cert_dir: /usr/local/share/ca-certificates
+update_ca_cmd: update-ca-certificates
 #+end_src
 * Files :noexport_2:
 ** SSH Keys

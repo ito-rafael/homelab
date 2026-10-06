@@ -4,3 +4,5 @@ ssh_packages:
   - openssh-server
   - openssh-clients
 ssh_service: sshd
+ca_cert_dir: /etc/pki/ca-trust/source/anchors
+update_ca_cmd: update-ca-trust

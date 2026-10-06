@@ -3,3 +3,5 @@ sudo_group: wheel
 ssh_packages:
   - openssh
 ssh_service: sshd
+ca_cert_dir: /etc/ca-certificates/trust-source/anchors
+update_ca_cmd: update-ca-trust
