@@ -32,3 +32,11 @@
   delegate_to: caddy
   register: caddy_root_ca_raw
   run_once: true
+
+- name: system | ca | install Caddy root certificate
+  ansible.builtin.copy:
+    content: "{{ caddy_root_ca_raw.content | b64decode }}"
+    dest: "{{ ca_cert_dir }}/caddy-internal-root.crt"
+    owner: root
+    group: root
+    mode: '0644'

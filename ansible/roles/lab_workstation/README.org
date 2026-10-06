@@ -193,6 +193,16 @@
   register: caddy_root_ca_raw
   run_once: true
 #+end_src
+***** Install Certificate on Workstation
+#+begin_src yaml
+- name: system | ca | install Caddy root certificate
+  ansible.builtin.copy:
+    content: "{{ caddy_root_ca_raw.content | b64decode }}"
+    dest: "{{ ca_cert_dir }}/caddy-internal-root.crt"
+    owner: root
+    group: root
+    mode: '0644'
+#+end_src
 *** Kanidm authentication
 :PROPERTIES:
 :header-args+: :tangle tasks/system/kanidm-unixd.yml
