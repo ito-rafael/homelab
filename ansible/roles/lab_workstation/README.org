@@ -202,6 +202,7 @@
     owner: root
     group: root
     mode: '0644'
+  notify: system | ca | update ca certificates
 #+end_src
 *** Kanidm authentication
 :PROPERTIES:
@@ -442,6 +443,12 @@
 #+begin_src yaml
 - name: system | networking | reload NetworkManager connection
   ansible.builtin.command: nmcli connection up "{{ nm_active_conn.stdout }}"
+#+end_src
+*** Update CA Certificates
+#+begin_src yaml
+- name: system | ca | update ca certificates
+  ansible.builtin.command: "{{ update_ca_cmd }}"
+  changed_when: true
 #+end_src
 * Vars
 ** Main

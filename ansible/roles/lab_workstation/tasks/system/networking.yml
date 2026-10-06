@@ -40,3 +40,4 @@
     owner: root
     group: root
     mode: '0644'
+  notify: system | ca | update ca certificates
