@@ -41,3 +41,11 @@
     group: root
     mode: '0644'
   notify: system | ca | update ca certificates
+
+- name: system | brave | ensure managed policies directory exists
+  ansible.builtin.file:
+    path: /etc/brave/policies/managed
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
