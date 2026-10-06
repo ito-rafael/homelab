@@ -204,7 +204,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 #+begin_src yaml
 - name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
   ansible.builtin.get_url:
-    url: "https://raw.githubusercontent.com/ito-rafael/ansible-provision/main/roles/lab_experiments/cheatsheet/cheatsheet.pdf"
+    url: "https://raw.githubusercontent.com/ito-rafael/homelab/main/docs/cheatsheet/cheatsheet.pdf"
     dest: "/tmp/cheatsheet.pdf"
     mode: '0644'
 #+end_src
