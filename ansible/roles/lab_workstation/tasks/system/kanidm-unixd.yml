@@ -1,4 +1,7 @@
 ---
+- name: system | kanidm | import kanidm role variables
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/../kanidm/vars/main.yml"
 - name: system | kanidm | install APT transport and dependencies
   ansible.builtin.apt:
     name: apt-transport-https

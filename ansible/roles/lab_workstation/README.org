@@ -234,6 +234,12 @@
 #+begin_src yaml
 ---
 #+end_src
+**** Import Kanidm variables
+#+begin_src yaml :padline no
+- name: system | kanidm | import kanidm role variables
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/../kanidm/vars/main.yml"
+#+end_src
 **** Install APT Transport
 #+begin_src yaml :padline no
 - name: system | kanidm | install APT transport and dependencies
