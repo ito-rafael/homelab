@@ -338,6 +338,20 @@
     - system | kanidm | reload systemd
     - system | kanidm | restart kanidm-unixd
 #+end_src
+**** Configure Sudo Permissions
+#+begin_src yaml
+- name: system | kanidm | grant admin group sudo privileges
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/90-{{ inventory_hostname }}-admins"
+    content: |
+      # grant sudo rights to the workstation's Kanidm admin group
+      %{{ inventory_hostname }}_admins@lbic.fee.unicamp.br ALL=(ALL:ALL) ALL
+    owner: root
+    group: root
+    mode: '0440'
+    # crucial: prevents Ansible from applying the file if the syntax is invalid
+    validate: /usr/sbin/visudo -cf %s
+#+end_src
 **** Start Services
 #+begin_src yaml
 - name: system | kanidm | ensure daemons are started and enabled
