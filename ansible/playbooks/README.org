@@ -385,6 +385,23 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
     - item.users_allowed | length > 0
     - is_missing or (expected_members | sort != current_members | sort)
 #+end_src
+*** Purge Workstation Users If users_allowed is Empty
+#+begin_src yaml
+- name: ops | workstations | purge members when users_allowed is empty
+  ansible.builtin.command: "kanidm group purge-members {{ item.hostname }}_users --name idm_admin"
+  loop: "{{ workstations }}"
+  loop_control:
+    index_var: idx
+  vars:
+    state: "{{ ws_users_state.results[idx] }}"
+    is_missing: "{{ 'No matching group' in state.stdout or 'not found' in state.stderr }}"
+    group_attrs: "{{ (state.stdout | from_json).attrs if not is_missing else {} }}"
+    current_members: "{{ group_attrs.member | default([]) }}"
+  when:
+    - not is_missing
+    - item.users_allowed is defined and item.users_allowed | length == 0
+    - current_members | length > 0
+#+end_src
 ** Configure Admin User Accounts
 *** Get Workstation Admins Group State
 #+begin_src yaml
