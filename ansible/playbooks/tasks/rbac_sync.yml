@@ -4,12 +4,12 @@
   changed_when: false
   no_log: true
 
-- name: ops | workstations | check if workstation users group exists
-  ansible.builtin.command: "kanidm group get {{ item.hostname }}_users --name idm_admin"
+- name: ops | workstations | get workstation users group state
+  ansible.builtin.command: "kanidm group get {{ item.hostname }}_users --name idm_admin -o json"
   loop: "{{ workstations }}"
+  register: ws_users_state
   changed_when: false
   failed_when: false
-  register: group_check
 
 - name: ops | workstations | create workstation users group
   ansible.builtin.command: "kanidm group create {{ item.hostname }}_users --name idm_admin"

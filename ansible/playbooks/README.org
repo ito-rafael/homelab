@@ -324,14 +324,14 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
   no_log: true
 #+end_src
 ** Configure Regular User Accounts
-*** Check Workstation User Groups
+*** Get Workstation Users Group State
 #+begin_src yaml
-- name: ops | workstations | check if workstation users group exists
-  ansible.builtin.command: "kanidm group get {{ item.hostname }}_users --name idm_admin"
+- name: ops | workstations | get workstation users group state
+  ansible.builtin.command: "kanidm group get {{ item.hostname }}_users --name idm_admin -o json"
   loop: "{{ workstations }}"
+  register: ws_users_state
   changed_when: false
   failed_when: false
-  register: group_check
 #+end_src
 *** Create Workstation Users Groups
 #+begin_src yaml
