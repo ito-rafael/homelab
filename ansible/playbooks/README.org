@@ -363,13 +363,25 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
     'posixgroup' not in classes or
     group_attrs.gidnumber is not defined
 #+end_src
-*** Enforce Group Memberships For Regular Users (RBAC)
+*** Update Workstation Users Group Members
 #+begin_src yaml
 - name: ops | workstations | set exact members for workstation users
   ansible.builtin.command: "kanidm group set-members {{ item.hostname }}_users {{ item.users_allowed | join(' ') }} --name idm_admin"
   loop: "{{ workstations }}"
-  when: item.users_allowed is defined and item.users_allowed | length > 0
-  changed_when: true
+  loop_control:
+    index_var: idx
+  vars:
+    state: "{{ ws_users_state.results[idx] }}"
+    is_missing: "{{ 'No matching group' in state.stdout or 'not found' in state.stderr }}"
+    group_attrs: "{{ (state.stdout | from_json).attrs if not is_missing else {} }}"
+    current_members: "{{ group_attrs.member | default([]) }}"
+    expected_members: "{{ item.users_allowed | map('regex_replace', '^(.*)$', '\\1@' ~ kanidm_domain) | list }}"
+  # run if group was just created, or if members list needs update
+  # guardrail: run set-members only if there is at least one user to add
+  when:
+    - item.users_allowed is defined
+    - item.users_allowed | length > 0
+    - is_missing or (expected_members | sort != current_members | sort)
 #+end_src
 ** Configure Admin User Accounts
 *** Create Workstation Admins Groups
