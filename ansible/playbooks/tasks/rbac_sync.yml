@@ -14,15 +14,12 @@
 - name: ops | workstations | create workstation users group
   ansible.builtin.command: "kanidm group create {{ item.hostname }}_users --name idm_admin"
   loop: "{{ workstations }}"
-  # only run the create command if the "get" command failed
-  when: group_check.rc != 0
-
-- name: ops | workstations | check if workstation users group has POSIX enabled
-  ansible.builtin.command: kanidm group posix get {{ item.hostname }}_users --name idm_admin
-  loop: "{{ workstations }}"
-  register: ws_users_posix_get
-  changed_when: false
-  failed_when: false
+  loop_control:
+    index_var: idx
+  vars:
+    state: "{{ ws_users_state.results[idx] }}"
+  # run if group doesn't exist yet
+  when: "'No matching group' in state.stdout or 'not found' in state.stderr"
 
 - name: ops | workstations | enable POSIX on workstation users group
   ansible.builtin.command: kanidm group posix set {{ item.hostname }}_users --name idm_admin
