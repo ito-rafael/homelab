@@ -563,14 +563,15 @@ ansible ALL=(ALL) NOPASSWD: ALL
 * Templates
 ** Kanidm config
 #+begin_src conf :tangle templates/config.j2
-uri = "https://andira.lbic.fee.unicamp.br"
+uri = "{{ kanidm_origin }}"
 verify_hostnames = true
 verify_ca = true
 #+end_src
 ** Kanidm unixd config
 #+begin_src conf :tangle templates/unixd.j2
 version = "2"
-uri = "https://andira.lbic.fee.unicamp.br"
+uri = "{{ kanidm_origin }}"
+domain = "{{ kanidm_domain }}"
 verify_hostnames = true
 verify_ca = true
 
