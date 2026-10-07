@@ -462,6 +462,23 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
     - item.admin | length > 0
     - is_missing or (expected_members | sort != current_members | sort)
 #+end_src
+*** Purge Workstation Admins If admin is Empty
+#+begin_src yaml
+- name: ops | workstations | purge members when admin list is empty
+  ansible.builtin.command: "kanidm group purge-members {{ item.hostname }}_admins --name idm_admin"
+  loop: "{{ workstations }}"
+  loop_control:
+    index_var: idx
+  vars:
+    state: "{{ ws_admins_state.results[idx] }}"
+    is_missing: "{{ 'No matching group' in state.stdout or 'not found' in state.stderr }}"
+    group_attrs: "{{ (state.stdout | from_json).attrs if not is_missing else {} }}"
+    current_members: "{{ group_attrs.member | default([]) }}"
+  when:
+    - not is_missing
+    - item.admin is defined and item.admin | length == 0
+    - current_members | length > 0
+#+end_src
 * Offboarding User :noexport_1:
 :PROPERTIES:
 :header-args+: :tangle tasks/user_offboard.yml
