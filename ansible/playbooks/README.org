@@ -387,9 +387,12 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 #+end_src
 ** Configure Admin User Accounts
 *** Create Workstation Admins Groups
+*** Get Workstation Admins Group State
 #+begin_src yaml
 - name: ops | workstations | create workstation admins group
   ansible.builtin.command: kanidm group create {{ item.hostname }}_admins --name idm_admin
+- name: ops | workstations | get workstation admins group state
+  ansible.builtin.command: "kanidm group get {{ item.hostname }}_admins --name idm_admin -o json"
   loop: "{{ workstations }}"
   register: kanidm_ws_admins_create
   changed_when:
@@ -407,6 +410,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
   ansible.builtin.command: kanidm group posix get {{ item.hostname }}_admins --name idm_admin
   loop: "{{ workstations }}"
   register: ws_admins_posix_get
+  register: ws_admins_state
   changed_when: false
   failed_when: false
 #+end_src

@@ -57,6 +57,8 @@
 
 - name: ops | workstations | create workstation admins group
   ansible.builtin.command: kanidm group create {{ item.hostname }}_admins --name idm_admin
+- name: ops | workstations | get workstation admins group state
+  ansible.builtin.command: "kanidm group get {{ item.hostname }}_admins --name idm_admin -o json"
   loop: "{{ workstations }}"
   register: kanidm_ws_admins_create
   changed_when:
@@ -72,6 +74,7 @@
   ansible.builtin.command: kanidm group posix get {{ item.hostname }}_admins --name idm_admin
   loop: "{{ workstations }}"
   register: ws_admins_posix_get
+  register: ws_admins_state
   changed_when: false
   failed_when: false
 
