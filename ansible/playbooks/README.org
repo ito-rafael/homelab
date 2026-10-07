@@ -386,35 +386,28 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
     - is_missing or (expected_members | sort != current_members | sort)
 #+end_src
 ** Configure Admin User Accounts
-*** Create Workstation Admins Groups
 *** Get Workstation Admins Group State
 #+begin_src yaml
-- name: ops | workstations | create workstation admins group
-  ansible.builtin.command: kanidm group create {{ item.hostname }}_admins --name idm_admin
 - name: ops | workstations | get workstation admins group state
   ansible.builtin.command: "kanidm group get {{ item.hostname }}_admins --name idm_admin -o json"
   loop: "{{ workstations }}"
-  register: kanidm_ws_admins_create
-  changed_when:
-    - kanidm_ws_admins_create.rc == 0
-    - "'already' not in kanidm_ws_admins_create.stdout | lower"
-    - "'already' not in kanidm_ws_admins_create.stderr | lower"
-  failed_when:
-    - kanidm_ws_admins_create.rc != 0
-    - "'already exists' not in kanidm_ws_admins_create.stderr | lower"
-    - "'409' not in kanidm_ws_admins_create.stderr"
-#+end_src
-*** Check POSIX For Workstation Admin Groups
-#+begin_src yaml
-- name: ops | workstations | check if workstation admins group has POSIX enabled
-  ansible.builtin.command: kanidm group posix get {{ item.hostname }}_admins --name idm_admin
-  loop: "{{ workstations }}"
-  register: ws_admins_posix_get
   register: ws_admins_state
   changed_when: false
   failed_when: false
 #+end_src
 *** Grant POSIX For Workstation Admin Groups
+*** Create Workstation Admins Group
+#+begin_src yaml
+- name: ops | workstations | create workstation admins group
+  ansible.builtin.command: "kanidm group create {{ item.hostname }}_admins --name idm_admin"
+  loop: "{{ workstations }}"
+  loop_control:
+    index_var: idx
+  vars:
+    state: "{{ ws_admins_state.results[idx] }}"
+  # run if group doesn't exist yet
+  when: "'No matching group' in state.stdout or 'not found' in state.stderr"
+#+end_src
 #+begin_src yaml
 - name: ops | workstations | enable POSIX on workstation admins group
   ansible.builtin.command: kanidm group posix set {{ item.hostname }}_admins --name idm_admin
