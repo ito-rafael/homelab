@@ -197,10 +197,11 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 #+begin_src yaml
 - name: ops | users | generate setup token for new users
   ansible.builtin.command: kanidm person credential create-reset-token {{ item.item.username }} --name idm_admin
-  loop: "{{ kanidm_user_create.results }}"
-  when: item.changed
+  loop: "{{ kanidm_user_create.results | selectattr('changed') | list }}"
   register: kanidm_setup_tokens
   changed_when: true
+  loop_control:
+    label: "{{ item.item.username }}"
 #+end_src
 ** Download Cheatsheet
 #+begin_src yaml
