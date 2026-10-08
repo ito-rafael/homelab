@@ -37,6 +37,27 @@
   loop_control:
     label: "{{ item.username }}"
 
+- name: ops | users | set users legal name and mail address
+  ansible.builtin.command: >
+    kanidm person update {{ item.item.username }}
+    {% if item.item.name is defined %}--legalname "{{ item.item.name }}"{% endif %}
+    {% if item.item.email is defined %}--mail "{{ item.item.email }}"{% endif %}
+    --name idm_admin
+  loop: "{{ kanidm_users_current.results }}"
+  vars:
+    # parse Kanidm output (adjust key paths based on your Kanidm version's JSON structure)
+    current_json: "{{ item.stdout | from_json }}"
+    current_legalname: "{{ current_json.attrs.legalname[0] | default('') }}"
+    current_mail: "{{ current_json.attrs.mail[0] | default('') }}"
+
+    desired_name: "{{ item.item.name | default(current_legalname) }}"
+    desired_email: "{{ item.item.email | default(current_mail) }}"
+  when: >
+    (item.item.name is defined and desired_name != current_legalname) or
+    (item.item.email is defined and desired_email != current_mail)
+  loop_control:
+    label: "{{ item.item.username }}"
+
 - name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/ito-rafael/homelab/main/docs/cheatsheet/cheatsheet.pdf"
