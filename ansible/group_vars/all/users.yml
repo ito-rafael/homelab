@@ -3,3 +3,7 @@ users:
   - username: "onboard.student"
     name: "Onboard Student"
     email: "onboard.student@example.com"
+users_offboard:
+  - username: "offboard.student"
+    name: "Offboard Student"
+    email: "offboard.student@example.com"

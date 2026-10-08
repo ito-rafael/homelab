@@ -8,6 +8,8 @@
 * Table of Contents :toc:
 - [[#users][Users]]
   - [[#template][Template]]
+- [[#users-offboard][Users Offboard]]
+  - [[#template-1][Template]]
 
 * Users
 :PROPERTIES:
@@ -22,4 +24,17 @@ users:
   - username: "onboard.student"
     name: "Onboard Student"
     email: "onboard.student@example.com"
+#+end_src
+* Users Offboard
+:PROPERTIES:
+:header-args+: :padline no :tangle users.yml
+:END:
+#+begin_src yaml
+users_offboard:
+#+end_src
+** Template
+#+begin_src yaml
+  - username: "offboard.student"
+    name: "Offboard Student"
+    email: "offboard.student@example.com"
 #+end_src
