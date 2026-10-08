@@ -1,5 +1,5 @@
 ---
 users:
-  - username: "test.student"
-    name: "Test Student"
-    email: "test.student@gmail.com"
+  - username: "onboard.student"
+    name: "Onboard Student"
+    email: "onboard.student@example.com"
