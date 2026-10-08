@@ -203,6 +203,17 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
   loop_control:
     label: "{{ item.item.username }}"
 #+end_src
+** Get User Attributes
+#+begin_src yaml
+- name: ops | users | get current user details
+  ansible.builtin.command: >
+    kanidm person get {{ item.username }} --output json --name idm_admin
+  loop: "{{ users }}"
+  register: kanidm_users_current
+  changed_when: false
+  loop_control:
+    label: "{{ item.username }}"
+#+end_src
 ** Download Cheatsheet
 #+begin_src yaml
 - name: core | headscale onboarding | download latest cheatsheet PDF from GitHub

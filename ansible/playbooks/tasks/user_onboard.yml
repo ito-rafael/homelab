@@ -28,6 +28,15 @@
   loop_control:
     label: "{{ item.item.username }}"
 
+- name: ops | users | get current user details
+  ansible.builtin.command: >
+    kanidm person get {{ item.username }} --output json --name idm_admin
+  loop: "{{ users }}"
+  register: kanidm_users_current
+  changed_when: false
+  loop_control:
+    label: "{{ item.username }}"
+
 - name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/ito-rafael/homelab/main/docs/cheatsheet/cheatsheet.pdf"
