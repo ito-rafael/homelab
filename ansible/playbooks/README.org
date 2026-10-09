@@ -175,6 +175,37 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
   changed_when: false
   no_log: true
 #+end_src
+** Compute Dynamic User Attributes
+*** List Initialization
+#+begin_src yaml
+- name: ops | users | initialize empty processed_users list
+  ansible.builtin.set_fact:
+    processed_users: []
+#+end_src
+*** Generate username & Expire Date
+#+begin_src yaml
+- name: ops | users | pre-process user list with computed attributes
+  ansible.builtin.set_fact:
+    processed_users: >-
+      {{
+        processed_users + [
+          item | combine({
+            'username': item.username | default((item.name.split(' ')[0] ~ '.' ~ item.name.split(' ')[-1]) | lower)
+          }) | combine(
+            { 'expire_timestamp': ((item.enroll | default('0000-00-00')).split('-')[0] | int + duration_map[item.level]) | string ~ '-' ~ (item.enroll | default('0000-00-00')).split('-')[1] ~ '-' ~ (item.enroll | default('0000-00-00')).split('-')[2] ~ 'T00:00:00Z' }
+            if item.level != 'admin' else {}
+          )
+        ]
+      }}
+  loop: "{{ users }}"
+  vars:
+    duration_map:
+      phd: 5
+      masters: 3
+      undergraduation: 1
+      associate: 1
+      admin: 0
+#+end_src
 ** Create User Accounts
 #+begin_src yaml
 - name: ops | users | create user accounts
