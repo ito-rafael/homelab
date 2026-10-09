@@ -163,6 +163,8 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 ---
 - name: Onboard and Manage LBiC Students
   hosts: kanidm
+  vars_files:
+    - "../roles/kanidm/vars/expiration.yml"
   tasks:
     - name: Import user onboarding tasks
       ansible.builtin.import_tasks: tasks/user_onboard.yml
@@ -198,13 +200,6 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
         ]
       }}
   loop: "{{ users }}"
-  vars:
-    duration_map:
-      phd: 5
-      masters: 3
-      undergraduation: 1
-      associate: 1
-      admin: 0
 #+end_src
 ** Create User Accounts
 #+begin_src yaml

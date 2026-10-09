@@ -22,13 +22,6 @@
         ]
       }}
   loop: "{{ users }}"
-  vars:
-    duration_map:
-      phd: 5
-      masters: 3
-      undergraduation: 1
-      associate: 1
-      admin: 0
 
 - name: ops | users | create user accounts
   ansible.builtin.command: kanidm person create {{ item.username }} "{{ item.name }}" --name idm_admin

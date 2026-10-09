@@ -1,6 +1,8 @@
 ---
 - name: Onboard and Manage LBiC Students
   hosts: kanidm
+  vars_files:
+    - "../roles/kanidm/vars/expiration.yml"
   tasks:
     - name: Import user onboarding tasks
       ansible.builtin.import_tasks: tasks/user_onboard.yml
