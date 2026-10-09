@@ -210,7 +210,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 #+begin_src yaml
 - name: ops | users | create user accounts
   ansible.builtin.command: kanidm person create {{ item.username }} "{{ item.name }}" --name idm_admin
-  loop: "{{ users }}"
+  loop: "{{ processed_users }}"
   register: kanidm_user_create
   changed_when:
     - kanidm_user_create.rc == 0
@@ -239,7 +239,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 - name: ops | users | get current user details
   ansible.builtin.command: >
     kanidm person get {{ item.username }} --output json --name idm_admin
-  loop: "{{ users }}"
+  loop: "{{ processed_users }}"
   register: kanidm_users_current
   changed_when: false
   loop_control:
@@ -333,7 +333,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 #+begin_src yaml
 - name: ops | users | inspect POSIX attributes for users
   ansible.builtin.command: kanidm person posix show --name idm_admin {{ item.username }}
-  loop: "{{ users }}"
+  loop: "{{ processed_users }}"
   register: kanidm_posix_state
   changed_when: false
   failed_when: false
@@ -342,7 +342,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 #+begin_src yaml
 - name: ops | users | give the student POSIX attributes (bash shell)
   ansible.builtin.command: kanidm person posix set {{ item.username }} --shell /bin/bash --name idm_admin
-  loop: "{{ users }}"
+  loop: "{{ processed_users }}"
   loop_control:
     index_var: kanidm_user_index
   when: >-
@@ -355,7 +355,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 #+begin_src yaml
 - name: ops | users | inspect Headscale VPN group membership
   ansible.builtin.command: kanidm person get {{ item.username }} --name idm_admin
-  loop: "{{ users }}"
+  loop: "{{ processed_users }}"
   register: kanidm_person_state
   changed_when: false
 #+end_src
@@ -363,7 +363,7 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
 #+begin_src yaml
 - name: ops | users | add users to Headscale VPN group
   ansible.builtin.command: kanidm group add-members headscale_users {{ item.username }} --name idm_admin
-  loop: "{{ users }}"
+  loop: "{{ processed_users }}"
   loop_control:
     index_var: kanidm_user_index
   when:
