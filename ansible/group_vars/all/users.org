@@ -21,8 +21,8 @@ users:
 #+end_src
 ** Template
 #+begin_src yaml
-  - username: "onboard.student"
-    name: "Onboard Student"
+  - name: "Onboard Student"
+    #username: "onboard.student" (optional)
     email: "onboard.student@example.com"
 #+end_src
 * Users Offboard
