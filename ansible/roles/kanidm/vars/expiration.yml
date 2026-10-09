@@ -1,0 +1,7 @@
+# Account expiration lifespans (years until expiration)
+duration_map:
+  undergraduation: 1
+  associate: 2
+  masters: 3
+  phd: 5
+  admin: 0  # non-expiring account
