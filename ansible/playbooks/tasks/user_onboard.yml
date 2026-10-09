@@ -84,6 +84,15 @@
   loop_control:
     label: "{{ item.item.username }}"
 
+- name: ops | users | set account expiration date
+  ansible.builtin.command: >
+    kanidm person validity expire-at {{ item.username }} "{{ item.expire_timestamp }}" --name idm_admin
+  loop: "{{ processed_users }}"
+  when: item.expire_timestamp is defined
+  loop_control:
+    label: "{{ item.username }}"
+  changed_when: false
+
 - name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/ito-rafael/homelab/main/docs/cheatsheet/cheatsheet.pdf"

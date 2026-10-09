@@ -268,6 +268,18 @@ Runs against physical lab workstations to install packages, hook PAM/NSS into Ka
   loop_control:
     label: "{{ item.item.username }}"
 #+end_src
+** Set Account Expiration Date
+*** Set For Regular Accounts
+#+begin_src yaml
+- name: ops | users | set account expiration date
+  ansible.builtin.command: >
+    kanidm person validity expire-at {{ item.username }} "{{ item.expire_timestamp }}" --name idm_admin
+  loop: "{{ processed_users }}"
+  when: item.expire_timestamp is defined
+  loop_control:
+    label: "{{ item.username }}"
+  changed_when: false
+#+end_src
 ** Download Cheatsheet
 #+begin_src yaml
 - name: core | headscale onboarding | download latest cheatsheet PDF from GitHub
