@@ -3,7 +3,11 @@ users:
   - name: "Onboard Student"
     #username: "onboard.student" (optional)
     email: "onboard.student@example.com"
+    enroll: "2026-10-01"
+    level: "masters"
 users_offboard:
   - username: "offboard.student"
     name: "Offboard Student"
     email: "offboard.student@example.com"
+    enroll: "2022-10-01"
+    level: "phd"
