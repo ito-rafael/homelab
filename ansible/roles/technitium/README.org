@@ -144,7 +144,7 @@
       token: "{{ active_token }}"
       forwarders: "143.106.8.30,143.106.2.5,1.1.1.1,1.0.0.1,8.8.8.8,8.8.4.4"
       recursion: "UseSpecifiedNetworkACL"
-      recursionNetworkAcl: "10.10.20.0/24,143.106.45.160/27"
+      recursionNetworkAcl: "10.10.20.0/24,143.106.45.160/27,100.64.0.0/10"
     status_code: 200
   # API does not tell if settings were different
   changed_when: false
