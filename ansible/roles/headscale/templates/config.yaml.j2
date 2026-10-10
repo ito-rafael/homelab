@@ -24,8 +24,8 @@ dns:
   base_domain: lbic.internal
   nameservers:
     global:
-      - 1.1.1.1
-      - 8.8.8.8
+      - "{{ ip_technitium_dns1 }}"
+      - "{{ ip_technitium_dns2 }}"
   override_local_dns: true
 
 private_key_path: /var/lib/headscale/private.key
