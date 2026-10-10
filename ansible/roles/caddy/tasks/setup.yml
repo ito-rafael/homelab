@@ -1,15 +1,18 @@
 ---
-- name: core | caddy | install repository dependencies
+- name: core | caddy | install dependencies
   ansible.builtin.apt:
     name:
-      - debian-keyring
-      - debian-archive-keyring
-      - apt-transport-https
       - curl
+      - jq
     state: present
     update_cache: yes
 
-- name: core | caddy | download Caddy GPG key
+- name: core | caddy | get latest Caddy release metadata
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/caddyserver/caddy/releases/latest
+    return_content: true
+  register: caddy_latest
+  changed_when: false
   ansible.builtin.get_url:
     url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
     dest: /usr/share/keyrings/caddy-stable-archive-keyring.asc

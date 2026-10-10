@@ -38,8 +38,8 @@
 #+begin_src yaml
 ---
 #+end_src
-*** Install Dependencies
-#+begin_src yaml :padline no
+*** Install Repository Dependencies
+#+begin_src yaml :padline no :tangle no
 - name: core | caddy | install repository dependencies
   ansible.builtin.apt:
     name:
@@ -50,9 +50,19 @@
     state: present
     update_cache: yes
 #+end_src
+*** Install Dependencies
+#+begin_src yaml :padline no
+- name: core | caddy | install dependencies
+  ansible.builtin.apt:
+    name:
+      - curl
+      - jq
+    state: present
+    update_cache: yes
+#+end_src
 *** Configure APT Repository
 **** Download Caddy GPG key
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | caddy | download Caddy GPG key
   ansible.builtin.get_url:
     url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
@@ -60,7 +70,7 @@
     mode: '0644'
 #+end_src
 **** Add Caddy APT repository
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | caddy | add Caddy APT repository (deb822 format)
   ansible.builtin.deb822_repository:
     name: caddy-stable
@@ -72,7 +82,7 @@
     state: present
 #+end_src
 *** Install Caddy web server
-#+begin_src yaml
+#+begin_src yaml :tangle no
 - name: core | caddy | install Caddy
   ansible.builtin.apt:
     name: caddy
