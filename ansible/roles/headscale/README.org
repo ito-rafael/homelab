@@ -266,7 +266,7 @@
     ansible.builtin.command: >
       tailscale up
       --login-server https://andira.lbic.fee.unicamp.br
-      --advertise-routes=143.106.45.160/27
+      --advertise-routes=143.106.45.160/27,10.10.20.0/24
       --authkey={{ headscale_authkey.stdout | trim }}
 #+end_src
 *** Approve Routes
@@ -286,7 +286,7 @@
 **** Approve Routes
 #+begin_src yaml
 - name: core | headscale | approve advertised routes
-  ansible.builtin.command: "headscale nodes approve-routes --identifier {{ headscale_node_id }} --routes 143.106.45.160/27"
+  ansible.builtin.command: "headscale nodes approve-routes --identifier {{ headscale_node_id }} --routes 143.106.45.160/27,10.10.20.0/24"
   changed_when: false
 #+end_src
 * Handlers
