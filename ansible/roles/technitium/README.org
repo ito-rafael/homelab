@@ -190,3 +190,20 @@
     - { name: 'kanidm',    ip: '{{ ip_kanidm_iam }}' }
     - { name: 'headscale', ip: '{{ ip_headscale_vpn }}' }
 #+end_src
+*** Create Split-DNS Zone for Proxmox/Kanidm
+#+begin_src yaml
+- name: core | dns | create split-dns zone for VPN clients
+  ansible.builtin.uri:
+    url: "http://localhost:5380/api/zones/create"
+    method: POST
+    body_format: form-urlencoded
+    body:
+      token: "{{ active_token }}"
+      # create a zone strictly for this FQDN to avoid breaking the rest of the domain
+      domain: "andira.lbic.fee.unicamp.br"
+      type: "Primary"
+    status_code: 200
+  register: split_zone_result
+  failed_when: false
+  changed_when: split_zone_result.json.get('status') == 'ok'
+#+end_src
