@@ -99,6 +99,14 @@
   register: caddy_latest
   changed_when: false
 #+end_src
+**** Download Latest Debian Package
+#+begin_src yaml
+- name: core | caddy | download Caddy Debian package
+  ansible.builtin.get_url:
+    url: "https://github.com/caddyserver/caddy/releases/download/{{ caddy_latest.json.tag_name }}/caddy_{{ caddy_latest.json.tag_name | regex_replace('^v', '') }}_linux_amd64.deb"
+    dest: /tmp/caddy.deb
+    mode: '0644'
+#+end_src
 *** Create Let's Encrypt Directory
 #+begin_src yaml
 - name: core | caddy | create Let's Encrypt ACME directory
