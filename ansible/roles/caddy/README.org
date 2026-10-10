@@ -89,6 +89,16 @@
     state: present
     update_cache: yes
 #+end_src
+*** Install Caddy Web Server From GitHub Releases
+**** Get Latest Release Version
+#+begin_src yaml
+- name: core | caddy | get latest Caddy release metadata
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/caddyserver/caddy/releases/latest
+    return_content: true
+  register: caddy_latest
+  changed_when: false
+#+end_src
 *** Create Let's Encrypt Directory
 #+begin_src yaml
 - name: core | caddy | create Let's Encrypt ACME directory
