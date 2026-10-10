@@ -107,6 +107,13 @@
     dest: /tmp/caddy.deb
     mode: '0644'
 #+end_src
+**** Install Debian Package
+#+begin_src yaml
+- name: core | caddy | install Caddy from local deb
+  ansible.builtin.apt:
+    deb: /tmp/caddy.deb
+    state: present
+#+end_src
 *** Create Let's Encrypt Directory
 #+begin_src yaml
 - name: core | caddy | create Let's Encrypt ACME directory
