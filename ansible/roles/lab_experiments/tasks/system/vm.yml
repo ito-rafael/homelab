@@ -1,0 +1,8 @@
+---
+- name: system | vm | install KVM and QEMU
+  tags: vm
+  package:
+    name:
+      - qemu-system-x86
+      - libvirt-daemon-system
+      - virtinst

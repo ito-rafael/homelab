@@ -23,6 +23,7 @@
     - [[#nvidia-cdi][NVIDIA CDI]]
     - [[#podman][Podman]]
     - [[#ssh][SSH]]
+    - [[#virtual-machines][Virtual Machines]]
 - [[#vars][Vars]]
   - [[#main-1][Main]]
   - [[#ubuntu-1][Ubuntu]]
@@ -55,6 +56,7 @@
   - import_tasks: system/nvidia-cdi.yml    # NVIDIA Container Device Interface
   - import_tasks: system/podman.yml        # Podman containers
   - import_tasks: system/mamba.yml         # Mamba Python env
+  - import_tasks: system/vm.yml            # virtual machines with KVM & QEMU
 #+end_src
 ** Software
 *** Packages
@@ -869,6 +871,23 @@ This task is only needed in a SELinux system (eg: Fedora/RHEL)
     state: started
     enabled: yes
   when: ansible_facts['distribution'] in ["Debian", "Ubuntu"]
+#+end_src
+*** Virtual Machines
+:PROPERTIES:
+:header-args+: :tangle tasks/system/vm.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Install Packages
+#+begin_src yaml :padline no
+- name: system | vm | install KVM and QEMU
+  tags: vm
+  package:
+    name:
+      - qemu-system-x86
+      - libvirt-daemon-system
+      - virtinst
 #+end_src
 * Vars
 ** Main
