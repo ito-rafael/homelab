@@ -72,6 +72,7 @@
     name:
       - git            # version control
       - htop           # process viewer
+      - jq             # JSON processor
       - lshw           # show hw info
       - man-db         # tools for reading manual pages
       - python3        # Python programming language
