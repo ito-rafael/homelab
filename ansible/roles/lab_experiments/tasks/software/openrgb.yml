@@ -68,3 +68,13 @@
       url: https://codeberg.org/OpenRGB/OpenRGBEffectsPlugin/releases/download/release_1.0/OpenRGBEffectsPlugin_1.0_Linux_amd64_0e0f1b4.so
     - name: OpenRGBVisualMapPlugin.so
       url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_1.0/OpenRGBVisualMapPlugin_1.0_Linux_amd64_1dde279.so
+
+- name: software | openrgb | copy RAM memory visual map
+  tags: software,openrgb
+  copy:
+    src: openrgb/corsair_vengeance.json
+    dest: /home/lbic-user/.config/OpenRGB/plugins/settings/virtual-controllers/corsair_vengeance
+    owner: lbic-user
+    group: lbic-user
+    mode: '0644'
+  notify: reload systemd user daemon
