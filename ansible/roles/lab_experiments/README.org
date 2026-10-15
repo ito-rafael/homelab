@@ -25,8 +25,10 @@
     - [[#podman][Podman]]
     - [[#ssh][SSH]]
     - [[#virtual-machines][Virtual Machines]]
-- [[#vars][Vars]]
+- [[#handlers][Handlers]]
   - [[#main-1][Main]]
+- [[#vars][Vars]]
+  - [[#main-2][Main]]
   - [[#ubuntu-1][Ubuntu]]
   - [[#users-1][Users]]
 - [[#files][Files]]
@@ -1025,6 +1027,24 @@ This task is only needed in a SELinux system (eg: Fedora/RHEL)
       - qemu-system-x86
       - libvirt-daemon-system
       - virtinst
+#+end_src
+* Handlers :noexport_2:
+** Main
+:PROPERTIES:
+:header-args+: :tangle handlers/main.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+*** Reload systemd user daemon
+#+begin_src yaml :padline no
+- name: reload systemd user daemon
+  become_user: lbic-user
+  systemd:
+    daemon_reload: true
+    scope: user
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd']['lbic-user'][1] }}"
 #+end_src
 * Vars
 ** Main

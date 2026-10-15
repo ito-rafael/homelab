@@ -1,0 +1,8 @@
+---
+- name: reload systemd user daemon
+  become_user: lbic-user
+  systemd:
+    daemon_reload: true
+    scope: user
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd']['lbic-user'][1] }}"
