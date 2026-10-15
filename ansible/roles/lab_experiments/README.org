@@ -185,6 +185,18 @@
       i2c-i801
       {% endif %}
 #+end_src
+**** OpenRGB configuration
+***** Create plugins directory
+#+begin_src yaml
+- name: software | openrgb | create directories
+  tags: software,openrgb
+  file:
+    path: /home/lbic-user/.config/OpenRGB/plugins
+    state: directory
+    owner: lbic-user
+    group: lbic-user
+    mode: '0755'
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
