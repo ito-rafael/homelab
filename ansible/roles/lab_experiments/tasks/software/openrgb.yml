@@ -12,3 +12,10 @@
     name: i2c
     system: yes
     state: present
+
+- name: software | openrgb | add user to i2c group
+  tags: software,openrgb
+  user:
+    name: lbic-user
+    groups: i2c
+    append: yes

@@ -146,6 +146,15 @@
     system: yes
     state: present
 #+end_src
+**** Add user to i2c group
+#+begin_src yaml
+- name: software | openrgb | add user to i2c group
+  tags: software,openrgb
+  user:
+    name: lbic-user
+    groups: i2c
+    append: yes
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
