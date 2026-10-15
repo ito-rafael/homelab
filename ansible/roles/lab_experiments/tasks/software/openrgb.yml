@@ -109,3 +109,9 @@
   command: loginctl enable-linger lbic-user
   args:
     creates: /var/lib/systemd/linger/lbic-user
+
+- name: software | openrgb | get uid of lbic-user
+  tags: software,openrgb
+  getent:
+    database: passwd
+    key: lbic-user

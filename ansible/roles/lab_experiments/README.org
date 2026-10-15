@@ -265,6 +265,14 @@
   args:
     creates: /var/lib/systemd/linger/lbic-user
 #+end_src
+***** Get UID of lbic-user dynamically
+#+begin_src yaml
+- name: software | openrgb | get uid of lbic-user
+  tags: software,openrgb
+  getent:
+    database: passwd
+    key: lbic-user
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
