@@ -19,3 +19,14 @@
     name: lbic-user
     groups: i2c
     append: yes
+
+- name: software | openrgb | copy udev rules
+  tags: software,openrgb
+  copy:
+    src: /usr/lib/udev/rules.d/60-openrgb.rules
+    dest: /etc/udev/rules.d/60-openrgb.rules
+    remote_src: yes
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload udev rules

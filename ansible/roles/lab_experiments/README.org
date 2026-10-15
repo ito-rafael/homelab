@@ -155,6 +155,19 @@
     groups: i2c
     append: yes
 #+end_src
+**** Copy udev rules for OpenRGB
+#+begin_src yaml
+- name: software | openrgb | copy udev rules
+  tags: software,openrgb
+  copy:
+    src: /usr/lib/udev/rules.d/60-openrgb.rules
+    dest: /etc/udev/rules.d/60-openrgb.rules
+    remote_src: yes
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload udev rules
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
