@@ -34,6 +34,7 @@
 - [[#files][Files]]
   - [[#ssh-keys][SSH Keys]]
   - [[#users-2][Users]]
+  - [[#openrgb-1][OpenRGB]]
 
 * Tasks
 ** Main
@@ -1123,4 +1124,20 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAmHzeVa/W/GT9UPinI5SJYGpVDQlxB6wcmIj0Ya7keh
 *** sudoers_ansible
 #+begin_src conf :tangle files/users/sudoers_ansible
 ansible ALL=(ALL) NOPASSWD: ALL
+#+end_src
+** OpenRGB
+*** systemd service
+#+begin_src conf :tangle files/openrgb/openrgb.service
+[Unit]
+Description=OpenRGB SDK Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/openrgb --server
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
 #+end_src
