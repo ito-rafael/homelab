@@ -1046,6 +1046,13 @@ This task is only needed in a SELinux system (eg: Fedora/RHEL)
   environment:
     XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd']['lbic-user'][1] }}"
 #+end_src
+*** Reload udev rules
+#+begin_src yaml
+- name: reload udev rules
+  shell: |
+    udevadm control --reload-rules
+    udevadm trigger
+#+end_src
 * Vars
 ** Main
 #+begin_src yaml :tangle vars/main.yml
