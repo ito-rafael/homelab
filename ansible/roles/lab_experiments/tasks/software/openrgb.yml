@@ -115,3 +115,15 @@
   getent:
     database: passwd
     key: lbic-user
+
+- name: software | openrgb | enable and start openrgb service
+  tags: software,openrgb
+  become_user: lbic-user
+  systemd_service:
+    name: openrgb.service
+    scope: user
+    enabled: yes
+    state: started
+    daemon_reload: yes
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd']['lbic-user'][1] }}"
