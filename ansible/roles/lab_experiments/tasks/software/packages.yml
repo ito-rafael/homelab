@@ -3,6 +3,7 @@
   tags: software,packages
   package:
     name:
+      - acl            # access control list utils
       - git            # version control
       - htop           # process viewer
       - jq             # JSON processor
