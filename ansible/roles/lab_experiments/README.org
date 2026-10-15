@@ -197,6 +197,22 @@
     group: lbic-user
     mode: '0755'
 #+end_src
+***** Install plugins
+#+begin_src yaml
+- name: software | openrgb | download plugins
+  tags: software,openrgb
+  get_url:
+    url: "{{ item.url }}"
+    dest: "/home/lbic-user/.config/OpenRGB/plugins/{{ item.name }}"
+    owner: lbic-user
+    group: lbic-user
+    mode: '0755'
+  loop:
+    - name: OpenRGBEffectsPlugin.so
+      url: https://codeberg.org/OpenRGB/OpenRGBEffectsPlugin/releases/download/release_1.0/OpenRGBEffectsPlugin_1.0_Linux_amd64_0e0f1b4.so
+    - name: OpenRGBVisualMapPlugin.so
+      url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_1.0/OpenRGBVisualMapPlugin_1.0_Linux_amd64_1dde279.so
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
