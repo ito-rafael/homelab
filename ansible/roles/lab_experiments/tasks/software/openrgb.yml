@@ -103,3 +103,9 @@
     group: lbic-user
     mode: '0644'
   notify: reload systemd user daemon
+
+- name: software | openrgb | enable systemd lingering
+  tags: software,openrgb
+  command: loginctl enable-linger lbic-user
+  args:
+    creates: /var/lib/systemd/linger/lbic-user

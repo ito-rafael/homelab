@@ -257,6 +257,14 @@
     mode: '0644'
   notify: reload systemd user daemon
 #+end_src
+***** Enable lingering for lbic-user
+#+begin_src yaml
+- name: software | openrgb | enable systemd lingering
+  tags: software,openrgb
+  command: loginctl enable-linger lbic-user
+  args:
+    creates: /var/lib/systemd/linger/lbic-user
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
