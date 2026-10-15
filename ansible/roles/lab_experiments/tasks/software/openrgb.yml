@@ -1,0 +1,7 @@
+---
+- name: software | openrgb | install packages
+  tags: software,openrgb
+  package:
+    name:
+      - openrgb
+      - i2c-tools

@@ -10,6 +10,7 @@
   - [[#software][Software]]
     - [[#packages][Packages]]
     - [[#ubuntu][Ubuntu]]
+    - [[#openrgb][OpenRGB]]
   - [[#users][Users]]
     - [[#ansible][Ansible]]
     - [[#dataset][Dataset]]
@@ -43,6 +44,7 @@
   # software
   - import_tasks: software/ubuntu.yml      # unminimize Ubuntu packages
   - import_tasks: software/packages.yml    # install Vim, networking tools, etc
+  - import_tasks: software/openrgb.yml     # OpenRGB
   # users & groups
   - import_tasks: users/ansible.yml        # set system user to run ansible automations
   - import_tasks: users/dataset.yml        # lbic group + dataset dir
@@ -118,6 +120,22 @@
     path: /var/log/unminimize_ansible.done
     state: touch
   when: unminimize_result.changed
+#+end_src
+*** OpenRGB
+:PROPERTIES:
+:header-args+: :tangle tasks/software/openrgb.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Install packages
+#+begin_src yaml :padline no
+- name: software | openrgb | install packages
+  tags: software,openrgb
+  package:
+    name:
+      - openrgb
+      - i2c-tools
 #+end_src
 ** Users
 *** Ansible

@@ -6,6 +6,7 @@
   # software
   - import_tasks: software/ubuntu.yml      # unminimize Ubuntu packages
   - import_tasks: software/packages.yml    # install Vim, networking tools, etc
+  - import_tasks: software/openrgb.yml     # OpenRGB
   # users & groups
   - import_tasks: users/ansible.yml        # set system user to run ansible automations
   - import_tasks: users/dataset.yml        # lbic group + dataset dir
