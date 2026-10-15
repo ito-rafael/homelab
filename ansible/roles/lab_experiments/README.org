@@ -221,9 +221,16 @@
 - name: software | openrgb | copy visual maps and effect shaders
   tags: software,openrgb
   copy:
+    src: "{{ item.src }}"
+    dest: "/home/lbic-user/.config/OpenRGB/plugins/settings/{{ item.dest }}"
+    owner: lbic-user
+    group: lbic-user
+    mode: '0644'
   loop:
     - { src: "openrgb/corsair_vengeance.json", dest: "virtual-controllers/corsair_vengeance" }
     - { src: "openrgb/dna_double_helix.glsl",  dest: "effect-shaders/dna_double_helix" }
+  notify: reload systemd user daemon
+#+end_src
 **** systemd configuration
 ***** Create user systemd directory
 #+begin_src yaml
@@ -236,6 +243,13 @@
     group: lbic-user
     mode: '0755'
 #+end_src
+***** Copy openrgb systemd user service
+#+begin_src yaml
+- name: software | openrgb | copy user systemd service
+  tags: software,openrgb
+  copy:
+    src: openrgb/openrgb.service
+    dest: /home/lbic-user/.config/systemd/user/openrgb.service
     owner: lbic-user
     group: lbic-user
     mode: '0644'

@@ -93,3 +93,13 @@
     owner: lbic-user
     group: lbic-user
     mode: '0755'
+
+- name: software | openrgb | copy user systemd service
+  tags: software,openrgb
+  copy:
+    src: openrgb/openrgb.service
+    dest: /home/lbic-user/.config/systemd/user/openrgb.service
+    owner: lbic-user
+    group: lbic-user
+    mode: '0644'
+  notify: reload systemd user daemon
