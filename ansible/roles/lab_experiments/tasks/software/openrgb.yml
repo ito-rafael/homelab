@@ -72,12 +72,15 @@
     - name: OpenRGBVisualMapPlugin.so
       url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_1.0/OpenRGBVisualMapPlugin_1.0_Linux_amd64_1dde279.so
 
-- name: software | openrgb | copy RAM memory visual map
+- name: software | openrgb | copy visual maps and effect shaders
   tags: software,openrgb
   copy:
-    src: openrgb/corsair_vengeance.json
-    dest: /home/lbic-user/.config/OpenRGB/plugins/settings/virtual-controllers/corsair_vengeance
+    src: "{{ item.src }}"
+    dest: "/home/lbic-user/.config/OpenRGB/plugins/settings/{{ item.dest }}"
     owner: lbic-user
     group: lbic-user
     mode: '0644'
+  loop:
+    - { src: "openrgb/corsair_vengeance.json", dest: "virtual-controllers/corsair_vengeance" }
+    - { src: "openrgb/dna_double_helix.glsl",  dest: "effect-shaders/dna_double_helix" }
   notify: reload systemd user daemon
