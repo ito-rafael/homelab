@@ -84,3 +84,12 @@
     - { src: "openrgb/corsair_vengeance.json", dest: "virtual-controllers/corsair_vengeance" }
     - { src: "openrgb/dna_double_helix.glsl",  dest: "effect-shaders/dna_double_helix" }
   notify: reload systemd user daemon
+
+- name: software | openrgb | create user systemd directory
+  tags: software,openrgb
+  file:
+    path: /home/lbic-user/.config/systemd/user
+    state: directory
+    owner: lbic-user
+    group: lbic-user
+    mode: '0755'
