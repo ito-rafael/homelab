@@ -5,3 +5,10 @@
     name:
       - openrgb
       - i2c-tools
+
+- name: software | openrgb | create i2c group
+  tags: software,openrgb
+  group:
+    name: i2c
+    system: yes
+    state: present
