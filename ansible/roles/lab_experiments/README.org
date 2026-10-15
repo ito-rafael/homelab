@@ -168,6 +168,23 @@
     mode: '0644'
   notify: reload udev rules
 #+end_src
+**** Configure kernel modules
+#+begin_src yaml
+- name: software | openrgb | create modules-load.d config
+  tags: software,openrgb
+  copy:
+    dest: /etc/modules-load.d/openrgb.conf
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      i2c-dev
+      {% if 'AuthenticAMD' in ansible_facts['processor'] %}
+      i2c-piix4
+      {% elif 'GenuineIntel' in ansible_facts['processor'] %}
+      i2c-i801
+      {% endif %}
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
