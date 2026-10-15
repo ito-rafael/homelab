@@ -46,14 +46,17 @@
       i2c-i801
       {% endif %}
 
-- name: software | openrgb | create directories
+- name: software | openrgb | create plugin settings directories
   tags: software,openrgb
   file:
-    path: /home/lbic-user/.config/OpenRGB/plugins
+    path: "/home/lbic-user/.config/OpenRGB/plugins/settings/{{ item }}"
     state: directory
     owner: lbic-user
     group: lbic-user
     mode: '0755'
+  loop:
+    - virtual-controllers
+    - effect-shaders
 
 - name: software | openrgb | download plugins
   tags: software,openrgb
