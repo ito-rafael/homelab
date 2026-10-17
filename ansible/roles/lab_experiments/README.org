@@ -327,6 +327,15 @@ https://gitlab.com/coolercontrol/coolercontrol
     state: present
     update_cache: yes
 #+end_src
+***** Enable and start coolercontrold
+#+begin_src yaml
+- name: software | aio cooler | enable and start coolercontrold service
+  tags: software,aio
+  systemd_service:
+    name: coolercontrold
+    enabled: yes
+    state: started
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:

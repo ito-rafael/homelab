@@ -17,3 +17,10 @@
     name: coolercontrol
     state: present
     update_cache: yes
+
+- name: software | aio cooler | enable and start coolercontrold service
+  tags: software,aio
+  systemd_service:
+    name: coolercontrold
+    enabled: yes
+    state: started
