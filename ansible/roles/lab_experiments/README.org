@@ -336,6 +336,17 @@ https://gitlab.com/coolercontrol/coolercontrol
     enabled: yes
     state: started
 #+end_src
+**** CoolerDash
+https://github.com/damachine/coolerdash
+***** Get latest CoolerDash release
+#+begin_src yaml
+- name: software | aio cooler | get latest CoolerDash release info
+  tags: software,aio
+  uri:
+    url: https://api.github.com/repos/damachine/coolerdash/releases/latest
+    return_content: yes
+  register: coolerdash_release
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:

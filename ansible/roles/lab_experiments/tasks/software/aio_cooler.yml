@@ -24,3 +24,10 @@
     name: coolercontrold
     enabled: yes
     state: started
+
+- name: software | aio cooler | get latest CoolerDash release info
+  tags: software,aio
+  uri:
+    url: https://api.github.com/repos/damachine/coolerdash/releases/latest
+    return_content: yes
+  register: coolerdash_release
