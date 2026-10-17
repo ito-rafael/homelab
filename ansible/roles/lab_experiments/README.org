@@ -318,6 +318,15 @@ https://gitlab.com/coolercontrol/coolercontrol
   args:
     creates: /etc/apt/sources.list.d/coolercontrol-coolercontrol.list
 #+end_src
+***** Install CoolerControl
+#+begin_src yaml
+- name: software | aio cooler | install CoolerControl
+  tags: software,aio
+  apt:
+    name: coolercontrol
+    state: present
+    update_cache: yes
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
