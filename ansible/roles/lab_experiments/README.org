@@ -11,6 +11,7 @@
     - [[#packages][Packages]]
     - [[#ubuntu][Ubuntu]]
     - [[#openrgb][OpenRGB]]
+    - [[#aio-cooler][AIO Cooler]]
   - [[#users][Users]]
     - [[#ansible][Ansible]]
     - [[#dataset][Dataset]]
@@ -48,6 +49,7 @@
   - import_tasks: software/ubuntu.yml      # unminimize Ubuntu packages
   - import_tasks: software/packages.yml    # install Vim, networking tools, etc
   - import_tasks: software/openrgb.yml     # OpenRGB
+  - import_tasks: software/aio_cooler.yml  # liquidctl, CoolerControl, CoolerDash
   # users & groups
   - import_tasks: users/ansible.yml        # set system user to run ansible automations
   - import_tasks: users/dataset.yml        # lbic group + dataset dir
@@ -289,6 +291,22 @@
     daemon_reload: yes
   environment:
     XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts['getent_passwd']['lbic-user'][1] }}"
+#+end_src
+*** AIO Cooler
+:PROPERTIES:
+:header-args+: :tangle tasks/software/aio_cooler.yml
+:END:
+#+begin_src yaml
+---
+#+end_src
+**** Install liquidctl
+https://github.com/liquidctl/liquidctl
+#+begin_src yaml :padline no
+- name: software | aio cooler | install packages
+  tags: software,aio
+  package:
+    name:
+      - liquidctl
 #+end_src
 ** Users
 *** Ansible

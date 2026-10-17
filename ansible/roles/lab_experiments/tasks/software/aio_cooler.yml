@@ -1,0 +1,6 @@
+---
+- name: software | aio cooler | install packages
+  tags: software,aio
+  package:
+    name:
+      - liquidctl
