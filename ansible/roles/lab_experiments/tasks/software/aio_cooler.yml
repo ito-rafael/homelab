@@ -31,3 +31,9 @@
     url: https://api.github.com/repos/damachine/coolerdash/releases/latest
     return_content: yes
   register: coolerdash_release
+
+- name: software | aio cooler | download CoolerDash package
+  tags: software,aio
+  get_url:
+    url: "{{ (coolerdash_release.json.assets | selectattr('name', 'search', 'amd64\\.deb') | first).browser_download_url }}"
+    dest: /tmp/coolerdash_latest_amd64.deb
