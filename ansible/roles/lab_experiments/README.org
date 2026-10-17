@@ -220,19 +220,20 @@
     - name: OpenRGBVisualMapPlugin.so
       url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_1.0/OpenRGBVisualMapPlugin_1.0_Linux_amd64_1dde279.so
 #+end_src
-***** Configure visual maps and effect shaders
+***** Configure visual maps, effect shaders, and profile
 #+begin_src yaml
 - name: software | openrgb | copy visual maps and effect shaders
   tags: software,openrgb
   copy:
     src: "{{ item.src }}"
-    dest: "/home/lbic-user/.config/OpenRGB/plugins/settings/{{ item.dest }}"
+    dest: "/home/lbic-user/.config/OpenRGB/{{ item.dest }}"
     owner: lbic-user
     group: lbic-user
     mode: '0644'
   loop:
-    - { src: "openrgb/corsair_vengeance.json", dest: "virtual-controllers/corsair_vengeance" }
-    - { src: "openrgb/dna_double_helix.glsl",  dest: "effect-shaders/dna_double_helix" }
+    - { src: "openrgb/corsair_vengeance.json", dest: "plugins/settings/virtual-controllers/corsair_vengeance" }
+    - { src: "openrgb/dna_double_helix.glsl",  dest: "plugins/settings/effect-shaders/dna_double_helix" }
+    - { src: "openrgb/profile.json",           dest: "profiles/profile.json" }
   notify: reload systemd user daemon
 #+end_src
 **** systemd configuration

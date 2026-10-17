@@ -77,13 +77,14 @@
   tags: software,openrgb
   copy:
     src: "{{ item.src }}"
-    dest: "/home/lbic-user/.config/OpenRGB/plugins/settings/{{ item.dest }}"
+    dest: "/home/lbic-user/.config/OpenRGB/{{ item.dest }}"
     owner: lbic-user
     group: lbic-user
     mode: '0644'
   loop:
-    - { src: "openrgb/corsair_vengeance.json", dest: "virtual-controllers/corsair_vengeance" }
-    - { src: "openrgb/dna_double_helix.glsl",  dest: "effect-shaders/dna_double_helix" }
+    - { src: "openrgb/corsair_vengeance.json", dest: "plugins/settings/virtual-controllers/corsair_vengeance" }
+    - { src: "openrgb/dna_double_helix.glsl",  dest: "plugins/settings/effect-shaders/dna_double_helix" }
+    - { src: "openrgb/profile.json",           dest: "profiles/profile.json" }
   notify: reload systemd user daemon
 
 - name: software | openrgb | create user systemd directory
