@@ -355,6 +355,13 @@ https://github.com/damachine/coolerdash
     url: "{{ (coolerdash_release.json.assets | selectattr('name', 'search', 'amd64\\.deb') | first).browser_download_url }}"
     dest: /tmp/coolerdash_latest_amd64.deb
 #+end_src
+***** Install CoolerDash
+#+begin_src yaml
+- name: software | aio cooler | install CoolerDash
+  tags: software,aio
+  apt:
+    deb: /tmp/coolerdash_latest_amd64.deb
+#+end_src
 ** Users
 *** Ansible
 :PROPERTIES:
