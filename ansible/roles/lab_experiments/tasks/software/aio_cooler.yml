@@ -4,3 +4,9 @@
   package:
     name:
       - liquidctl
+
+- name: software | aio cooler | setup CoolerControl repository
+  tags: software,aio
+  shell: "curl -1sLf 'https://dl.cloudsmith.io/public/coolercontrol/coolercontrol/setup.deb.sh' | distro=ubuntu codename={{ ansible_distribution_release }} bash"
+  args:
+    creates: /etc/apt/sources.list.d/coolercontrol-coolercontrol.list
