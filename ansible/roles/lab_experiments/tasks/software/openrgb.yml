@@ -49,14 +49,15 @@
 - name: software | openrgb | create plugin settings directories
   tags: software,openrgb
   file:
-    path: "/home/lbic-user/.config/OpenRGB/plugins/settings/{{ item }}"
+    path: "/home/lbic-user/.config/OpenRGB/{{ item }}"
     state: directory
     owner: lbic-user
     group: lbic-user
     mode: '0755'
   loop:
-    - virtual-controllers
-    - effect-shaders
+    - plugins/settings/virtual-controllers
+    - plugins/settings/effect-shaders
+    - profiles
 
 - name: software | openrgb | download plugins
   tags: software,openrgb
