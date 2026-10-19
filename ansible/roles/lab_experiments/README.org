@@ -80,6 +80,7 @@
   package:
     name:
       - acl            # access control list utils
+      - btop           # system resources monitor
       - git            # version control
       - htop           # process viewer
       - jq             # JSON processor
