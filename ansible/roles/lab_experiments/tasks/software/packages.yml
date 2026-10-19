@@ -3,19 +3,20 @@
   tags: software,packages
   package:
     name:
-      - acl            # access control list utils
-      - btop           # system resources monitor
-      - git            # version control
-      - htop           # process viewer
-      - jq             # JSON processor
-      - lshw           # show hw info
-      - man-db         # tools for reading manual pages
-      - python3        # Python programming language
-      - tmux           # terminal multiplexer
-      - unrar          # RAR uncompression
-      - unzip          # zip archives extraction
-      - vim            # terminal text editor
-      - zip            # zip archives compressor
+      - acl               # access control list utils
+      - btop              # system resources monitor
+      - git               # version control
+      - htop              # process viewer
+      - jq                # JSON processor
+      - kitty-terminfo    # terminfo for kitty
+      - lshw              # show hw info
+      - man-db            # tools for reading manual pages
+      - python3           # Python programming language
+      - tmux              # terminal multiplexer
+      - unrar             # RAR uncompression
+      - unzip             # zip archives extraction
+      - vim               # terminal text editor
+      - zip               # zip archives compressor
 
 - name: software | packages | install monitoring packages
   tags: software,packages
