@@ -175,6 +175,16 @@
     mode: '0644'
   notify: reload udev rules
 #+end_src
+**** Fix plugdev permissions for headless server
+#+begin_src yaml
+- name: software | openrgb | ensure headless plugdev group permissions in udev rules
+  tags: software,openrgb
+  replace:
+    path: /etc/udev/rules.d/60-openrgb.rules
+    regexp: 'TAG\+="uaccess"'
+    replace: 'MODE="0660", GROUP="plugdev"'
+  notify: reload udev rules
+#+end_src
 **** Configure kernel modules
 #+begin_src yaml
 - name: software | openrgb | create modules-load.d config

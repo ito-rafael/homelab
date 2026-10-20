@@ -31,6 +31,14 @@
     mode: '0644'
   notify: reload udev rules
 
+- name: software | openrgb | ensure headless plugdev group permissions in udev rules
+  tags: software,openrgb
+  replace:
+    path: /etc/udev/rules.d/60-openrgb.rules
+    regexp: 'TAG\+="uaccess"'
+    replace: 'MODE="0660", GROUP="plugdev"'
+  notify: reload udev rules
+
 - name: software | openrgb | create modules-load.d config
   tags: software,openrgb
   copy:
