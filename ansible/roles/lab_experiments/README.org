@@ -162,29 +162,6 @@
     groups: i2c
     append: yes
 #+end_src
-**** Copy udev rules for OpenRGB
-#+begin_src yaml
-- name: software | openrgb | copy udev rules
-  tags: software,openrgb
-  copy:
-    src: /usr/lib/udev/rules.d/60-openrgb.rules
-    dest: /etc/udev/rules.d/60-openrgb.rules
-    remote_src: yes
-    owner: root
-    group: root
-    mode: '0644'
-  notify: reload udev rules
-#+end_src
-**** Fix plugdev permissions for headless server
-#+begin_src yaml
-- name: software | openrgb | ensure headless plugdev group permissions in udev rules
-  tags: software,openrgb
-  replace:
-    path: /etc/udev/rules.d/60-openrgb.rules
-    regexp: 'TAG\+="uaccess"'
-    replace: 'MODE="0660", GROUP="plugdev"'
-  notify: reload udev rules
-#+end_src
 **** Configure kernel modules
 #+begin_src yaml
 - name: software | openrgb | create modules-load.d config
@@ -201,6 +178,28 @@
       {% elif 'GenuineIntel' in ansible_facts['processor'] %}
       i2c-i801
       {% endif %}
+#+end_src
+**** Deploy modified udev rules for headless server
+***** Read original udev rules
+#+begin_src yaml
+- name: software | openrgb | read original udev rules
+  tags: software,openrgb
+  slurp:
+    src: /usr/lib/udev/rules.d/60-openrgb.rules
+  register: openrgb_raw_rules
+#+end_src
+***** Fix headless plugdev permissions
+#+begin_src yaml
+- name: software | openrgb | write headless plugdev rules
+  tags: software,openrgb
+  copy:
+    content: >
+      {{ (openrgb_raw_rules['content'] | b64decode) | regex_replace('TAG\+="uaccess"', 'MODE="0660", GROUP="plugdev"') }}
+    dest: /etc/udev/rules.d/60-openrgb.rules
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload udev rules
 #+end_src
 **** OpenRGB configuration
 ***** Create plugins directories
