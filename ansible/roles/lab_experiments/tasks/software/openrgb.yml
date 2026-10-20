@@ -80,6 +80,8 @@
       url: https://codeberg.org/OpenRGB/OpenRGBEffectsPlugin/releases/download/release_1.0/OpenRGBEffectsPlugin_1.0_Linux_amd64_0e0f1b4.so
     - name: OpenRGBVisualMapPlugin.so
       url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_1.0/OpenRGBVisualMapPlugin_1.0_Linux_amd64_1dde279.so
+    - name: OpenRGBHardwareSyncPlugin.so
+      url: https://codeberg.org/OpenRGB/OpenRGBHardwareSyncPlugin/releases/download/release_1.0/OpenRGBHardwareSyncPlugin_1.0_Linux_amd64_d999417.so
 
 - name: software | openrgb | copy visual maps and effect shaders
   tags: software,openrgb
