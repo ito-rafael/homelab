@@ -79,11 +79,11 @@
     mode: '0755'
   loop:
     - name: OpenRGBEffectsPlugin.so
-      url: https://codeberg.org/OpenRGB/OpenRGBEffectsPlugin/releases/download/release_1.0/OpenRGBEffectsPlugin_1.0_Linux_amd64_0e0f1b4.so
+      url: https://codeberg.org/OpenRGB/OpenRGBEffectsPlugin/releases/download/release_candidate_1.0rc2/OpenRGBEffectsPlugin_1.0rc2_Linux_amd64_415dc20.so
     - name: OpenRGBVisualMapPlugin.so
-      url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_1.0/OpenRGBVisualMapPlugin_1.0_Linux_amd64_1dde279.so
+      url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_candidate_1.0rc2/OpenRGBVisualMapPlugin_1.0rc2_Linux_amd64_320420d.so
     - name: OpenRGBHardwareSyncPlugin.so
-      url: https://codeberg.org/OpenRGB/OpenRGBHardwareSyncPlugin/releases/download/release_1.0/OpenRGBHardwareSyncPlugin_1.0_Linux_amd64_d999417.so
+      url: https://codeberg.org/OpenRGB/OpenRGBHardwareSyncPlugin/releases/download/release_candidate_1.0rc2/OpenRGBHardwareSyncPlugin_1.0rc2_Linux_amd64_4aed949.so
 
 - name: software | openrgb | copy visual maps and effect shaders
   tags: software,openrgb

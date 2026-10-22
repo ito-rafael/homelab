@@ -223,7 +223,10 @@
     - profiles
 #+end_src
 ***** Install plugins
-#+begin_src yaml
+****** Release 1.x (API Version 5)
+Requires OpenRGB version >= 1.0.
+On 2026-10-22, Ubuntu Server 26.04 was still shipping OpenRGB version 0.9.
+#+begin_src yaml :tangle no
 - name: software | openrgb | download plugins
   tags: software,openrgb
   get_url:
@@ -239,6 +242,24 @@
       url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_1.0/OpenRGBVisualMapPlugin_1.0_Linux_amd64_1dde279.so
     - name: OpenRGBHardwareSyncPlugin.so
       url: https://codeberg.org/OpenRGB/OpenRGBHardwareSyncPlugin/releases/download/release_1.0/OpenRGBHardwareSyncPlugin_1.0_Linux_amd64_d999417.so
+#+end_src
+****** Release Candidate 1.0rc2 (API Version 4)
+#+begin_src yaml
+- name: software | openrgb | download plugins
+  tags: software,openrgb
+  get_url:
+    url: "{{ item.url }}"
+    dest: "/home/lbic-user/.config/OpenRGB/plugins/src/{{ item.name }}"
+    owner: lbic-user
+    group: lbic-user
+    mode: '0755'
+  loop:
+    - name: OpenRGBEffectsPlugin.so
+      url: https://codeberg.org/OpenRGB/OpenRGBEffectsPlugin/releases/download/release_candidate_1.0rc2/OpenRGBEffectsPlugin_1.0rc2_Linux_amd64_415dc20.so
+    - name: OpenRGBVisualMapPlugin.so
+      url: https://codeberg.org/OpenRGB/OpenRGBVisualMapPlugin/releases/download/release_candidate_1.0rc2/OpenRGBVisualMapPlugin_1.0rc2_Linux_amd64_320420d.so
+    - name: OpenRGBHardwareSyncPlugin.so
+      url: https://codeberg.org/OpenRGB/OpenRGBHardwareSyncPlugin/releases/download/release_candidate_1.0rc2/OpenRGBHardwareSyncPlugin_1.0rc2_Linux_amd64_4aed949.so
 #+end_src
 ***** Configure visual maps, effect shaders, and profile
 #+begin_src yaml
