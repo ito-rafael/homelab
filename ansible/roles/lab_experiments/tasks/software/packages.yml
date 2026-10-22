@@ -13,6 +13,7 @@
       - man-db            # tools for reading manual pages
       - python3           # Python programming language
       - tmux              # terminal multiplexer
+      - tree              # directory listing
       - unrar             # RAR uncompression
       - unzip             # zip archives extraction
       - vim               # terminal text editor
