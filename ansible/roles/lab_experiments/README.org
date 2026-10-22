@@ -1431,6 +1431,157 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord)
     fragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
 }
 #+end_src
+*** Hardware Sync
+#+begin_src conf :tangle files/openrgb/MeasureSettings.json
+[
+  {
+    "auto_start": false,
+    "brightness": 100,
+    "devices": [
+      {
+        "brightness": 100,
+        "description": "NZXT Hue 2 Device",
+        "is_percentage_fill": false,
+        "is_segment": true,
+        "location": "HID: /dev/hidraw3",
+        "name": "NZXT RGB Controller",
+        "reverse": false,
+        "segment_idx": 0,
+        "serial": "A7E87EAA4729E057BD40971153BAC6E9",
+        "vendor": "NZXT",
+        "version": "1.5.0",
+        "zone_idx": 2
+      }
+    ],
+    "fps": 60,
+    "hardware": 1,
+    "hardware_feature": 0,
+    "measure_color": {
+      "color_stops": [
+        [
+          50.0,
+          16737280
+        ],
+        [
+          60.0,
+          65280
+        ],
+        [
+          72.0,
+          51455
+        ],
+        [
+          85.0,
+          20735
+        ],
+        [
+          93.0,
+          255
+        ]
+      ]
+    },
+    "name": "aio_fan1_cpu",
+    "refresh_interval": 100,
+    "running": true
+  },
+  {
+    "auto_start": false,
+    "brightness": 100,
+    "devices": [
+      {
+        "brightness": 100,
+        "description": "NZXT Hue 2 Device",
+        "is_percentage_fill": false,
+        "is_segment": true,
+        "location": "HID: /dev/hidraw3",
+        "name": "NZXT RGB Controller",
+        "reverse": false,
+        "segment_idx": 0,
+        "serial": "A7E87EAA4729E057BD40971153BAC6E9",
+        "vendor": "NZXT",
+        "version": "1.5.0",
+        "zone_idx": 0
+      }
+    ],
+    "fps": 60,
+    "hardware": 11,
+    "hardware_feature": 0,
+    "measure_color": {
+      "color_stops": [
+        [
+          25.0,
+          65280
+        ],
+        [
+          50.0,
+          51455
+        ],
+        [
+          75.0,
+          20735
+        ],
+        [
+          90.0,
+          255
+        ]
+      ]
+    },
+    "name": "aio_fan2_ram",
+    "refresh_interval": 100,
+    "running": true
+  },
+  {
+    "auto_start": false,
+    "brightness": 100,
+    "devices": [
+      {
+        "brightness": 100,
+        "description": "NZXT Hue 2 Device",
+        "is_percentage_fill": false,
+        "is_segment": true,
+        "location": "HID: /dev/hidraw3",
+        "name": "NZXT RGB Controller",
+        "reverse": false,
+        "segment_idx": 0,
+        "serial": "A7E87EAA4729E057BD40971153BAC6E9",
+        "vendor": "NZXT",
+        "version": "1.5.0",
+        "zone_idx": 1
+      }
+    ],
+    "fps": 60,
+    "hardware": 13,
+    "hardware_feature": 0,
+    "measure_color": {
+      "color_stops": [
+        [
+          42.0,
+          16737280
+        ],
+        [
+          47.0,
+          65280
+        ],
+        [
+          52.0,
+          51455
+        ],
+        [
+          57.0,
+          20735
+        ],
+        [
+          67.0,
+          255
+        ]
+      ]
+    },
+    "name": "aio_fan3_gpu",
+    "refresh_interval": 100,
+    "running": true
+  }
+]
+#+end_src
 *** Profile
 #+begin_src conf :tangle files/openrgb/profile.json
 {
