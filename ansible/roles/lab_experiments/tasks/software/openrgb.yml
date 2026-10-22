@@ -50,7 +50,7 @@
   copy:
     content: >
       {{ (openrgb_raw_rules['content'] | b64decode) | regex_replace('TAG\+="uaccess"', 'MODE="0660", GROUP="plugdev"') }}
-    dest: /etc/udev/rules.d/60-openrgb.rules
+    dest: /etc/udev/rules.d/61-openrgb.rules
     owner: root
     group: root
     mode: '0644'
