@@ -142,8 +142,12 @@
   tags: software,openrgb
   package:
     name:
-      - openrgb
-      - i2c-tools
+      - openrgb                 # OpenRGB daemon and client
+      - i2c-tools               # I2C/SMBus controller access
+      # dependencies for OpenRGB's plugins
+      - libopenal1              # [Effect] OpenAL: Open Audio library
+      - libqt6core5compat6      # [Effect] Qt 6 Core 5 compatibility library
+      - libgtop-2.0-11          # [Hardware Sync] GNOME top library for live CPU/RAM/GPU metric monitoring
 #+end_src
 **** Create i2c group
 #+begin_src yaml
