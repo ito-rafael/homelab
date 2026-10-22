@@ -220,6 +220,7 @@
   loop:
     - plugins/settings/virtual-controllers
     - plugins/settings/effect-shaders
+    - plugins/src
     - profiles
 #+end_src
 ***** Install plugins
@@ -231,7 +232,7 @@ On 2026-10-22, Ubuntu Server 26.04 was still shipping OpenRGB version 0.9.
   tags: software,openrgb
   get_url:
     url: "{{ item.url }}"
-    dest: "/home/lbic-user/.config/OpenRGB/plugins/{{ item.name }}"
+    dest: "/home/lbic-user/.config/OpenRGB/plugins/src/{{ item.name }}"
     owner: lbic-user
     group: lbic-user
     mode: '0755'

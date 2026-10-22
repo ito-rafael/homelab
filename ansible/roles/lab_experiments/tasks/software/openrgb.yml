@@ -67,13 +67,14 @@
   loop:
     - plugins/settings/virtual-controllers
     - plugins/settings/effect-shaders
+    - plugins/src
     - profiles
 
 - name: software | openrgb | download plugins
   tags: software,openrgb
   get_url:
     url: "{{ item.url }}"
-    dest: "/home/lbic-user/.config/OpenRGB/plugins/{{ item.name }}"
+    dest: "/home/lbic-user/.config/OpenRGB/plugins/src/{{ item.name }}"
     owner: lbic-user
     group: lbic-user
     mode: '0755'
