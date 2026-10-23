@@ -1242,18 +1242,26 @@ ansible ALL=(ALL) NOPASSWD: ALL
 ** OpenRGB
 *** systemd service
 #+begin_src conf :tangle files/openrgb/openrgb.service
-[Unit]
-Description=OpenRGB SDK Server
-After=network.target
-
 [Service]
 Type=simple
-ExecStart=/usr/bin/openrgb --server
-Restart=on-failure
-RestartSec=5s
+User=lbic-user
+Group=lbic-user
+Environment=HOME=/home/lbic-user
+Environment=LIBGL_ALWAYS_SOFTWARE=1
+WorkingDirectory=/home/lbic-user
 
-[Install]
-WantedBy=multi-user.target
+ExecStart=/usr/bin/xvfb-run -a \
+    -s "-screen 0 1024x768x24 +extension GLX +render -noreset" \
+    /usr/bin/openrgb \
+        --gui \
+        --server \
+        --noautoconnect \
+        --profile /home/lbic-user/.config/OpenRGB/profile.orp \
+        --loglevel 6 \
+        --verbose
+
+Restart=on-failure
+RestartSec=5
 #+end_src
 *** Visual Map
 #+begin_src conf :tangle files/openrgb/corsair_vengeance.json
