@@ -3096,7 +3096,8 @@ WantedBy=default.target
 }
 #+end_src
 *** Visual Map
-#+begin_src conf :tangle files/openrgb/corsair_vengeance.json
+**** RAM memories
+#+begin_src conf :tangle files/openrgb/visual-map/corsair-vengeance.json
 {
   "ctrl_zones": [
     {
@@ -3173,10 +3174,10 @@ WantedBy=default.target
     }
   ],
   "grid_settings": {
-    "auto_load": false,
+    "auto_load": true,
     "auto_register": true,
     "grid_size": 1,
-    "h": 12,
+    "h": 10,
     "show_bounds": true,
     "show_grid": true,
     "unregister_members": false,

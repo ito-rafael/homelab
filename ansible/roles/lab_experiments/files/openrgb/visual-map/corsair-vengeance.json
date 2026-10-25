@@ -74,10 +74,10 @@
     }
   ],
   "grid_settings": {
-    "auto_load": false,
+    "auto_load": true,
     "auto_register": true,
     "grid_size": 1,
-    "h": 12,
+    "h": 10,
     "show_bounds": true,
     "show_grid": true,
     "unregister_members": false,
