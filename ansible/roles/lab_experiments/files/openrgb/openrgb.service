@@ -1,20 +1,23 @@
+[Unit]
+Description=OpenRGB Headless Server
+
 [Service]
 Type=simple
-User=lbic-user
-Group=lbic-user
 Environment=HOME=/home/lbic-user
 Environment=LIBGL_ALWAYS_SOFTWARE=1
 WorkingDirectory=/home/lbic-user
-
 ExecStart=/usr/bin/xvfb-run -a \
     -s "-screen 0 1024x768x24 +extension GLX +render -noreset" \
     /usr/bin/openrgb \
         --gui \
         --server \
+        --server-host 127.0.0.1 \
         --noautoconnect \
         --profile /home/lbic-user/.config/OpenRGB/profile.orp \
         --loglevel 6 \
         --verbose
-
 Restart=on-failure
 RestartSec=5
+
+[Install]
+WantedBy=default.target
