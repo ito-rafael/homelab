@@ -6,6 +6,7 @@
       - openrgb                 # OpenRGB daemon and client
       - i2c-tools               # I2C/SMBus controller access
       # dependencies for OpenRGB's plugins
+      - xvfb                    # virtual framebuffer X server
       - libopenal1              # [Effect] OpenAL: Open Audio library
       - libqt6core5compat6      # [Effect] Qt 6 Core 5 compatibility library
       - libgtop-2.0-11          # [Hardware Sync] GNOME top library for live CPU/RAM/GPU metric monitoring
