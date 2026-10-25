@@ -300,7 +300,9 @@ On 2026-10-22, Ubuntu Server 26.04 was still shipping OpenRGB version 0.9.
     owner: lbic-user
     group: lbic-user
     mode: '0644'
-  notify: reload systemd user daemon
+  notify:
+    - reload systemd user daemon
+    - software | openrgb | restart user systemd service
 #+end_src
 ***** Enable lingering for lbic-user
 #+begin_src yaml
@@ -324,7 +326,7 @@ On 2026-10-22, Ubuntu Server 26.04 was still shipping OpenRGB version 0.9.
   tags: software,openrgb
   become_user: lbic-user
   systemd_service:
-    name: openrgb.service
+    name: openrgb
     scope: user
     enabled: yes
     state: started
@@ -1197,6 +1199,16 @@ This task is only needed in a SELinux system (eg: Fedora/RHEL)
   shell: |
     udevadm control --reload-rules
     udevadm trigger
+#+end_src
+*** Restart OpenRGB service
+#+begin_src yaml
+- name: software | openrgb | restart user systemd service
+  tags: software,openrgb
+  become_user: lbic-user
+  ansible.builtin.systemd:
+    name: openrgb
+    state: restarted
+    scope: user
 #+end_src
 * Vars
 ** Main

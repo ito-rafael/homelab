@@ -117,7 +117,9 @@
     owner: lbic-user
     group: lbic-user
     mode: '0644'
-  notify: reload systemd user daemon
+  notify:
+    - reload systemd user daemon
+    - software | openrgb | restart user systemd service
 
 - name: software | openrgb | enable systemd lingering
   tags: software,openrgb
@@ -135,7 +137,7 @@
   tags: software,openrgb
   become_user: lbic-user
   systemd_service:
-    name: openrgb.service
+    name: openrgb
     scope: user
     enabled: yes
     state: started

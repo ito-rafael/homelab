@@ -11,3 +11,11 @@
   shell: |
     udevadm control --reload-rules
     udevadm trigger
+
+- name: software | openrgb | restart user systemd service
+  tags: software,openrgb
+  become_user: lbic-user
+  ansible.builtin.systemd:
+    name: openrgb
+    state: restarted
+    scope: user
