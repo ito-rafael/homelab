@@ -3268,6 +3268,122 @@ WantedBy=default.target
   "use_prefered_colors": false
 }
 #+end_src
+**** Profile
+#+begin_src conf :tangle files/openrgb/effects/profile.json
+{
+  "Effects": [
+    {
+      "AllowOnlyFirst": false,
+      "AutoStart": true,
+      "Brightness": 100,
+      "ControllerZones": [
+        {
+          "description": "Virtual controller provided by VisualMap plugin",
+          "is_segment": false,
+          "location": "Somewhere over the rainbow",
+          "name": "corsair-vengeance",
+          "reverse": false,
+          "segment_idx": -1,
+          "self_brightness": 100,
+          "serial": "VISUAL_MAP_VISUAL_CONTROLLER_SERIAL",
+          "vendor": "VisualMap plugin",
+          "version": "1.0.0",
+          "zone_idx": 0
+        }
+      ],
+      "CustomName": "DNA Double Helix",
+      "CustomSettings": {
+        "audio_settings": {
+          "amplitude": 100,
+          "audio_device": -1,
+          "avg_mode": 0,
+          "avg_size": 8,
+          "decay": 80,
+          "equalizer": [
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "filter_constant": 1.0,
+          "nrml_ofst": 0.03999999910593033,
+          "nrml_scl": 0.5,
+          "window_mode": 0
+        },
+        "height": 128,
+        "invert_time": false,
+        "shader_name": "dna-double-helix-3d.glsl",
+        "shader_program": {
+          "height": 128,
+          "main_pass": {
+            "fragment_shader": "// DNA Double Helix — 3D axial rotation for OpenRGB Effects > Shaders\n// For a 4-column x 10-row Visual Map (40 LEDs).\n// Apply to the combined Visual Map, not to each RAM stick separately.\n// No connecting rungs: only the cyan and magenta strands are rendered.\n//\n// The rotation is projected from a simple 3D helix:\n//   horizontal position = sin(angle)\n//   depth / front-back = cos(angle)\n// As time advances, the angle changes so the two strands orbit the long axis;\n// each crossing swaps which strand is in front. The front strand becomes wider,\n// brighter, and gets a small cool-white highlight; the rear strand recedes.\n\nconst float ROTATION_SPEED = 1.20;      // Radians/second; higher = faster rotation\nconst float BRIGHTNESS = 1.00;         // Overall brightness: 0.0 to 1.0\nconst float TURN_LENGTH = 10.0;        // Rows per full helical turn\nconst float STRAND_RADIUS = 1.45;       // Horizontal travel in LED columns\nconst float BACK_BRIGHTNESS = 0.22;       // Rear strand brightness at maximum depth\nconst float FRONT_HIGHLIGHT = 0.18;       // Front-facing specular highlight\nconst float MIN_STRAND_WIDTH = 0.90;      // Rear strand width in LED units\nconst float MAX_STRAND_WIDTH = 1.28;      // Front strand width in LED units\n\nconst float TAU = 6.28318530718;\nconst float PI  = 3.14159265359;\n\nfloat strandCoverage(float col, float strandX, float width)\n{\n  float d = abs(col - strandX);\n  return 1.0 - smoothstep(0.12, width, d);\n}\n\nvoid mainImage(out vec4 fragColor, in vec2 fragCoord)\n{\n  vec2 res = max(iResolution.xy, vec2(1.0));\n  vec2 uv = fragCoord.xy / res;\n\n  // Continuous coordinates centered on the 4 x 10 LED grid.\n  float col = clamp(uv.x * 4.0 - 0.5, 0.0, 3.0);\n  float row = clamp(uv.y * 10.0 - 0.5, 0.0, 9.0);\n\n  // Rotate the helix around its long axis. The sin() component is its visible\n  // left/right orbit; cos() is depth, determining which strand faces camera.\n  float angleA = row * (TAU / TURN_LENGTH) - iTime * ROTATION_SPEED;\n  float angleB = angleA + PI;\n\n  float depthA = cos(angleA);  // +1 = cyan strand fully forward\n  float depthB = cos(angleB);  // opposite depth to strand A\n\n  float mid = 1.5;\n  float xA = mid + STRAND_RADIUS * sin(angleA);\n  float xB = mid + STRAND_RADIUS * sin(angleB);\n\n  // A strand is visually fuller when it faces the viewer and thinner as it\n  // rotates away. This helps the motion read as a rotating 3D object.\n  float widthA = mix(MIN_STRAND_WIDTH, MAX_STRAND_WIDTH, 0.5 + 0.5 * depthA);\n  float widthB = mix(MIN_STRAND_WIDTH, MAX_STRAND_WIDTH, 0.5 + 0.5 * depthB);\n  float onA = strandCoverage(col, xA, widthA);\n  float onB = strandCoverage(col, xB, widthB);\n\n  vec3 cyan = vec3(0.03, 0.80, 1.00);\n  vec3 pink = vec3(1.00, 0.035, 0.42);\n  vec3 background = vec3(0.001, 0.003, 0.010);\n\n  // Depth shading: the rear side is deliberately darker, while the forward\n  // side gets a subtle highlight that moves around the helix with the rotation.\n  float shadeA = mix(BACK_BRIGHTNESS, 1.0, smoothstep(-0.35, 0.55, depthA));\n  float shadeB = mix(BACK_BRIGHTNESS, 1.0, smoothstep(-0.35, 0.55, depthB));\n  float shineA = FRONT_HIGHLIGHT * pow(max(depthA, 0.0), 8.0);\n  float shineB = FRONT_HIGHLIGHT * pow(max(depthB, 0.0), 8.0);\n  vec3 colorA = mix(cyan * shadeA, vec3(1.0), shineA);\n  vec3 colorB = mix(pink * shadeB, vec3(1.0), shineB);\n\n  // The strands have opposite depth. Paint the rear one first, then place the\n  // front one over it. The swap occurs when their projected positions are far\n  // apart, avoiding a visible popping effect at the crossing.\n  float aIsFront = step(0.0, depthA);\n  float backOn = mix(onA, onB, aIsFront);\n  float frontOn = mix(onB, onA, aIsFront);\n  vec3 backColor = mix(colorA, colorB, aIsFront);\n  vec3 frontColor = mix(colorB, colorA, aIsFront);\n\n  vec3 color = mix(background, backColor, clamp(backOn, 0.0, 1.0));\n  color = mix(color, frontColor, clamp(frontOn, 0.0, 1.0));\n\n  // Very subtle breathing highlights; the actual axial rotation remains the\n  // dominant motion and both strands keep their original cyan/pink identity.\n  float pulse = 0.96 + 0.04 * (0.5 + 0.5 * sin(iTime * ROTATION_SPEED * 1.7 + row * 0.28));\n  color *= pulse * clamp(BRIGHTNESS, 0.0, 1.0);\n\n  fragColor = vec4(clamp(color, 0.0, 1.0), 1.0);\n}\n",
+            "texture_path": "",
+            "type": 2
+          },
+          "passes": [],
+          "version": "110",
+          "width": 128
+        },
+        "show_rendering": false,
+        "use_audio": false,
+        "width": 128
+      },
+      "EffectClassName": "Shaders",
+      "FPS": 60,
+      "RandomColors": false,
+      "Slider2Val": 1,
+      "Speed": 1000,
+      "Temperature": 0,
+      "Tint": 0
+    },
+    {
+      "AllowOnlyFirst": false,
+      "AutoStart": true,
+      "Brightness": 100,
+      "ControllerZones": [
+        {
+          "description": "Virtual controller provided by VisualMap plugin",
+          "is_segment": false,
+          "location": "Somewhere over the rainbow",
+          "name": "mobo-leds",
+          "reverse": false,
+          "segment_idx": -1,
+          "self_brightness": 100,
+          "serial": "VISUAL_MAP_VISUAL_CONTROLLER_SERIAL",
+          "vendor": "VisualMap plugin",
+          "version": "1.0.0",
+          "zone_idx": 0
+        }
+      ],
+      "CustomName": "",
+      "EffectClassName": "GradientWave",
+      "FPS": 60,
+      "RandomColors": false,
+      "Slider2Val": 1,
+      "Speed": 2,
+      "Temperature": 0,
+      "Tint": 0,
+      "UserColors": [
+        16711935,
+        16733440
+      ]
+    }
+  ],
+  "version": 2
+}
+#+end_src
 // DNA Double Helix — OpenRGB Effects Plugin
 // Smooth 4-column x 10-row Visual Map, with alternating front/back depth.
 // Apply to the combined Visual Map, not to each RAM stick separately.
