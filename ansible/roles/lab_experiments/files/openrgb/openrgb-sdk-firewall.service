@@ -1,0 +1,11 @@
+[Unit]
+Description=Restrict access to the OpenRGB SDK port
+Before=ssh.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/openrgb-sdk-firewall
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

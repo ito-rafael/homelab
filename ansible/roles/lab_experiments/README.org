@@ -3776,4 +3776,18 @@ if ! "$IPTABLES" -C OUTPUT \
         -j REJECT --reject-with tcp-reset
 fi
 #+end_src
+*** OpenRGB SDK firewall service
+#+begin_src conf :tangle files/openrgb/openrgb-sdk-firewall.service
+[Unit]
+Description=Restrict access to the OpenRGB SDK port
+Before=ssh.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/openrgb-sdk-firewall
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+#+end_src
 #+end_src
