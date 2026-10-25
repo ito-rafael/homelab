@@ -218,10 +218,10 @@
     group: lbic-user
     mode: '0755'
   loop:
-    - plugins/settings/virtual-controllers
-    - plugins/settings/effect-shaders
     - plugins/src
-    - profiles
+    - plugins/settings/effect-profiles
+    - plugins/settings/effect-shaders
+    - plugins/settings/virtual-controllers
 #+end_src
 ***** Install plugins
 ****** Release 1.x (API Version 5)
