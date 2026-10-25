@@ -124,6 +124,16 @@
     jump: REJECT
     reject_with: tcp-reset
     state: present
+
+- name: software | openrgb | deploy firewall script
+  tags: software,openrgb
+  copy:
+    src: openrgb/openrgb-sdk-firewall
+    dest: /usr/local/sbin/openrgb-sdk-firewall
+    owner: root
+    group: root
+    mode: '0755'
+  notify: restart openrgb sdk firewall
 - name: software | openrgb | create user systemd directory
   tags: software,openrgb
   file:

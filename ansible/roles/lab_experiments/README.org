@@ -306,6 +306,18 @@ On 2026-10-22, Ubuntu Server 26.04 was still shipping OpenRGB version 0.9.
     reject_with: tcp-reset
     state: present
 #+end_src
+***** Deploy Firewall Script
+#+begin_src yaml
+- name: software | openrgb | deploy firewall script
+  tags: software,openrgb
+  copy:
+    src: openrgb/openrgb-sdk-firewall
+    dest: /usr/local/sbin/openrgb-sdk-firewall
+    owner: root
+    group: root
+    mode: '0755'
+  notify: restart openrgb sdk firewall
+#+end_src
 #+end_src
 **** systemd configuration
 ***** Create user systemd directory
