@@ -3185,6 +3185,41 @@ WantedBy=default.target
   }
 }
 #+end_src
+**** Motherboard LEDs
+#+begin_src conf :tangle files/openrgb/visual-map/mobo-leds.json
+{
+  "ctrl_zones": [
+    {
+      "controller": {
+        "location": "HID: /dev/hidraw0",
+        "name": "ASUS TUF GAMING X870-PLUS WIFI",
+        "serial": "9876543210",
+        "vendor": "ASUS"
+      },
+      "custom_zone_name": "",
+      "settings": {
+        "custom_shape": null,
+        "led_spacing": 1,
+        "reverse": false,
+        "shape": 0,
+        "x": 0,
+        "y": 0
+      },
+      "zone_idx": 0
+    }
+  ],
+  "grid_settings": {
+    "auto_load": true,
+    "auto_register": true,
+    "grid_size": 1,
+    "h": 1,
+    "show_bounds": true,
+    "show_grid": true,
+    "unregister_members": false,
+    "w": 2
+  }
+}
+#+end_src
 *** Effects
 #+begin_src conf :tangle files/openrgb/dna_double_helix_rotating.glsl
 // DNA Double Helix — OpenRGB Effects Plugin
