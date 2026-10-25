@@ -262,9 +262,9 @@ On 2026-10-22, Ubuntu Server 26.04 was still shipping OpenRGB version 0.9.
     - name: OpenRGBHardwareSyncPlugin.so
       url: https://codeberg.org/OpenRGB/OpenRGBHardwareSyncPlugin/releases/download/release_candidate_1.0rc2/OpenRGBHardwareSyncPlugin_1.0rc2_Linux_amd64_4aed949.so
 #+end_src
-***** Configure visual maps, effect shaders, and profile
+***** Deploy configuration files
 #+begin_src yaml
-- name: software | openrgb | copy visual maps and effect shaders
+- name: software | openrgb | deploy config files
   tags: software,openrgb
   copy:
     src: "{{ item.src }}"
@@ -273,10 +273,20 @@ On 2026-10-22, Ubuntu Server 26.04 was still shipping OpenRGB version 0.9.
     group: lbic-user
     mode: '0644'
   loop:
-    - { src: "openrgb/corsair_vengeance.json",          dest: "plugins/settings/virtual-controllers/corsair_vengeance" }
-    - { src: "openrgb/dna_double_helix_rotating.glsl",  dest: "plugins/settings/effect-shaders/dna_double_helix_rotating.glsl" }
-    - { src: "openrgb/profile.json",                    dest: "profiles/profile.json" }
-  notify: reload systemd user daemon
+    - { src: "openrgb/OpenRGB.json",                       dest: "OpenRGB.json" }
+    - { src: "openrgb/profile.orp",                        dest: "profile.orp" }
+    - { src: "openrgb/sizes.ors",                          dest: "sizes.ors" }
+    - { src: "openrgb/visual-map/corsair-vengeance.json",  dest: "plugins/settings/virtual-controllers/corsair-vengeance" }
+    - { src: "openrgb/visual-map/mobo-leds.json",          dest: "plugins/settings/virtual-controllers/mobo-leds" }
+    - { src: "openrgb/effects/dna-double-helix.glsl",      dest: "plugins/settings/effect-shaders/dna-double-helix.glsl" }
+    - { src: "openrgb/effects/dna-double-helix-3d.glsl",   dest: "plugins/settings/effect-shaders/dna-double-helix-3d.glsl" }
+    - { src: "openrgb/effects/profile.json",               dest: "plugins/settings/effect-profiles/profile" }
+    - { src: "openrgb/effects/EffectSettings.json",        dest: "plugins/settings/EffectSettings.json" }
+    - { src: "openrgb/hardware-sync/MeasureSettings.json", dest: "plugins/settings/MeasureSettings.json" }
+  notify:
+    - reload systemd user daemon
+    - software | openrgb | restart user systemd service
+#+end_src
 #+end_src
 **** systemd configuration
 ***** Create user systemd directory
