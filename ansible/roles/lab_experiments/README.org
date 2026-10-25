@@ -3222,6 +3222,52 @@ WantedBy=default.target
 #+end_src
 *** Effects
 #+begin_src conf :tangle files/openrgb/dna_double_helix_rotating.glsl
+**** Settings
+#+begin_src conf :tangle files/openrgb/effects/EffectSettings.json
+{
+  "audio_settings": {
+    "amplitude": 100,
+    "audio_device": -1,
+    "avg_mode": 0,
+    "avg_size": 8,
+    "decay": 80,
+    "equalizer": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "filter_constant": 1.0,
+    "nrml_ofst": 0.03999999910593033,
+    "nrml_scl": 0.5,
+    "window_mode": 0
+  },
+  "brightness": 100,
+  "fps": 60,
+  "fpscapture": 60,
+  "hide_unsupported": true,
+  "prefer_random": false,
+  "prefered_colors": [
+    0
+  ],
+  "startup_profile": "profile",
+  "temperature": 0,
+  "tint": 0,
+  "use_prefered_colors": false
+}
+#+end_src
 // DNA Double Helix — OpenRGB Effects Plugin
 // Smooth 4-column x 10-row Visual Map, with alternating front/back depth.
 // Apply to the combined Visual Map, not to each RAM stick separately.
