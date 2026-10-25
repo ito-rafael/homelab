@@ -1,6 +1,6 @@
 [
   {
-    "auto_start": false,
+    "auto_start": true,
     "brightness": 100,
     "devices": [
       {
@@ -8,7 +8,7 @@
         "description": "NZXT Hue 2 Device",
         "is_percentage_fill": false,
         "is_segment": true,
-        "location": "HID: /dev/hidraw3",
+        "location": "HID: /dev/hidraw2",
         "name": "NZXT RGB Controller",
         "reverse": false,
         "segment_idx": 0,
@@ -24,7 +24,7 @@
     "measure_color": {
       "color_stops": [
         [
-          50.0,
+          45.0,
           16737280
         ],
         [
@@ -50,7 +50,7 @@
     "running": true
   },
   {
-    "auto_start": false,
+    "auto_start": true,
     "brightness": 100,
     "devices": [
       {
@@ -58,7 +58,7 @@
         "description": "NZXT Hue 2 Device",
         "is_percentage_fill": false,
         "is_segment": true,
-        "location": "HID: /dev/hidraw3",
+        "location": "HID: /dev/hidraw2",
         "name": "NZXT RGB Controller",
         "reverse": false,
         "segment_idx": 0,
@@ -96,7 +96,7 @@
     "running": true
   },
   {
-    "auto_start": false,
+    "auto_start": true,
     "brightness": 100,
     "devices": [
       {
@@ -104,7 +104,7 @@
         "description": "NZXT Hue 2 Device",
         "is_percentage_fill": false,
         "is_segment": true,
-        "location": "HID: /dev/hidraw3",
+        "location": "HID: /dev/hidraw2",
         "name": "NZXT RGB Controller",
         "reverse": false,
         "segment_idx": 0,
@@ -120,23 +120,23 @@
     "measure_color": {
       "color_stops": [
         [
-          42.0,
+          35.0,
           16737280
         ],
         [
-          47.0,
+          45.0,
           65280
         ],
         [
-          52.0,
+          50.0,
           51455
         ],
         [
-          57.0,
+          60.0,
           20735
         ],
         [
-          67.0,
+          70.0,
           255
         ]
       ]
