@@ -110,6 +110,20 @@
     - reload systemd user daemon
     - software | openrgb | restart user systemd service
 
+- name: software | openrgb | restrict SDK access to lbic-user
+  tags: software,openrgb
+  ansible.builtin.iptables:
+    chain: OUTPUT
+    action: insert
+    rule_num: "1"
+    out_interface: lo
+    destination: 127.0.0.1/32
+    protocol: tcp
+    destination_port: "6742"
+    uid_owner: "!lbic-user"
+    jump: REJECT
+    reject_with: tcp-reset
+    state: present
 - name: software | openrgb | create user systemd directory
   tags: software,openrgb
   file:

@@ -288,6 +288,24 @@ On 2026-10-22, Ubuntu Server 26.04 was still shipping OpenRGB version 0.9.
     - reload systemd user daemon
     - software | openrgb | restart user systemd service
 #+end_src
+**** Security
+***** Restrict local OpenRGB SDK access
+#+begin_src yaml
+- name: software | openrgb | restrict SDK access to lbic-user
+  tags: software,openrgb
+  ansible.builtin.iptables:
+    chain: OUTPUT
+    action: insert
+    rule_num: "1"
+    out_interface: lo
+    destination: 127.0.0.1/32
+    protocol: tcp
+    destination_port: "6742"
+    uid_owner: "!lbic-user"
+    jump: REJECT
+    reject_with: tcp-reset
+    state: present
+#+end_src
 #+end_src
 **** systemd configuration
 ***** Create user systemd directory
